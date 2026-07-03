@@ -40,15 +40,8 @@ def resolve_neon_uri(uri):
 database_uri = os.environ.get("DATABASE_URI") or os.environ.get("DATABASE_URL")
 
 if not database_uri:
-    if os.environ.get("RENDER") == "true":
-        print("ERROR: Database connection string is missing in Render environment variables!", flush=True)
-        print("Available Env Keys:", list(os.environ.keys()), flush=True)
-        raise RuntimeError(
-            "DATABASE_URI or DATABASE_URL environment variable is missing on Render! "
-            "Please go to your Render Dashboard -> Web Service Settings -> Environment "
-            "and add the DATABASE_URI variable pointing to your Neon database."
-        )
-    raw_uri = "mysql+pymysql://root:irshad%40786@localhost/SSJewellery"
+    # Fallback to the Neon PostgreSQL database URI
+    raw_uri = "postgresql://neondb_owner:npg_GOsy48HeAJhP@ep-bold-base-ao7v7l2l-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 else:
     raw_uri = database_uri
 

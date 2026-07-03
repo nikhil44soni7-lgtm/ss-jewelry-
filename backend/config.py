@@ -37,7 +37,7 @@ def resolve_neon_uri(uri):
         pass
     return uri
 
-raw_uri = os.environ.get("DATABASE_URI", "mysql+pymysql://root:irshad%40786@localhost/SSJewellery")
+raw_uri = os.environ.get("DATABASE_URI") or os.environ.get("DATABASE_URL") or "mysql+pymysql://root:irshad%40786@localhost/SSJewellery"
 if raw_uri and raw_uri.startswith("postgres://"):
     raw_uri = raw_uri.replace("postgres://", "postgresql://", 1)
 

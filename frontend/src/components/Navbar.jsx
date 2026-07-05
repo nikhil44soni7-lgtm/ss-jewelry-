@@ -751,7 +751,7 @@ export const Navbar = () => {
               </div>
 
               {/* CENTER SECTION: Search Bar (Desktop and Mobile) */}
-              <div className="flex justify-center flex-1 max-w-[125px] sm:max-w-[280px] md:max-w-[400px] lg:max-w-[550px] relative mx-1 sm:mx-2">
+              <div className="flex justify-center flex-1 max-w-[190px] sm:max-w-[280px] md:max-w-[400px] lg:max-w-[550px] relative mx-1 sm:mx-2">
                 <form onSubmit={handleSearchSubmit} className="w-full relative">
                   <input
                     type="text"
@@ -760,7 +760,7 @@ export const Navbar = () => {
                     onChange={(e) => setSearchVal(e.target.value)}
                     className="w-full pl-3 sm:pl-5 pr-8 sm:pr-12 py-1.5 sm:py-3 text-[10px] sm:text-sm bg-[#FAFAFA] dark:bg-slate-800/80 border border-[#F2E8D9] dark:border-slate-700 rounded-full focus:outline-none focus:ring-1 focus:ring-[#D4A75F] focus:border-[#D4A75F] text-[#1F1F1F] dark:text-slate-100 placeholder-slate-400 transition-all shadow-sm hover:border-[#D4A75F]/60"
                   />
-                  <button type="submit" className="absolute right-2.5 top-2 sm:right-4 sm:top-3.5 text-[#3F1D5A] dark:text-[#D4A75F] hover:text-[#D4A75F] dark:hover:text-[#BF934B] transition-colors cursor-pointer bg-transparent border-none">
+                  <button type="submit" className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 text-[#3F1D5A] dark:text-[#D4A75F] hover:text-[#D4A75F] dark:hover:text-[#BF934B] transition-colors cursor-pointer bg-transparent border-none">
                     <Search className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
                   </button>
                 </form>

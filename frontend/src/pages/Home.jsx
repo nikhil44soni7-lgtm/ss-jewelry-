@@ -308,25 +308,22 @@ const BannerSlider = React.memo(({
                 willChange: 'transform, opacity'
               }}
             >
-              {/* Full-bleed image — brightness boosted for vivid, glowing look */}
-              {slide.image_url ? (
-                <img
-                  src={slide.image_url}
-                  alt={slide.title}
-                  className="hero-image-glow"
-                  style={{
-                    position: 'absolute', inset: 0,
-                    width: '100%', height: '100%',
-                    objectFit: 'cover', objectPosition: 'center',
-                    userSelect: 'none'
-                  }}
-                  draggable={false}
-                />
-              ) : (
-                <div
-                  style={{ position: 'absolute', inset: 0 }}
-                  className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
-                />
+              {/* Background gradient (always active) */}
+              <div
+                style={{ position: 'absolute', inset: 0 }}
+                className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
+              />
+
+              {/* Centered-Right Product Image fitted without cropping, size slightly reduced for clarity */}
+              {slide.image_url && (
+                <div className="absolute top-[14%] bottom-[16%] right-[8%] left-[48%] xl:left-[45%] flex items-center justify-center pointer-events-none z-10">
+                  <img
+                    src={slide.image_url}
+                    alt={slide.title}
+                    className="hero-image-glow max-h-full max-w-full object-contain select-none filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.60)]"
+                    draggable={false}
+                  />
+                </div>
               )}
 
               {/* Lightweight gradient — left side only for text, right side stays clear */}

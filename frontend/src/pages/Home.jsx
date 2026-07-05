@@ -708,6 +708,7 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         alt={cat.label}
                         width="76"
                         height="76"
+                        wrapperClassName="rounded-full"
                         className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
                           isActive
                             ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
@@ -781,6 +782,7 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         alt={cat.label}
                         width="68"
                         height="68"
+                        wrapperClassName="rounded-full"
                         className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
                           isActive
                             ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'

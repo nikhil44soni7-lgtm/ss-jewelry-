@@ -201,6 +201,8 @@ export const ProductDetails = ({ productId }) => {
   const [activeImage, setActiveImage] = useState('');
   const [zoomedImage, setZoomedImage] = useState(null);
   const [zoomedTitle, setZoomedTitle] = useState('');
+  const fileInputRef = React.useRef(null);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
   
   // Quantity selector state
   const [quantity, setQuantity] = useState(1);
@@ -1043,7 +1045,8 @@ export const ProductDetails = ({ productId }) => {
         category: editCategory,
         price: editPrice,
         discount: editDiscount,
-        stock: editStock
+        stock: editStock,
+        images: product.images || []
       }, config);
       setProduct(response.data.product);
       alert(`Stock updated successfully! Set to ${editStock}.`);
@@ -1072,7 +1075,8 @@ export const ProductDetails = ({ productId }) => {
         category: editCategory,
         price: editPrice,
         discount: editDiscount,
-        stock: editStock
+        stock: editStock,
+        images: product.images || []
       }, config);
       setProduct(response.data.product);
       alert("Price & Discount updated successfully!");
@@ -1084,6 +1088,62 @@ export const ProductDetails = ({ productId }) => {
       setSavingFinancials(false);
     }
   };
+
+  const handleUploadMedia = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingMedia(true);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    };
+
+    try {
+      // 1. Upload the image file to the backend
+      const uploadResponse = await axios.post(`${API_BASE_URL}/products/upload`, formData, config);
+      const uploadedImageUrl = uploadResponse.data.url;
+
+      // 2. Append the new image URL to the product's image list
+      const existingImages = product.images && product.images.length > 0 ? product.images : [];
+      const updatedImages = [...existingImages, uploadedImageUrl];
+
+      // 3. Save the updated image list to the database via PUT
+      const updateConfig = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      const response = await axios.put(`${API_BASE_URL}/products/${id}`, {
+        name_en: editNameEn,
+        name_hi: editNameHi,
+        description_en: editDescEn,
+        description_hi: editDescHi,
+        features_en: editFeaturesEn,
+        features_hi: editFeaturesHi,
+        specifications_en: editSpecsEn,
+        specifications_hi: editSpecsHi,
+        category: editCategory,
+        price: editPrice,
+        discount: editDiscount,
+        stock: editStock,
+        images: updatedImages
+      }, updateConfig);
+
+      setProduct(response.data.product);
+      setActiveImage(uploadedImageUrl);
+      alert("Image uploaded and added to product gallery successfully!");
+      fetchAdminData();
+    } catch (err) {
+      console.error("Failed to upload image:", err);
+      alert("Failed to upload image: " + (err.response?.data?.message || err.message));
+    } finally {
+      setUploadingMedia(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
 
   const handleSaveDetails = async () => {
     setSavingDetails(true);
@@ -1101,7 +1161,8 @@ export const ProductDetails = ({ productId }) => {
         category: editCategory,
         price: editPrice,
         discount: editDiscount,
-        stock: editStock
+        stock: editStock,
+        images: product.images || []
       }, config);
       setProduct(response.data.product);
       alert("Product details and translations saved successfully!");
@@ -1281,12 +1342,28 @@ export const ProductDetails = ({ productId }) => {
                       </div>
                       <ProductImageGallery images={imagesList} productName={product.name} />
                     </div>
-                   <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
-                     <div className="text-xs text-slate-500 font-medium">Images ({imagesList.length})</div>
-                     <button className="px-3 py-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100 cursor-pointer">
-                       Upload Media
-                     </button>
-                   </div>
+                                       <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+                      <div className="text-xs text-slate-500 font-medium">Images ({imagesList.length})</div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleUploadMedia}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <button 
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingMedia}
+                        className="px-3 py-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                      >
+                        {uploadingMedia ? (
+                          <>
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : 'Upload Media'}
+                      </button>
+                    </div>
                  </div>
 
                </div>

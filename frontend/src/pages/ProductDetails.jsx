@@ -443,12 +443,26 @@ export const ProductDetails = ({ productId }) => {
         )}
 
         {/* Image Block */}
-        <div className="relative aspect-video w-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-center p-2 mt-2">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-center p-2 mt-2">
+          {/* Primary Image */}
           <LuxuryImage
             src={item.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'}
             alt={item.name}
-            className="max-h-24 max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+            className={`max-h-32 max-w-full object-contain transition-all duration-700 ease-out ${
+              item.images?.[1] ? 'group-hover:opacity-0 group-hover:scale-95' : 'group-hover:scale-105'
+            }`}
           />
+
+          {/* Secondary Image on Hover */}
+          {item.images?.[1] && (
+            <div className="absolute inset-0 p-2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out transform scale-105 group-hover:scale-100 pointer-events-none">
+              <LuxuryImage
+                src={item.images[1]}
+                alt={`${item.name} - Alternate`}
+                className="max-h-32 max-w-full object-contain"
+              />
+            </div>
+          )}
         </div>
 
         {/* Content Block */}

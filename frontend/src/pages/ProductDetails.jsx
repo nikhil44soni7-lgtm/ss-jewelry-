@@ -1852,11 +1852,11 @@ export const ProductDetails = ({ productId }) => {
 
           {/* Breadcrumbs */}
           <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 font-medium py-3 border-b border-slate-100 dark:border-slate-900 mb-6">
-            <span className="cursor-pointer hover:text-emerald-500 transition-colors" onClick={() => navigate('/')}>{language === 'hi' ? 'होम' : 'Home'}</span>
+            <span className="cursor-pointer hover:text-[#D4A75F] transition-colors" onClick={() => navigate('/')}>{language === 'hi' ? 'होम' : 'Home'}</span>
             <ChevronRight className="h-3 w-3 mx-1 text-slate-400" />
-            <span className="cursor-pointer hover:text-emerald-500 capitalize transition-colors" onClick={() => navigate(`/category/${product.category}`)}>{translateCategory(product.category)}</span>
+            <span className="cursor-pointer hover:text-[#D4A75F] capitalize transition-colors" onClick={() => navigate(`/category/${product.category}`)}>{translateCategory(product.category)}</span>
             <ChevronRight className="h-3 w-3 mx-1 text-slate-400" />
-            <span className="text-slate-700 dark:text-slate-350 font-bold truncate max-w-[200px] md:max-w-xs">{language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}</span>
+            <span className="text-[#D4A75F] font-bold truncate max-w-[200px] md:max-w-xs">{language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start w-full">

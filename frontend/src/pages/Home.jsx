@@ -258,14 +258,19 @@ const BannerSlider = React.memo(({
 
   if (bannersLoading) {
     return (
-      <div className="relative w-full">
-        <div
-          className="relative overflow-hidden bg-[#1B0B26] flex items-center justify-center h-screen min-h-[600px]"
-        >
-          <div className="absolute inset-0 luxury-gold-shimmer pointer-events-none" />
-          <img src="/logo.svg" alt="SSJewellery" className="h-20 w-auto opacity-60 object-contain relative z-20 animate-pulse" />
+      <>
+        {/* Desktop Loading Skeleton */}
+        <div className="hidden md:block relative w-full">
+          <div className="relative overflow-hidden bg-[#1B0B26] flex items-center justify-center h-screen min-h-[600px]">
+            <div className="absolute inset-0 luxury-gold-shimmer pointer-events-none" />
+            <img src="/logo.svg" alt="SSJewellery" className="h-20 w-auto opacity-60 object-contain relative z-20 animate-pulse" />
+          </div>
         </div>
-      </div>
+        {/* Mobile Loading Skeleton */}
+        <div className="block md:hidden w-[94vw] mx-auto mt-[24px] mb-8">
+          <MobileBannerSkeleton />
+        </div>
+      </>
     );
   }
 
@@ -273,264 +278,383 @@ const BannerSlider = React.memo(({
   if (!currentSlide) return null;
 
   return (
-    <div
-      className="relative w-full mb-10 lg:mb-12 hero-slider-container"
-      style={{ perspective: '1400px' }}
-    >
-      {/* ======== SLIDER CONTAINER ======== */}
+    <>
+      {/* Desktop view */}
       <div
-        className="relative overflow-hidden"
-        style={{
-          height: '100vh',
-          minHeight: '600px',
-          maxHeight: '1000px',
-          boxShadow: '0 0 80px rgba(212,167,95,0.12) inset',
-          transformStyle: 'preserve-3d'
-        }}
+        className="hidden md:block relative w-full mb-10 lg:mb-12 hero-slider-container"
+        style={{ perspective: '1400px' }}
       >
-        {/* ---- BACKGROUND SLIDES ---- */}
-        {slides.map((slide, idx) => (
-          <div
-            key={idx}
-            ref={el => { slideRefs.current[idx] = el; }}
-            style={{
-              position: 'absolute', inset: 0,
-              opacity: idx === activeSlide ? 1 : 0,
-              zIndex: idx === activeSlide ? 10 : 1,
-              transformStyle: 'preserve-3d',
-              willChange: 'transform, opacity'
-            }}
-          >
-            {/* Full-bleed image — brightness boosted for vivid, glowing look */}
-            {slide.image_url ? (
-              <img
-                src={slide.image_url}
-                alt={slide.title}
-                className="hero-image-glow"
-                style={{
-                  position: 'absolute', inset: 0,
-                  width: '100%', height: '100%',
-                  objectFit: 'cover', objectPosition: 'center',
-                  userSelect: 'none'
-                }}
-                draggable={false}
-              />
-            ) : (
-              <div
-                style={{ position: 'absolute', inset: 0 }}
-                className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
-              />
-            )}
-
-            {/* Lightweight gradient — left side only for text, right side stays clear */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.04) 100%)' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 35%, rgba(0,0,0,0.08) 100%)' }} />
-            {/* Vibrant gold radial glow on left — makes image pop */}
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 5% 70%, rgba(212,167,95,0.20), transparent 60%)' }} />
-            {/* Warm amber inner glow at image center */}
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 65% 50%, rgba(255,200,100,0.06), transparent 55%)' }} />
-            {/* Bottom fade to blend into page */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '140px', background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.25) 50%, transparent 100%)' }} />
-            {/* Gold top rule */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(to right, transparent, rgba(212,167,95,0.80), transparent)' }} />
-          </div>
-        ))}
-
-        {/* ---- FLOATING GOLD PARTICLES ---- */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none', overflow: 'hidden' }}>
-          {[...Array(10)].map((_, i) => (
-            <div
-              key={i}
-              className="animate-float-slow"
-              style={{
-                position: 'absolute',
-                borderRadius: '50%',
-                background: `rgba(212,167,95,${0.08 + i * 0.025})`,
-                width: `${5 + i * 3}px`,
-                height: `${5 + i * 3}px`,
-                left: `${8 + i * 9}%`,
-                top: `${15 + (i % 5) * 17}%`,
-                animationDuration: `${4.5 + i * 0.7}s`,
-                animationDelay: `${i * 0.35}s`,
-                filter: 'blur(1.5px)'
-              }}
-            />
-          ))}
-        </div>
-
-        {/* ---- DECORATIVE CORNER ORNAMENT ---- */}
-        <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 25, pointerEvents: 'none' }}>
-          <svg width="52" height="52" viewBox="0 0 52 52" fill="none" opacity="0.45">
-            <path d="M2 2 L24 2" stroke="#D4A75F" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M2 2 L2 24" stroke="#D4A75F" strokeWidth="1.5" strokeLinecap="round"/>
-            <circle cx="2" cy="2" r="2.5" fill="#D4A75F"/>
-          </svg>
-        </div>
-
-        {/* ---- SLIDE COUNTER — top right ---- */}
+        {/* ======== SLIDER CONTAINER ======== */}
         <div
+          className="relative overflow-hidden"
           style={{
-            position: 'absolute', top: 20, right: 20, zIndex: 40,
-            display: 'flex', alignItems: 'center', gap: '8px',
-            padding: '6px 14px',
-            background: 'rgba(0,0,0,0.30)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(212,167,95,0.22)',
-            borderRadius: '999px'
+            height: '100vh',
+            minHeight: '600px',
+            maxHeight: '1000px',
+            boxShadow: '0 0 80px rgba(212,167,95,0.12) inset',
+            transformStyle: 'preserve-3d'
           }}
         >
-          <span style={{ color: '#D4A75F', fontFamily: 'serif', fontWeight: 700, fontSize: '1.05rem', lineHeight: 1 }}>
-            {String(activeSlide + 1).padStart(2, '0')}
-          </span>
-          <div style={{ width: '20px', height: '1px', background: 'rgba(212,167,95,0.40)' }} />
-          <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: '0.75rem', fontWeight: 500 }}>
-            {String(slides.length).padStart(2, '0')}
-          </span>
-        </div>
+          {/* ---- BACKGROUND SLIDES ---- */}
+          {slides.map((slide, idx) => (
+            <div
+              key={idx}
+              ref={el => { slideRefs.current[idx] = el; }}
+              style={{
+                position: 'absolute', inset: 0,
+                opacity: idx === activeSlide ? 1 : 0,
+                zIndex: idx === activeSlide ? 10 : 1,
+                transformStyle: 'preserve-3d',
+                willChange: 'transform, opacity'
+              }}
+            >
+              {/* Full-bleed image — brightness boosted for vivid, glowing look */}
+              {slide.image_url ? (
+                <img
+                  src={slide.image_url}
+                  alt={slide.title}
+                  className="hero-image-glow"
+                  style={{
+                    position: 'absolute', inset: 0,
+                    width: '100%', height: '100%',
+                    objectFit: 'cover', objectPosition: 'center',
+                    userSelect: 'none'
+                  }}
+                  draggable={false}
+                />
+              ) : (
+                <div
+                  style={{ position: 'absolute', inset: 0 }}
+                  className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
+                />
+              )}
 
-        {/* ---- CONTENT OVERLAY ---- */}
-        <div
-          ref={contentRef}
-          style={{ position: 'absolute', inset: 0, zIndex: 30, display: 'flex', alignItems: 'center' }}
-        >
-          <div className="w-full max-w-2xl xl:max-w-3xl px-8 sm:px-12 md:px-14 lg:px-20">
-            {/* Badge */}
-            <div ref={badgeRef} style={{ opacity: 0 }} className="mb-4 sm:mb-5">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#D4A75F]/15 text-[#D4A75F] border border-[#D4A75F]/35 backdrop-blur-sm tracking-[0.15em] uppercase shadow-sm">
-                <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-                {currentSlide.badge}
-              </span>
+              {/* Lightweight gradient — left side only for text, right side stays clear */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.04) 100%)' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 35%, rgba(0,0,0,0.08) 100%)' }} />
+              {/* Vibrant gold radial glow on left — makes image pop */}
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 5% 70%, rgba(212,167,95,0.20), transparent 60%)' }} />
+              {/* Warm amber inner glow at image center */}
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 65% 50%, rgba(255,200,100,0.06), transparent 55%)' }} />
+              {/* Bottom fade to blend into page */}
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '140px', background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.25) 50%, transparent 100%)' }} />
+              {/* Gold top rule */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(to right, transparent, rgba(212,167,95,0.80), transparent)' }} />
             </div>
+          ))}
 
-            {/* Main Title */}
-            <h1
-              ref={titleRef}
-              className="font-serif font-bold text-white leading-[1.07] tracking-tight mb-3 sm:mb-4"
-              style={{ opacity: 0, fontSize: 'clamp(1.85rem, 4.8vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
-            >
-              {currentSlide.title}
-            </h1>
-
-            {/* Gold Subtitle */}
-            <p
-              ref={subtitleRef}
-              className="font-serif text-[#D4A75F] mb-3"
-              style={{ opacity: 0, fontSize: 'clamp(1rem, 2vw, 1.45rem)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
-            >
-              {currentSlide.subtitle}
-            </p>
-
-            {/* Description */}
-            <p
-              ref={descRef}
-              className="text-slate-300/85 leading-relaxed mb-7 sm:mb-8 max-w-lg hidden sm:block text-sm"
-              style={{ opacity: 0 }}
-            >
-              {currentSlide.desc}
-            </p>
-
-            {/* CTA Row */}
-            <div ref={btnRef} className="flex items-center gap-4" style={{ opacity: 0 }}>
-              <Link
-                to={currentSlide.btnLink || `/?category=${currentSlide.catFilter}`}
-                onClick={(e) => handleBannerButtonClick(e, currentSlide)}
-                className="group inline-flex items-center gap-2.5 px-8 py-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 gold-shimmer-btn relative overflow-hidden"
-                style={{ boxShadow: '0 8px 36px rgba(212,167,95,0.50), 0 2px 8px rgba(0,0,0,0.3)' }}
-              >
-                {currentSlide.btnText}
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
-              <div className="hidden sm:block w-px h-10 bg-white/20" />
-              <Link
-                to="/?category=All"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onCategoryClick('All', 'banner');
+          {/* ---- FLOATING GOLD PARTICLES ---- */}
+          <div style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none', overflow: 'hidden' }}>
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="animate-float-slow"
+                style={{
+                  position: 'absolute',
+                  borderRadius: '50%',
+                  background: `rgba(212,167,95,${0.08 + i * 0.025})`,
+                  width: `${5 + i * 3}px`,
+                  height: `${5 + i * 3}px`,
+                  left: `${8 + i * 9}%`,
+                  top: `${15 + (i % 5) * 17}%`,
+                  animationDuration: `${4.5 + i * 0.7}s`,
+                  animationDelay: `${i * 0.35}s`,
+                  filter: 'blur(1.5px)'
                 }}
-                className="hidden sm:inline-flex items-center gap-1.5 text-white/55 hover:text-[#D4A75F] text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
+              />
+            ))}
+          </div>
+
+          {/* ---- DECORATIVE CORNER ORNAMENT ---- */}
+          <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 25, pointerEvents: 'none' }}>
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none" opacity="0.45">
+              <path d="M2 2 L24 2" stroke="#D4A75F" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M2 2 L2 24" stroke="#D4A75F" strokeWidth="1.5" strokeLinecap="round"/>
+              <circle cx="2" cy="2" r="2.5" fill="#D4A75F"/>
+            </svg>
+          </div>
+
+          {/* ---- SLIDE COUNTER — top right ---- */}
+          <div
+            style={{
+              position: 'absolute', top: 20, right: 20, zIndex: 40,
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '6px 14px',
+              background: 'rgba(0,0,0,0.30)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(212,167,95,0.22)',
+              borderRadius: '999px'
+            }}
+          >
+            <span style={{ color: '#D4A75F', fontFamily: 'serif', fontWeight: 700, fontSize: '1.05rem', lineHeight: 1 }}>
+              {String(activeSlide + 1).padStart(2, '0')}
+            </span>
+            <div style={{ width: '20px', height: '1px', background: 'rgba(212,167,95,0.40)' }} />
+            <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: '0.75rem', fontWeight: 500 }}>
+              {String(slides.length).padStart(2, '0')}
+            </span>
+          </div>
+
+          {/* ---- CONTENT OVERLAY ---- */}
+          <div
+            ref={contentRef}
+            style={{ position: 'absolute', inset: 0, zIndex: 30, display: 'flex', alignItems: 'center' }}
+          >
+            <div className="w-full max-w-2xl xl:max-w-3xl px-8 sm:px-12 md:px-14 lg:px-20">
+              {/* Badge */}
+              <div ref={badgeRef} style={{ opacity: 0 }} className="mb-4 sm:mb-5">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#D4A75F]/15 text-[#D4A75F] border border-[#D4A75F]/35 backdrop-blur-sm tracking-[0.15em] uppercase shadow-sm">
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                  {currentSlide.badge}
+                </span>
+              </div>
+
+              {/* Main Title */}
+              <h1
+                ref={titleRef}
+                className="font-serif font-bold text-white leading-[1.07] tracking-tight mb-3 sm:mb-4"
+                style={{ opacity: 0, fontSize: 'clamp(1.85rem, 4.8vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
               >
-                View All
-                <ChevronRight className="h-3 w-3" />
-              </Link>
+                {currentSlide.title}
+              </h1>
+
+              {/* Gold Subtitle */}
+              <p
+                ref={subtitleRef}
+                className="font-serif text-[#D4A75F] mb-3"
+                style={{ opacity: 0, fontSize: 'clamp(1rem, 2vw, 1.45rem)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
+              >
+                {currentSlide.subtitle}
+              </p>
+
+              {/* Description */}
+              <p
+                ref={descRef}
+                className="text-slate-300/85 leading-relaxed mb-7 sm:mb-8 max-w-lg hidden sm:block text-sm"
+                style={{ opacity: 0 }}
+              >
+                {currentSlide.desc}
+              </p>
+
+              {/* CTA Row */}
+              <div ref={btnRef} className="flex items-center gap-4" style={{ opacity: 0 }}>
+                <Link
+                  to={currentSlide.btnLink || `/?category=${currentSlide.catFilter}`}
+                  onClick={(e) => handleBannerButtonClick(e, currentSlide)}
+                  className="group inline-flex items-center gap-2.5 px-8 py-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 gold-shimmer-btn relative overflow-hidden"
+                  style={{ boxShadow: '0 8px 36px rgba(212,167,95,0.50), 0 2px 8px rgba(0,0,0,0.3)' }}
+                >
+                  {currentSlide.btnText}
+                  <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+                </Link>
+                <div className="hidden sm:block w-px h-10 bg-white/20" />
+                <Link
+                  to="/?category=All"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCategoryClick('All', 'banner');
+                  }}
+                  className="hidden sm:inline-flex items-center gap-1.5 text-white/55 hover:text-[#D4A75F] text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
+                >
+                  View All
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
             </div>
           </div>
+
+          {/* ---- ADMIN EDIT BUTTON ---- */}
+          {isAdmin && (
+            <Link
+              to="/admin-control?tab=config"
+              className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 px-4 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold backdrop-blur-md transition-all hover:scale-105 cursor-pointer animate-pulse"
+            >
+              <Edit3 className="h-3.5 w-3.5" />
+              <span>Edit Banners</span>
+            </Link>
+          )}
+
+          {/* ---- PAGINATION DOT INDICATORS ---- */}
+          <div
+            className="absolute z-40 flex items-center gap-2.5"
+            style={{ bottom: '28px', left: '50%', transform: 'translateX(-50%)' }}
+          >
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlide(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className="cursor-pointer rounded-full"
+                style={{
+                  width: idx === activeSlide ? '28px' : '8px',
+                  height: '8px',
+                  background: idx === activeSlide ? '#D4A75F' : 'rgba(255,255,255,0.30)',
+                  boxShadow: idx === activeSlide ? '0 0 12px rgba(212,167,95,0.80), 0 0 4px rgba(212,167,95,0.50)' : 'none',
+                  border: 'none', padding: 0,
+                  transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)'
+                }}
+              />
+            ))}
+          </div>
+
+          {/* ---- ANIMATED GOLD BOTTOM STRIP ---- */}
+          <div
+            className="hero-gold-bottom"
+            style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 45, height: '3px', pointerEvents: 'none' }}
+          />
+
+          {/* ---- PROGRESS STRIPS (bottom) ---- */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', height: '3px' }}>
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlide(idx)}
+                style={{
+                  flex: 1,
+                  background: idx === activeSlide ? 'transparent' : 'rgba(255,255,255,0.18)',
+                  position: 'relative',
+                  cursor: 'pointer',
+                  border: 'none',
+                  padding: 0,
+                  overflow: 'hidden',
+                  transition: 'background 0.3s'
+                }}
+              >
+                {idx === activeSlide && (
+                  <div
+                    ref={progressBarRef}
+                    style={{
+                      position: 'absolute', inset: 0,
+                      background: '#D4A75F',
+                      transformOrigin: 'left center',
+                      transform: 'scaleX(0)'
+                    }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+        </div>
+      </div>
+
+      {/* Mobile view */}
+      <div className="block md:hidden w-[94vw] mx-auto mt-[24px] mb-8">
+        <div className="relative h-[390px] xs:h-[420px] sm:h-[440px] overflow-hidden rounded-[16px] shadow-[0_20px_50px_rgba(27,11,38,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#D4A75F]/15 dark:border-white/5 bg-gradient-to-tr from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]">
+          {isAdmin && (
+            <Link
+              to="/admin-control?tab=config"
+              className="absolute top-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 active:bg-emerald-500/30 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 rounded-full text-[10px] font-bold backdrop-blur-md transition-all duration-300 hover:scale-105 shadow-sm cursor-pointer"
+            >
+              <Edit3 className="h-3 w-3" />
+              <span>Edit Banner</span>
+            </Link>
+          )}
+
+          <motion.div
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(event, info) => {
+              const swipeThreshold = 40;
+              if (info.offset.x < -swipeThreshold) {
+                handleNextSlide();
+              } else if (info.offset.x > swipeThreshold) {
+                handlePrevSlide();
+              }
+            }}
+            className="w-full h-full cursor-grab active:cursor-grabbing relative"
+          >
+            {slides.map((slide, idx) => (
+              <div
+                key={idx}
+                className={`absolute inset-0 bg-gradient-to-tr ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'} transition-opacity duration-1000 ${
+                  idx === activeSlide
+                    ? 'opacity-100 z-10'
+                    : 'opacity-0 z-0 pointer-events-none'
+                }`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-[#1B0B26]/30 to-[#3F1D5A]/10 mix-blend-multiply opacity-90 pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(212,167,95,0.15),transparent_50%)] pointer-events-none" />
+                <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4A75F]/20 to-transparent pointer-events-none" />
+
+                <div className="h-full flex flex-col items-center justify-between text-center pt-5 pb-8 px-4 text-white z-10 relative">
+
+                  <div className="flex flex-col items-center">
+                    <motion.h1
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={idx === activeSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      className="text-[28px] xs:text-[32px] sm:text-[36px] font-serif font-bold tracking-normal leading-[1.2] text-white mb-1.5 max-w-[280px] xs:max-w-md break-words animate-in fade-in"
+                    >
+                      {slide.title}
+                    </motion.h1>
+
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={idx === activeSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                      className="text-[14px] xs:text-[15px] sm:text-[16px] font-serif text-[#D4A75F] max-w-[280px] xs:max-w-md break-words"
+                    >
+                      {slide.subtitle}
+                    </motion.p>
+                  </div>
+
+                  <div className="my-2">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={idx === activeSlide ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4, delay: 0.4 }}
+                      className="w-fit"
+                    >
+                      <Link
+                        to={slide.btnLink || `/?category=${slide.catFilter}`}
+                        onClick={(e) => handleBannerButtonClick(e, slide)}
+                        className="px-5 py-2 bg-[#D4A75F] text-white font-bold text-[11px] uppercase tracking-wider rounded-full shadow-lg transition-transform active:scale-95 duration-300 w-fit flex items-center gap-1.5 cursor-pointer gold-shimmer-btn relative overflow-hidden"
+                      >
+                        {slide.btnText}
+                      </Link>
+                    </motion.div>
+                  </div>
+
+                  {slide.image_url && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={idx === activeSlide ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                      transition={{ duration: 0.6, delay: 0.45 }}
+                      className="w-full h-[140px] xs:h-[160px] sm:h-[180px] flex items-center justify-center relative mt-2"
+                    >
+                      <LuxuryImage
+                        src={slide.image_url}
+                        alt={slide.title}
+                        draggable="false"
+                        className="h-full w-auto object-contain rounded-xl filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)] select-none"
+                        width="300"
+                        height="200"
+                      />
+                    </motion.div>
+                  )}
+
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
-        {/* ---- ADMIN EDIT BUTTON ---- */}
-        {isAdmin && (
-          <Link
-            to="/admin-control?tab=config"
-            className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 px-4 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold backdrop-blur-md transition-all hover:scale-105 cursor-pointer animate-pulse"
-          >
-            <Edit3 className="h-3.5 w-3.5" />
-            <span>Edit Banners</span>
-          </Link>
-        )}
-
-        {/* ---- PAGINATION DOT INDICATORS ---- */}
-        <div
-          className="absolute z-40 flex items-center gap-2.5"
-          style={{ bottom: '28px', left: '50%', transform: 'translateX(-50%)' }}
-        >
+        <div className="mt-4 flex items-center justify-center gap-2">
           {slides.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setActiveSlide(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
-              className="cursor-pointer rounded-full"
-              style={{
-                width: idx === activeSlide ? '28px' : '8px',
-                height: '8px',
-                background: idx === activeSlide ? '#D4A75F' : 'rgba(255,255,255,0.30)',
-                boxShadow: idx === activeSlide ? '0 0 12px rgba(212,167,95,0.80), 0 0 4px rgba(212,167,95,0.50)' : 'none',
-                border: 'none', padding: 0,
-                transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)'
-              }}
+              className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${
+                idx === activeSlide ? 'bg-[#D4A75F] w-6' : 'bg-slate-350 dark:bg-slate-800 hover:bg-slate-200 w-1.5'
+              }`}
             />
           ))}
         </div>
-
-        {/* ---- ANIMATED GOLD BOTTOM STRIP ---- */}
-        <div
-          className="hero-gold-bottom"
-          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 45, height: '3px', pointerEvents: 'none' }}
-        />
-
-        {/* ---- PROGRESS STRIPS (bottom) ---- */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', height: '3px' }}>
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveSlide(idx)}
-              style={{
-                flex: 1,
-                background: idx === activeSlide ? 'transparent' : 'rgba(255,255,255,0.18)',
-                position: 'relative',
-                cursor: 'pointer',
-                border: 'none',
-                padding: 0,
-                overflow: 'hidden',
-                transition: 'background 0.3s'
-              }}
-            >
-              {idx === activeSlide && (
-                <div
-                  ref={progressBarRef}
-                  style={{
-                    position: 'absolute', inset: 0,
-                    background: '#D4A75F',
-                    transformOrigin: 'left center',
-                    transform: 'scaleX(0)'
-                  }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-
       </div>
-    </div>
+    </>
   );
 });
 

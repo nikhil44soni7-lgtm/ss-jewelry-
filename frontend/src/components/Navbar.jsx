@@ -194,260 +194,498 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className={`${location.pathname === '/' ? 'fixed' : 'absolute'} top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] lg:w-[82%] max-w-[1280px] pointer-events-none`}>
-        <div 
-          className={`w-full pointer-events-auto transition-all duration-500 rounded-2xl mobile-navbar-mockup ${
-            location.pathname === '/'
-              ? (isScrolled ? 'navbar-glass-3d-scrolled' : 'navbar-glass-3d')
-              : 'navbar-glass-3d-scrolled'
-          }`}
-        >
-          <div className="px-3 sm:px-6">
-            <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 md:h-20 flex-nowrap">
+      <nav className={`sticky top-0 z-40 transition-all duration-500 border-b ${
+        isScrolled
+          ? 'navbar-glass-scrolled shadow-md'
+          : 'bg-white dark:bg-slate-950 border-[#F2E8D9]/60 dark:border-slate-850 shadow-sm'
+      }`}>
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className={`flex items-center justify-between gap-4 transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20'}`}>
 
-              {/* LEFT SECTION: Logo + Brand Name */}
-              <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0 flex-nowrap">
-                {/* Mobile Menu Toggle Button */}
-                <button
-                  onClick={() => setMobileMenuOpen(true)}
-                  className="p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer lg:hidden"
-                  title="Menu"
-                >
-                  <Menu className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-                </button>
-                <Link to="/" className="flex items-center gap-1.5 sm:gap-[14px] flex-shrink-0 brand-typography-wrapper select-none group no-underline flex-nowrap">
-                  <img 
-                    src="/logo.svg" 
-                    alt="SSJewellery Logo" 
-                    className="h-[38px] sm:h-[48px] lg:h-[65px] w-auto object-contain flex-shrink-0"
-                  />
-                  <div className="hidden sm:flex items-center whitespace-nowrap">
-                    <span className="font-cinzel text-sm sm:text-xl md:text-2xl font-bold tracking-[1px] sm:tracking-[2px] text-[#3F1D5A] dark:text-[#EFE7DB] transition-colors duration-300">
-                      SS
-                    </span>
-                    <span className="font-great-vibes text-base sm:text-2xl md:text-3xl text-[#3F1D5A] dark:text-[#EFE7DB] ml-1 relative transition-colors duration-300 select-none">
-                      Jewellery
-                      <span className="absolute bottom-0.5 left-0 w-full h-[1.5px] bg-[#D4A75F]"></span>
-                    </span>
-                  </div>
-                </Link>
+          {/* LEFT SECTION: Logo + SSJewellery Brand Name */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0 lg:flex-1 lg:justify-start">
+            {/* Hamburger Menu (Mobile/Tablet Only) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-11 h-11 flex items-center justify-center rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors lg:hidden cursor-pointer"
+              title="Toggle Mobile Menu"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+
+            {/* SSJewellery Logo and Brand Name Identity */}
+            <Link to="/" className="flex items-center gap-[14px] flex-shrink-0 brand-typography-wrapper select-none group no-underline">
+              <img
+                src="/logo.svg"
+                alt="SSJewellery Logo"
+                className="h-[46px] md:h-[56px] lg:h-[65px] w-auto object-contain flex-shrink-0"
+              />
+              <div className="flex items-baseline whitespace-nowrap">
+                <span className="font-great-vibes text-xl sm:text-2xl md:text-3xl text-[#3F1D5A] dark:text-[#EFE7DB] relative pb-1 transition-colors duration-300 select-none">
+                  SS
+                  <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#D4A75F]"></span>
+                </span>
+                <span className="font-great-vibes text-xl sm:text-2xl md:text-3xl text-[#3F1D5A] dark:text-[#EFE7DB] ml-2 relative pb-1 transition-colors duration-300 select-none">
+                  Jewellery
+                  <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#D4A75F]"></span>
+                </span>
               </div>
+            </Link>
+          </div>
 
-              {/* CENTER SECTION: Search Bar (Desktop and Mobile) */}
-              <div className="flex justify-center flex-1 max-w-[125px] sm:max-w-[280px] md:max-w-[400px] lg:max-w-[550px] relative mx-1 sm:mx-2">
-                <form onSubmit={handleSearchSubmit} className="w-full relative">
-                  <input
-                    type="text"
-                    placeholder={t('common.search_placeholder')}
-                    value={searchVal}
-                    onChange={(e) => setSearchVal(e.target.value)}
-                    className="w-full pl-3 sm:pl-5 pr-8 sm:pr-12 py-1.5 sm:py-3 text-[10px] sm:text-sm bg-[#FAFAFA] dark:bg-slate-800/80 border border-[#F2E8D9] dark:border-slate-700 rounded-full focus:outline-none focus:ring-1 focus:ring-[#D4A75F] focus:border-[#D4A75F] text-[#1F1F1F] dark:text-slate-100 placeholder-slate-400 transition-all shadow-sm hover:border-[#D4A75F]/60"
-                  />
-                  <button type="submit" className="absolute right-2.5 top-2 sm:right-4 sm:top-3.5 text-[#3F1D5A] dark:text-[#D4A75F] hover:text-[#D4A75F] dark:hover:text-[#BF934B] transition-colors cursor-pointer bg-transparent border-none">
-                    <Search className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
-                  </button>
-                </form>
-              </div>
+          {/* CENTER SECTION: Search Bar (Desktop only) */}
+          <div className="hidden lg:flex justify-center w-full max-w-[500px] lg:max-w-[700px] relative">
+            <form onSubmit={handleSearchSubmit} className="w-full relative">
+              <input
+                type="text"
+                placeholder={t('common.search_placeholder')}
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
+                className="w-full pl-5 pr-12 py-3 text-sm bg-[#FAFAFA] dark:bg-slate-800/80 border border-[#F2E8D9] dark:border-slate-700 rounded-full focus:outline-none focus:ring-1 focus:ring-[#D4A75F] focus:border-[#D4A75F] text-[#1F1F1F] dark:text-slate-100 placeholder-slate-400 transition-all shadow-sm hover:border-[#D4A75F]/60"
+              />
+              <button type="submit" className="absolute right-4 top-3.5 text-[#3F1D5A] dark:text-[#D4A75F] hover:text-[#D4A75F] dark:hover:text-[#BF934B] transition-colors cursor-pointer bg-transparent border-none">
+                <Search className="h-4.5 w-4.5" />
+              </button>
+            </form>
+          </div>
 
-              {/* RIGHT SECTION: Icons & User controls */}
-              <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 flex-shrink-0 flex-nowrap">
-                {/* Language Selector (Desktop Only) */}
-                <div className="relative hidden lg:block">
-                  <button
-                    onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                    className="flex items-center gap-0.5 p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer text-[10px] sm:text-xs font-bold uppercase"
-                    title="Change Language"
-                  >
-                    <Globe className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-[#3F1D5A] dark:text-[#D4A75F]" />
-                    <span className="hidden sm:inline">{language.toUpperCase()}</span>
-                  </button>
-                  <AnimatePresence>
-                    {langDropdownOpen && (
-                      <>
-                        <div className="fixed inset-0 z-10" onClick={() => setLangDropdownOpen(false)} />
-                        <motion.div
-                          initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                          className="absolute right-0 mt-2 w-32 sm:w-36 bg-white dark:bg-slate-800 border border-[#F2E8D9] dark:border-slate-700 rounded-2xl shadow-xl py-2 z-50 origin-top-right overflow-hidden"
+          {/* DESKTOP RIGHT SECTION: Visible only on lg screens and up */}
+          <div className="hidden lg:flex items-center gap-1.5 sm:gap-2.5 md:gap-3.5 lg:gap-4 flex-shrink-0 lg:flex-1 lg:justify-end">
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1 p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer text-xs font-bold uppercase"
+                title="Change Language"
+              >
+                <Globe className="h-4.5 w-4.5 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                <span className="hidden sm:inline">{language.toUpperCase()}</span>
+              </button>
+              <AnimatePresence>
+                {langDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setLangDropdownOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 mt-2 w-36 bg-white dark:bg-slate-800 border border-[#F2E8D9] dark:border-slate-700 rounded-2xl shadow-xl py-2 z-50 origin-top-right overflow-hidden"
+                    >
+                      {[
+                        { code: 'en', label: 'English (EN)' },
+                        { code: 'hi', label: 'Hindi (HI)' }
+                      ].map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => {
+                            changeLanguage(lang.code);
+                            setLangDropdownOpen(false);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-xs font-semibold transition-colors cursor-pointer ${language === lang.code
+                              ? 'text-[#3F1D5A] dark:text-[#D4A75F] bg-[#FAFAFA] dark:bg-slate-800 font-bold'
+                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-55 dark:hover:bg-slate-700'
+                            }`}
                         >
-                          {[
-                            { code: 'en', label: 'English (EN)' },
-                            { code: 'hi', label: 'Hindi (HI)' }
-                          ].map((lang) => (
-                            <button
-                              key={lang.code}
-                              onClick={() => {
-                                changeLanguage(lang.code);
-                                setLangDropdownOpen(false);
-                              }}
-                              className={`block w-full text-left px-4 py-2 text-xs font-semibold transition-colors cursor-pointer ${language === lang.code
-                                  ? 'text-[#3F1D5A] dark:text-[#D4A75F] bg-[#FAFAFA] dark:bg-slate-800 font-bold'
-                                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                                }`}
-                            >
-                              {lang.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Notifications Bell (Desktop Only) */}
-                {user && (
-                  <div className="relative hidden lg:block">
-                    <button
-                      onClick={() => setNotificationsOpen(!notificationsOpen)}
-                      className="relative p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      title={t('navbar.notifications')}
-                    >
-                      <Bell className="h-4.5 w-4.5" />
-                      {unreadCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 h-4.5 w-4.5 bg-[#D4A75F] text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white dark:border-slate-900 shadow-sm animate-pulse">
-                          {unreadCount}
-                        </span>
-                      )}
-                    </button>
-
-                    <AnimatePresence>
-                      {notificationsOpen && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setNotificationsOpen(false)} />
-                          <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                            className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-[#F2E8D9] dark:border-slate-850 rounded-2xl shadow-xl z-50 overflow-hidden origin-top-right"
-                          >
-                            <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-slate-855 border-b border-[#F2E8D9]/50 dark:border-slate-800/80 flex items-center justify-between">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-bold text-xs text-slate-850 dark:text-slate-100 uppercase tracking-wide">{t('navbar.notifications')}</span>
-                                {unreadCount > 0 && (
-                                  <span className="bg-[#D4A75F] text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
-                                    {unreadCount}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex gap-2 text-[10px] font-extrabold">
-                                <button onClick={handleMarkAllAsRead} className="text-[#D4A75F] hover:underline cursor-pointer bg-transparent border-none">
-                                  {t('navbar.mark_all_read')}
-                                </button>
-                                <span className="text-slate-300 dark:text-slate-700">|</span>
-                                <button onClick={handleClearRead} className="text-slate-500 hover:text-rose-500 dark:text-slate-400 hover:underline cursor-pointer bg-transparent border-none">
-                                  {t('navbar.clear_read')}
-                                </button>
-                              </div>
-                            </div>
-
-                            <div className="max-h-85 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-850">
-                              {displayedNotifications.length === 0 ? (
-                                <div className="py-8 text-center text-slate-400 dark:text-slate-555">
-                                  <Bell className="h-8 w-8 mx-auto opacity-30 mb-2 animate-bounce" />
-                                  <p className="text-xs font-semibold">{t('navbar.no_notifications')}</p>
-                                </div>
-                              ) : (
-                                displayedNotifications.map((n) => {
-                                  const isUnread = isAdmin ? n.status === 'unread' : !n.read;
-                                  const styles = n.type === 'SUPPORT_TICKET' ? { bg: 'bg-indigo-500/10 text-indigo-500', icon: <MessageSquare className="h-4 w-4" /> } : { bg: 'bg-slate-500/10 text-slate-500', icon: <Bell className="h-4 w-4" /> };
-                                  return (
-                                    <div key={n.id} className={`p-3.5 flex gap-3 items-start transition-colors cursor-pointer text-left ${isUnread ? 'bg-[#D4A75F]/5 font-semibold' : 'hover:bg-slate-50'}`}>
-                                      <div className={`p-2 rounded-xl flex-shrink-0 ${styles.bg}`}>{styles.icon}</div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-baseline gap-1.5">
-                                          <p className="text-xs font-bold truncate">{n.title}</p>
-                                          <span className="text-[9px] text-slate-450 flex-shrink-0 flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{formatTimeAgo(n.created_at)}</span>
-                                        </div>
-                                        <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{n.description || n.message}</p>
-                                      </div>
-                                    </div>
-                                  );
-                                })
-                              )}
-                            </div>
-                          </motion.div>
-                        </>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                          {lang.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
                 )}
+              </AnimatePresence>
+            </div>
 
-                {/* Theme Toggle (Desktop Only) */}
+            {/* Notifications Bell */}
+            {user && (
+              <div className="relative">
                 <button
-                  onClick={() => setIsDark(!isDark)}
-                  className="p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer hidden lg:block"
+                  onClick={() => setNotificationsOpen(!notificationsOpen)}
+                  className="relative p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  title={t('navbar.notifications')}
                 >
-                  {isDark ? <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400" /> : <Moon className="h-4 w-4 sm:h-5 sm:w-5" />}
+                  <Bell className="h-4.5 w-4.5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 h-4.5 w-4.5 bg-[#D4A75F] text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white dark:border-slate-900 shadow-sm animate-pulse">
+                      {unreadCount}
+                    </span>
+                  )}
                 </button>
 
-                {/* Wishlist (Desktop & Mobile) */}
-                {!isAdmin && (
-                  <button
-                    onClick={() => navigate('/orders?tab=wishlist')}
-                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  >
-                    <Heart className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-                    {wishlistCount > 0 && <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 bg-[#D4A75F] text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">{wishlistCount}</span>}
-                  </button>
-                )}
-
-                {/* Cart (Desktop & Mobile) */}
-                {!isAdmin && (
-                  <button
-                    onClick={() => navigate('/cart')}
-                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  >
-                    <ShoppingCart className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-                    {cartCount > 0 && <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 bg-[#D4A75F] text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">{cartCount}</span>}
-                  </button>
-                )}
-
-                {/* Profile / Sign In (Desktop & Mobile) */}
-                {user ? (
-                  <div className="relative">
-                    <button
-                      onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center space-x-1.5 p-1.5 rounded-xl border border-[#F2E8D9] dark:border-slate-700 bg-[#FAFAFA] dark:bg-slate-800 cursor-pointer"
-                    >
-                      <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#D4A75F] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase">{user.name.charAt(0)}</div>
-                      <span className="text-xs font-bold text-[#3F1D5A] dark:text-slate-200 hidden sm:block">{user.name}</span>
-                    </button>
-                    <AnimatePresence>
-                      {profileDropdownOpen && (
-                        <>
-                          <div className="fixed inset-0 z-10" onClick={() => setProfileDropdownOpen(false)} />
-                          <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#121826] border border-[#F2E8D9] rounded-2xl shadow-xl py-2 z-50 overflow-hidden"
+                <AnimatePresence>
+                  {notificationsOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setNotificationsOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-[#F2E8D9] dark:border-slate-855 rounded-2xl shadow-xl z-50 overflow-hidden origin-top-right"
+                      >
+                      <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-slate-855 border-b border-[#F2E8D9]/50 dark:border-slate-800/80 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-xs text-slate-850 dark:text-slate-100 uppercase tracking-wide">{t('navbar.notifications')}</span>
+                          {unreadCount > 0 && (
+                            <span className="bg-[#D4A75F] text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                              {unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-2 text-[10px] font-extrabold">
+                          <button
+                            onClick={handleMarkAllAsRead}
+                            className="text-[#D4A75F] hover:underline cursor-pointer bg-transparent border-none"
+                            title={t('navbar.mark_all_read')}
                           >
-                            <button onClick={logout} className="w-full px-4 py-2.5 text-sm text-red-500 hover:bg-slate-50 text-left bg-transparent border-none cursor-pointer flex items-center space-x-2">
-                              <LogOut className="h-4 w-4" /><span>{t('navbar.sign_out')}</span>
-                            </button>
-                          </motion.div>
+                            {t('navbar.mark_all_read')}
+                          </button>
+                          <span className="text-slate-300 dark:text-slate-700">|</span>
+                          <button
+                            onClick={handleClearRead}
+                            className="text-slate-500 hover:text-rose-500 dark:text-slate-400 hover:underline cursor-pointer bg-transparent border-none"
+                            title={t('navbar.clear_read')}
+                          >
+                            {t('navbar.clear_read')}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="max-h-85 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-850">
+                        {displayedNotifications.length === 0 ? (
+                          <div className="py-8 text-center text-slate-400 dark:text-slate-555">
+                            <Bell className="h-8 w-8 mx-auto opacity-30 mb-2 animate-bounce" />
+                            <p className="text-xs font-semibold">{t('navbar.no_notifications')}</p>
+                          </div>
+                        ) : (
+                          displayedNotifications.map((n) => {
+                            const isUnread = isAdmin ? n.status === 'unread' : !n.read;
+                            const getNotificationStyles = (notif) => {
+                              if (isAdmin) {
+                                switch (notif.type) {
+                                  case 'SUPPORT_TICKET':
+                                    return {
+                                      bg: 'bg-indigo-555/10 text-indigo-500 dark:bg-indigo-500/20',
+                                      icon: <MessageSquare className="h-4 w-4" />
+                                    };
+                                  case 'BUY_REQUEST':
+                                    return {
+                                      bg: 'bg-rose-500/10 text-rose-500 dark:bg-rose-500/20',
+                                      icon: <ShoppingBag className="h-4 w-4" />
+                                    };
+                                  case 'LOW_STOCK':
+                                    return {
+                                      bg: 'bg-amber-500/10 text-amber-500 dark:bg-amber-500/20',
+                                      icon: <AlertTriangle className="h-4 w-4" />
+                                    };
+                                  default:
+                                    return {
+                                      bg: 'bg-slate-500/10 text-slate-500 dark:bg-slate-500/20',
+                                      icon: <Bell className="h-4 w-4" />
+                                    };
+                                }
+                              } else {
+                                const title = (notif.title || '').toLowerCase();
+                                const msg = (notif.message || '').toLowerCase();
+
+                                if (title.includes('support') || title.includes('ticket') || title.includes('reply') || msg.includes('support') || msg.includes('ticket')) {
+                                  return {
+                                    bg: 'bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20',
+                                    icon: <MessageSquare className="h-4 w-4" />
+                                  };
+                                }
+                                if (title.includes('buy request') || title.includes('request to buy') || msg.includes('buy request') || msg.includes('request to buy') || title.includes('request status')) {
+                                  return {
+                                    bg: 'bg-rose-500/10 text-rose-500 dark:bg-rose-500/20',
+                                    icon: <ShoppingBag className="h-4 w-4" />
+                                  };
+                                }
+                                if (title.includes('order') || msg.includes('order')) {
+                                  return {
+                                    bg: 'bg-[#D4A75F]/10 text-[#D4A75F] dark:bg-[#D4A75F]/20',
+                                    icon: <ShoppingCart className="h-4 w-4" />
+                                  };
+                                }
+                                return {
+                                  bg: 'bg-slate-500/10 text-slate-500 dark:bg-slate-500/20',
+                                  icon: <Bell className="h-4 w-4" />
+                                };
+                              }
+                            };
+                            const styles = getNotificationStyles(n);
+                            const handleNotificationClick = () => {
+                              setNotificationsOpen(false);
+                              if (isAdmin) {
+                                  if (n.type === 'SUPPORT_TICKET') {
+                                    navigate('/admin?tab=support');
+                                  } else if (n.type === 'BUY_REQUEST') {
+                                    navigate('/admin?tab=notifications');
+                                  } else if (n.type === 'LOW_STOCK') {
+                                    navigate('/admin?tab=products');
+                                  }
+                              } else {
+                                const title = (n.title || '').toLowerCase();
+                                const msg = (n.message || '').toLowerCase();
+
+                                if (!n.read) {
+                                  handleMarkAsRead(n.id);
+                                }
+
+                                if (title.includes('support') || title.includes('ticket') || title.includes('reply') || msg.includes('support') || msg.includes('ticket')) {
+                                  navigate('/support-center');
+                                } else if (title.includes('buy request') || title.includes('request to buy') || msg.includes('buy request') || msg.includes('request to buy') || title.includes('request status')) {
+                                  navigate('/orders?tab=buy-requests');
+                                } else {
+                                  navigate('/orders?tab=orders');
+                                }
+                              }
+                            };
+                            return (
+                              <div
+                                key={n.id}
+                                onClick={handleNotificationClick}
+                                className={`p-3.5 flex gap-3 items-start transition-colors cursor-pointer text-left ${isUnread ? 'bg-[#D4A75F]/5 dark:bg-[#D4A75F]/5 font-semibold' : 'hover:bg-slate-50 dark:hover:bg-slate-850/50'
+                                  }`}
+                              >
+                                <div className={`p-2 rounded-xl flex-shrink-0 ${styles.bg}`}>
+                                  {styles.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex justify-between items-baseline gap-1.5">
+                                    <p className={`text-xs font-bold truncate ${isUnread ? 'text-slate-850 dark:text-slate-105' : 'text-slate-500 dark:text-slate-450'}`}>
+                                      {n.title}
+                                    </p>
+                                    <span className="text-[9px] font-semibold text-slate-450 dark:text-slate-555 flex-shrink-0 flex items-center gap-0.5">
+                                      <Clock className="h-2.5 w-2.5" />
+                                      {formatTimeAgo(n.created_at)}
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                    {n.description || n.message}
+                                  </p>
+
+                                  <div className="flex justify-between items-center mt-2.5">
+                                    <div />
+                                    <div>
+                                      {isUnread ? (
+                                        <button
+                                          onClick={(e) => handleMarkAsRead(n.id, e)}
+                                          className="text-[9px] font-extrabold text-white bg-[#D4A75F] hover:bg-[#BF934B] px-2 py-0.5 rounded-lg transition-colors cursor-pointer border-none"
+                                        >
+                                          Mark as read
+                                        </button>
+                                      ) : (
+                                        <span className="text-[9px] font-extrabold text-[#D4A75F] flex items-center gap-0.5 bg-[#D4A75F]/10 dark:bg-[#D4A75F]/15 px-1.5 py-0.5 rounded-lg">
+                                          <Check className="h-3 w-3" />
+                                          <span>Read</span>
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+
+                      {isAdmin && (
+                        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-850 border-t border-slate-200/50 dark:border-slate-800/80 text-center">
+                          <button
+                            onClick={() => {
+                              setNotificationsOpen(false);
+                              navigate('/admin?tab=notifications');
+                            }}
+                            className="text-xs font-bold text-[#D4A75F] hover:underline cursor-pointer block w-full py-1 border-none bg-transparent"
+                          >
+                            View all notifications
+                          </button>
+                        </div>
+                      )}
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className="p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              title="Toggle Light/Dark Mode"
+            >
+              {isDark ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
+            </button>
+
+            {/* Wishlist Icon */}
+            {!isAdmin && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!user) {
+                    triggerAuthModal(language === 'hi' ? 'कृपया अपनी विशलिस्ट देखने के लिए लॉगिन करें।' : 'Please login to access your wishlist.', '/orders?tab=wishlist');
+                  } else {
+                    navigate('/orders?tab=wishlist');
+                  }
+                }}
+                className="relative p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title={t('common.wishlist')}
+              >
+                <Heart className="h-5 w-5" />
+                {wishlistCount > 0 && (
+                  <motion.span
+                    key={`wishlist-${wishlistCount}`}
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: [0.6, 1.25, 1], opacity: 1 }}
+                    transition={{ duration: 0.4, type: 'spring', stiffness: 260, damping: 12 }}
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-[#D4A75F] text-white text-[9px] font-bold rounded-full flex items-center justify-center animate-cart-bounce"
+                  >
+                    {wishlistCount}
+                  </motion.span>
+                )}
+              </button>
+            )}
+
+            {/* Cart Icon */}
+            {!isAdmin && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!user) {
+                    triggerAuthModal(language === 'hi' ? 'उत्पादों को कार्ट में जोड़ने के लिए कृपया लॉगिन करें।' : 'Please login to add products to your cart.', '/cart');
+                  } else {
+                    navigate('/cart');
+                  }
+                }}
+                className="relative p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title={t('common.cart')}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <motion.span
+                    key={`cart-${cartCount}`}
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: [0.6, 1.25, 1], opacity: 1 }}
+                    transition={{ duration: 0.4, type: 'spring', stiffness: 260, damping: 12 }}
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-[#D4A75F] text-white text-[9px] font-bold rounded-full flex items-center justify-center animate-cart-bounce"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </button>
+            )}
+
+            {/* My Orders Button */}
+            {!isAdmin && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!user) {
+                    triggerAuthModal(language === 'hi' ? 'कृपया अपने ऑर्डर देखने के लिए लॉगिन करें।' : 'Please login to view your orders.', '/orders');
+                  } else {
+                    navigate('/orders');
+                  }
+                }}
+                className="p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors flex items-center space-x-1 cursor-pointer"
+                title={t('navbar.my_orders')}
+              >
+                <ClipboardList className="h-5 w-5" />
+                <span className="text-xs font-semibold hidden lg:inline">{t('common.orders')}</span>
+              </button>
+            )}
+
+            {/* User Profile / Login Dropdown */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  className="flex items-center space-x-1.5 p-1.5 rounded-xl border border-[#F2E8D9] dark:border-slate-700 bg-[#FAFAFA] dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors cursor-pointer"
+                >
+                  <div className="h-6 w-6 rounded-full bg-[#D4A75F] text-white flex items-center justify-center text-xs font-bold uppercase shadow-sm">
+                    {user.name.charAt(0)}
+                  </div>
+                  <span className="text-xs font-bold text-[#3F1D5A] dark:text-slate-200 hidden sm:block max-w-[80px] truncate">
+                    {language === 'hi' ? `${t('common.namaste')}, ${user.name}` : user.name}
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {profileDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setProfileDropdownOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#121826] border border-[#F2E8D9] dark:border-[rgba(212,167,95,0.25)] rounded-2xl shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-2 z-50 origin-top-right overflow-hidden"
+                      >
+                      <div className="px-4 py-2 border-b border-slate-105 dark:border-[rgba(212,167,95,0.15)]">
+                        <p className="text-xs text-slate-400">{language === 'hi' ? 'पंजीकृत ईमेल' : 'Signed in as'}</p>
+                        <p className="text-sm font-bold text-[#1F1F1F] dark:text-white truncate">{user.email}</p>
+                      </div>
+
+                      {isAdmin ? (
+                        <Link
+                          to="/admin"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#3F1D5A] dark:text-white hover:bg-slate-50 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                        >
+                          <Shield className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                          <span>Admin Panel</span>
+                        </Link>
+                      ) : (
+                        <>
+                          <Link
+                            to="/profile"
+                            onClick={() => setProfileDropdownOpen(false)}
+                            className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#1F1F1F] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                          >
+                            <User className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                            <span>{language === 'hi' ? 'मेरी प्रोफ़ाइल' : 'My Profile'}</span>
+                          </Link>
+
+                          <Link
+                            to="/profile"
+                            onClick={() => setProfileDropdownOpen(false)}
+                            className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#1F1F1F] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                          >
+                            <Settings className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                            <span>{language === 'hi' ? 'खाता सेटिंग्स' : 'Account Settings'}</span>
+                          </Link>
                         </>
                       )}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  <Link 
-                    to="/login" 
-                    className="flex items-center space-x-1 py-1.5 px-2.5 sm:py-2 sm:px-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white rounded-full text-[9px] sm:text-xs font-bold shadow-md hover:shadow-lg transition-all flex-shrink-0 cursor-pointer"
-                  >
-                    <LogIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    <span>{t('common.sign_in')}</span>
-                  </Link>
-                )}
-              </div>
 
-            </div>
+                      <button
+                        onClick={() => {
+                          setProfileDropdownOpen(false);
+                          logout();
+                          navigate('/');
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-500 hover:bg-[#FAFAFA] dark:text-white dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200 text-left cursor-pointer bg-transparent border-none"
+                      >
+                        <LogOut className="h-4 w-4 text-red-500 dark:text-[#D4A75F]" />
+                        <span>{t('navbar.sign_out')}</span>
+                      </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center space-x-1 py-2 px-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white rounded-full text-xs font-bold shadow-md hover:shadow-lg transition-all"
+              >
+                <LogIn className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">{t('common.sign_in')}</span>
+              </Link>
+            )}
           </div>
         </div>
-      </nav>
+      </div>
+    </nav>
 
       {/* MOBILE DRAWER SIDEBAR */}
       <AnimatePresence>

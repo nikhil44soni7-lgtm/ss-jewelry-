@@ -1937,7 +1937,7 @@ export const ProductDetails = ({ productId }) => {
               </div>
 
               {/* Product Name */}
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-xl sm:text-2xl font-black text-[#D4A75F] leading-tight">
                 {language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}
               </h1>
 

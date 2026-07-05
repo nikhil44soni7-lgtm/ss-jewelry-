@@ -1815,33 +1815,9 @@ export const ProductDetails = ({ productId }) => {
             {/* LEFT COLUMN: Gallery & Trust Section (40%) */}
             <div className="space-y-6 w-full">
               {/* Product Gallery Container */}
-              <div className="flex gap-4 items-start select-none">
-                {/* Vertical Thumbnails */}
-                <div className="flex flex-col gap-3 max-h-[480px] overflow-y-auto scrollbar-none w-[72px] shrink-0">
-                  {imagesList.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onMouseEnter={() => {
-                        setActiveImage(img);
-                        setPreviewImageIndex(idx);
-                      }}
-                      onClick={() => {
-                        setActiveImage(img);
-                        setPreviewImageIndex(idx);
-                      }}
-                      className={`w-[72px] h-[72px] rounded-xl border-2 overflow-hidden flex-shrink-0 transition-all cursor-pointer ${
-                        (activeImage || imagesList[0]) === img
-                          ? 'border-emerald-500 ring-2 ring-emerald-500/10 shadow-sm scale-102'
-                          : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-350 dark:hover:border-slate-700'
-                      }`}
-                    >
-                      <LuxuryImage src={img} alt={`${product.name} - Thumbnail ${idx + 1}`} className="w-full h-full object-cover" width="72" height="72" />
-                    </button>
-                  ))}
-                </div>
-
+              <div className="flex flex-col gap-4 items-start select-none w-full">
                 {/* Main Large Image Card with Zoom */}
-                <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 relative group z-30 flex items-center justify-center">
+                <div className="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 relative group z-30 flex items-center justify-center">
                   <div 
                     className="relative w-full h-[480px] flex items-center justify-center overflow-hidden rounded-xl cursor-zoom-in"
                     onClick={() => setIsPreviewOpen(true)}
@@ -1871,6 +1847,29 @@ export const ProductDetails = ({ productId }) => {
                     />
                   )}
                 </div>
+
+                {/* Horizontal Thumbnail Gallery (Visible on both Desktop and Mobile for all products) */}
+                {imagesList && imagesList.length > 0 && (
+                  <div className="flex gap-2.5 overflow-x-auto py-1 px-1 no-scrollbar w-full justify-start md:justify-center select-none">
+                    {imagesList.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setActiveImage(img);
+                          setPreviewImageIndex(idx);
+                        }}
+                        className={`w-16 h-16 lg:w-20 lg:h-20 rounded-xl border-2 overflow-hidden flex-shrink-0 transition-all cursor-pointer ${
+                          (activeImage || imagesList[0]) === img
+                            ? 'border-[#D4A75F] ring-2 ring-[#D4A75F]/20 shadow-md scale-105'
+                            : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-350 dark:hover:border-slate-700'
+                        }`}
+                      >
+                        <LuxuryImage src={img} alt={`${product.name} - Thumbnail ${idx + 1}`} className="w-full h-full object-cover" width="80" height="80" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

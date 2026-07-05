@@ -374,27 +374,7 @@ const BannerSlider = React.memo(({
             </svg>
           </div>
 
-          {/* ---- SLIDE COUNTER — top right ---- */}
-          <div
-            style={{
-              position: 'absolute', top: 20, right: 20, zIndex: 40,
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '6px 14px',
-              background: 'rgba(0,0,0,0.30)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: '1px solid rgba(212,167,95,0.22)',
-              borderRadius: '999px'
-            }}
-          >
-            <span style={{ color: '#D4A75F', fontFamily: 'serif', fontWeight: 700, fontSize: '1.05rem', lineHeight: 1 }}>
-              {String(activeSlide + 1).padStart(2, '0')}
-            </span>
-            <div style={{ width: '20px', height: '1px', background: 'rgba(212,167,95,0.40)' }} />
-            <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: '0.75rem', fontWeight: 500 }}>
-              {String(slides.length).padStart(2, '0')}
-            </span>
-          </div>
+
 
           {/* ---- CONTENT OVERLAY ---- */}
           <div

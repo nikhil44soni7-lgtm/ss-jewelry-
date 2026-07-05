@@ -636,12 +636,12 @@ export const ProductDetails = ({ productId }) => {
     };
   }, [isAutoSlidePaused]);
 
-  // Auto-slideshow for product images (cycles every 3 seconds only on mobile view)
+  // Auto-slideshow for product images (cycles every 3 seconds)
   useEffect(() => {
     const isCustomerView = !isAdmin || isPreviewMode;
     const imgs = product?.images && product.images.length > 0 ? product.images : [];
     
-    if (!isMobile || !isCustomerView || isAutoSlidePaused || imgs.length <= 1) return;
+    if (!isCustomerView || isAutoSlidePaused || imgs.length <= 1) return;
 
     const interval = setInterval(() => {
       const currentImg = activeImage || imgs[0];
@@ -653,7 +653,7 @@ export const ProductDetails = ({ productId }) => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [activeImage, product, isAdmin, isPreviewMode, isMobile, isAutoSlidePaused]);
+  }, [activeImage, product, isAdmin, isPreviewMode, isAutoSlidePaused]);
 
   useEffect(() => {
     if (product) {

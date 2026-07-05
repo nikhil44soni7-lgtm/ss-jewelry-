@@ -658,36 +658,31 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
 
   return (
     <>
+      {/* Desktop view */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="hidden md:block w-full bg-white dark:bg-[#0B1020] border-y border-[#F2E8D9] dark:border-slate-800/80 py-12 lg:py-16 transition-colors duration-300"
+        className="hidden md:block w-full bg-white dark:bg-[#0B1020] border-y border-[#F2E8D9] dark:border-slate-800/80 py-10 transition-colors duration-300"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-12">
-            <span className="text-xs md:text-sm font-bold tracking-[0.3em] text-[#D4A75F] uppercase block mb-2">CURATED COLLECTIONS</span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[#3F1D5A] dark:text-[#D4A75F] tracking-wide relative inline-block pb-3 transition-colors duration-300">
-              Category
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-[#D4A75F]"></span>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#3F1D5A] dark:text-[#D4A75F] tracking-wider relative inline-block pb-2 transition-colors duration-300">
+              Shop By Category
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-[#D4A75F]"></span>
             </h2>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-[#CBD5E1] mt-3 md:mt-4 tracking-[0.18em] uppercase font-semibold transition-colors duration-300">
-              Discover our exquisite handcrafted masterpieces
-            </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8 category-grid-container">
+          <div className="flex justify-center items-center gap-8 lg:gap-14 flex-wrap">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.name;
               return (
                 <motion.div
                   key={cat.name}
-                  animate={isActive ? { scale: 1.03, y: -6 } : { scale: 1, y: 0 }}
+                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={`relative group category-card-item rounded-[24px] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer ${
-                    isActive ? 'category-card-item-active' : ''
-                  }`}
+                  className="flex flex-col items-center justify-center"
                 >
                   <Link
                     to={`/?category=${encodeURIComponent(cat.name)}`}
@@ -695,35 +690,35 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                       e.preventDefault();
                       onCategoryClick(cat.name);
                     }}
-                    className="block w-full h-full relative"
+                    className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
                   >
-                    {/* Category Image */}
-                    <div className="w-full h-80 overflow-hidden bg-slate-50 dark:bg-slate-900">
+                    <div
+                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-300 ${
+                        isActive
+                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_12px_rgba(212,167,95,0.4)]'
+                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F] group-hover:shadow-[0_0_10px_rgba(212,167,95,0.3)]'
+                      }`}
+                      style={{
+                        width: '76px',
+                        height: '76px'
+                      }}
+                    >
                       <LuxuryImage
                         src={cat.img}
                         alt={cat.label}
-                        width="300"
-                        height="400"
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 luxury-category-img"
+                        width="76"
+                        height="76"
+                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
 
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-85 group-hover:opacity-90 transition-opacity duration-300 pointer-events-none" />
-
-                    {/* Floating Glassmorphic Label */}
-                    <div className={`absolute bottom-4 left-4 right-4 backdrop-blur-md rounded-2xl p-3.5 border transition-all duration-500 text-center ${
+                    <span className={`mt-2 text-xs md:text-sm font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
                       isActive
-                        ? 'bg-[#D4A75F] border-[#D4A75F] text-white shadow-[0_8px_20px_rgba(212,167,95,0.4)]'
-                        : 'bg-black/40 border-white/10 text-white group-hover:bg-[#D4A75F] group-hover:border-[#D4A75F] group-hover:shadow-[0_8px_20px_rgba(212,167,95,0.4)]'
+                        ? 'text-[#D4A75F]'
+                        : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
                     }`}>
-                      <span className="text-[11px] sm:text-xs md:text-sm font-bold tracking-[0.18em] uppercase block">
-                        {cat.label}
-                      </span>
-                      <div className={`w-1 h-1 rounded-full bg-white mx-auto mt-1 transition-all duration-300 ${
-                        isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100'
-                      }`} />
-                    </div>
+                      {cat.label}
+                    </span>
                   </Link>
                 </motion.div>
               );
@@ -732,6 +727,7 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
         </div>
       </motion.div>
 
+      {/* Mobile view */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

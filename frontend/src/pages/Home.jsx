@@ -288,9 +288,9 @@ const BannerSlider = React.memo(({
         <div
           className="relative overflow-hidden"
           style={{
-            height: '70vh',
-            minHeight: '480px',
-            maxHeight: '720px',
+            height: '100vh',
+            minHeight: '600px',
+            maxHeight: '1000px',
             boxShadow: '0 0 80px rgba(212,167,95,0.12) inset',
             transformStyle: 'preserve-3d'
           }}
@@ -308,26 +308,11 @@ const BannerSlider = React.memo(({
                 willChange: 'transform, opacity'
               }}
             >
-              {/* Full-bleed image — brightness boosted for vivid, glowing look */}
-              {slide.image_url ? (
-                <img
-                  src={slide.image_url}
-                  alt={slide.title}
-                  className="hero-image-glow"
-                  style={{
-                    position: 'absolute', inset: 0,
-                    width: '100%', height: '100%',
-                    objectFit: 'cover', objectPosition: 'center',
-                    userSelect: 'none'
-                  }}
-                  draggable={false}
-                />
-              ) : (
-                <div
-                  style={{ position: 'absolute', inset: 0 }}
-                  className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
-                />
-              )}
+              {/* Background gradient (always active) */}
+              <div
+                style={{ position: 'absolute', inset: 0 }}
+                className={`bg-gradient-to-br ${slide.gradient || 'from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]'}`}
+              />
 
               {/* Lightweight gradient — left side only for text, right side stays clear */}
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.10) 62%, rgba(0,0,0,0.04) 100%)' }} />
@@ -340,6 +325,18 @@ const BannerSlider = React.memo(({
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '140px', background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.25) 50%, transparent 100%)' }} />
               {/* Gold top rule */}
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(to right, transparent, rgba(212,167,95,0.80), transparent)' }} />
+
+              {/* Centered-Right Product Image fitted without cropping */}
+              {slide.image_url && (
+                <div className="absolute top-[10%] bottom-[14%] right-[6%] left-[48%] xl:left-[44%] flex items-center justify-center pointer-events-none z-10">
+                  <img
+                    src={slide.image_url}
+                    alt={slide.title}
+                    className="hero-image-glow max-h-full max-w-full object-contain select-none filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)]"
+                    draggable={false}
+                  />
+                </div>
+              )}
             </div>
           ))}
 

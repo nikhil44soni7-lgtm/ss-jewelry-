@@ -732,32 +732,30 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="block md:hidden w-full bg-white dark:bg-[#0B1020] border-y border-[#F2E8D9] dark:border-slate-800/80 py-8 transition-colors duration-300"
+        className="block md:hidden w-full bg-white dark:bg-[#0B1020] border-y border-[#F2E8D9] dark:border-slate-800/80 py-4 transition-colors duration-300"
       >
         <div className="w-[94vw] mx-auto px-1">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#3F1D5A] dark:text-[#D4A75F] tracking-wide relative inline-block pb-2 transition-colors duration-300">
-              Category
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-[#D4A75F]"></span>
+          <div className="text-center mb-4">
+            <h2 className="text-lg font-serif font-bold text-[#3F1D5A] dark:text-[#D4A75F] tracking-wider relative inline-block pb-1.5 transition-colors duration-300">
+              Shop By Category
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-0.5 bg-[#D4A75F]"></span>
             </h2>
           </div>
 
-          <div className="flex overflow-x-auto gap-4 pb-4 scroll-smooth snap-x snap-mandatory justify-start no-scrollbar">
+          <div className="flex overflow-x-auto gap-4 pb-2 scroll-smooth snap-x snap-mandatory justify-start no-scrollbar">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.name;
               return (
                 <motion.div
                   key={cat.name}
-                  animate={isActive ? { scale: 1.02 } : { scale: 1 }}
+                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className={`flex-none w-44 snap-center rounded-[20px] overflow-hidden shadow-md category-card-item ${
-                    isActive ? 'category-card-item-active' : ''
-                  }`}
+                  className="flex-none flex flex-col items-center justify-center"
                 >
                   <Link
                     to={`/?category=${encodeURIComponent(cat.name)}`}
@@ -765,32 +763,35 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                       e.preventDefault();
                       onCategoryClick(cat.name);
                     }}
-                    className="block w-full h-full relative"
+                    className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
                   >
-                    {/* Category Image */}
-                    <div className="w-full h-60 overflow-hidden bg-slate-50 dark:bg-slate-900">
+                    <div
+                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-300 ${
+                        isActive
+                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_12px_rgba(212,167,95,0.4)]'
+                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F] group-hover:shadow-[0_0_10px_rgba(212,167,95,0.3)]'
+                      }`}
+                      style={{
+                        width: '68px',
+                        height: '68px'
+                      }}
+                    >
                       <LuxuryImage
                         src={cat.img}
                         alt={cat.label}
-                        width="180"
-                        height="240"
-                        className="w-full h-full object-cover transition-transform duration-550 group-hover:scale-108 luxury-category-img"
+                        width="68"
+                        height="68"
+                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
 
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none" />
-
-                    {/* Label */}
-                    <div className={`absolute bottom-3 left-3 right-3 backdrop-blur-sm rounded-xl p-2.5 border transition-all duration-300 text-center ${
+                    <span className={`mt-2 text-[10px] sm:text-xs font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
                       isActive
-                        ? 'bg-[#D4A75F] border-[#D4A75F] text-white shadow-md'
-                        : 'bg-black/35 border-white/10 text-white'
+                        ? 'text-[#D4A75F]'
+                        : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
                     }`}>
-                      <span className="text-xs font-bold tracking-[0.15em] uppercase block">
-                        {cat.label}
-                      </span>
-                    </div>
+                      {cat.label}
+                    </span>
                   </Link>
                 </motion.div>
               );

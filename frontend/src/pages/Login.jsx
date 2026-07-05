@@ -240,7 +240,7 @@ export const Login = () => {
             <div className="p-1 bg-[#D4A75F]/10 dark:bg-[#D4A75F]/15 rounded-2xl border border-[#D4A75F]/20">
               <img src="/logo-monogram.png" className="h-8 w-8 object-contain rounded-xl" alt="SSJewellery Monogram" />
             </div>
-            <span className="font-cinzel font-bold tracking-widest text-sm uppercase text-[#D4A75F]">SSJEWELLERY</span>
+            <span className="font-great-vibes text-2xl text-[#D4A75F] select-none">SS Jewellery</span>
           </div>
           <h2 className="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
             {showForgotPassword ? 'Reset Password' : 'Welcome Back'}

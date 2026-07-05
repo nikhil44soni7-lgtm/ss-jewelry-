@@ -711,7 +711,7 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile/Tablet view navbar */}
-      <nav className={`block lg:hidden ${location.pathname === '/' ? 'fixed' : 'absolute'} top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] pointer-events-none`}>
+      <nav className="block lg:hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] pointer-events-none">
         <div 
           className={`w-full pointer-events-auto transition-all duration-500 rounded-2xl mobile-navbar-mockup ${
             location.pathname === '/'

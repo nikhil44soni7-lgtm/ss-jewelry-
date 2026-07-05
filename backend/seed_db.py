@@ -24,32 +24,32 @@ def seed_database():
     print("Initiating SSJewellery Database Seeding (SQLAlchemy)...")
     
     with app.app_context():
-        # Clear existing data in correct dependency order to avoid foreign key violations
-        print("Clearing old records from tables...")
-        try:
-            db.session.query(CategoryAttributeModel).delete()
-            db.session.query(OrderItem).delete()
-            db.session.query(Transaction).delete()
-            db.session.query(OrderModel).delete()
-            db.session.query(ReviewModel).delete()
-            from backend.models.support import SupportReplyModel
-            db.session.query(SupportReplyModel).delete()
-            db.session.query(SupportModel).delete()
-            db.session.query(FAQModel).delete()
-            db.session.query(SupportLinkModel).delete()
-            db.session.query(OTPVerification).delete()
-            db.session.query(CouponModel).delete()
-            db.session.query(ProductModel).delete()
-            db.session.query(Category).delete()
-            db.session.query(DeliveryAddress).delete()
-            db.session.query(UserModel).delete()
-            db.session.query(AdminModel).delete()
-            db.session.query(BannerModel).delete()
-            db.session.commit()
-            print("Successfully cleared all tables.")
-        except Exception as e:
-            print("Warning while clearing tables:", e)
-            db.session.rollback()
+        # [DISABLED per user request to prevent automatic database truncation. Run these statements manually if needed:]
+        # print("Clearing old records from tables...")
+        # try:
+        #     db.session.query(CategoryAttributeModel).delete()
+        #     db.session.query(OrderItem).delete()
+        #     db.session.query(Transaction).delete()
+        #     db.session.query(OrderModel).delete()
+        #     db.session.query(ReviewModel).delete()
+        #     from backend.models.support import SupportReplyModel
+        #     db.session.query(SupportReplyModel).delete()
+        #     db.session.query(SupportModel).delete()
+        #     db.session.query(FAQModel).delete()
+        #     db.session.query(SupportLinkModel).delete()
+        #     db.session.query(OTPVerification).delete()
+        #     db.session.query(CouponModel).delete()
+        #     db.session.query(ProductModel).delete()
+        #     db.session.query(Category).delete()
+        #     db.session.query(DeliveryAddress).delete()
+        #     db.session.query(UserModel).delete()
+        #     db.session.query(AdminModel).delete()
+        #     db.session.query(BannerModel).delete()
+        #     db.session.commit()
+        #     print("Successfully cleared all tables.")
+        # except Exception as e:
+        #     print("Warning while clearing tables:", e)
+        #     db.session.rollback()
 
         # Seed FAQs and Support Links
         print("Seeding support links and FAQs...")

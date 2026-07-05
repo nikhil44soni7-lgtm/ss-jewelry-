@@ -167,11 +167,10 @@ def seed_database():
                 has_old_categories = True
                 break
         
-        if ProductModel.query.count() == 0 or has_old_categories:
-            print("[SEED] Clearing old products and seeding default luxury jewelry products into MySQL...")
-            # Delete existing products to reset catalog to luxury jewelry
-            ProductModel.query.delete()
-            db.session.commit()
+        if ProductModel.query.count() == 0:
+            print("[SEED] Seeding default luxury jewelry products into MySQL...")
+            # ProductModel.query.delete() -- DISABLED to prevent automatic truncation of data.
+            # db.session.commit() -- DISABLED to prevent automatic truncation of data.
             
             default_products = [
                 {
@@ -290,10 +289,10 @@ def seed_database():
         if BannerModel.query.filter(BannerModel.title.like("%BharatBasket%")).count() > 0 or BannerModel.query.filter(BannerModel.title.like("%SSJewelry%")).count() > 0:
             has_old_banners = True
             
-        if BannerModel.query.count() == 0 or has_old_banners:
-            print("[SEED] Clearing old banners and seeding default banners into MySQL...")
-            BannerModel.query.delete()
-            db.session.commit()
+        if BannerModel.query.count() == 0:
+            print("[SEED] Seeding default banners into MySQL...")
+            # BannerModel.query.delete() -- DISABLED to prevent automatic truncation of data.
+            # db.session.commit() -- DISABLED to prevent automatic truncation of data.
             default_banners = [
                 {
                     "title": "The Solitaire Diamond Collection",

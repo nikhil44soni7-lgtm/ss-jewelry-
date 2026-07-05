@@ -2202,41 +2202,72 @@ export const ProductDetails = ({ productId }) => {
                 </div>
               </div>
 
-              {/* Bank Offers / EMI / SuperCoins - Styled with clean open dividers, NO cards */}
-              <div className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs px-2">
-                <div className="py-3 flex items-start gap-2.5">
-                  <Zap className="h-4.5 w-4.5 text-amber-500 fill-amber-500 mt-0.5 shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('SuperCoin Benefits')}</p>
-                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                      {language === 'hi' ? (
-                        <>इस ऑर्डर पर <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> सुपरकॉइन कमाएं</>
-                      ) : (
-                        <>Earn <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> SuperCoins on this order</>
-                      )}
-                    </p>
+              {/* Product Specifications & Trust Section */}
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs px-2 space-y-4">
+                
+                {/* 1. Product Keys & Values (Specifications) */}
+                {getLocalizedSpecifications().length > 0 && (
+                  <div className="py-2.5 space-y-2">
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                      {language === 'hi' ? 'उत्पाद विवरण (विनिर्देश)' : 'Product Specifications'}
+                    </span>
+                    <div className="space-y-1.5">
+                      {getLocalizedSpecifications().map((spec, idx) => (
+                        <div key={idx} className="flex justify-between items-center py-1 text-slate-700 dark:text-slate-350">
+                          <span className="font-semibold text-slate-400 capitalize">{spec.key}</span>
+                          <span className="font-bold text-right text-slate-800 dark:text-slate-200">{spec.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Premium Jewellery Trust Items */}
+                <div className="pt-3 space-y-3">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                    {language === 'hi' ? 'एसएसज्वेलरी वादे' : 'SSJewellery Commitments'}
+                  </span>
+                  
+                  {/* Certified Purity */}
+                  <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-350">
+                    <ShieldCheck className="h-4.5 w-4.5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-slate-800 dark:text-slate-200">
+                        {language === 'hi' ? '100% प्रमाणित पवित्रता' : '100% Certified & Hallmarked'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        {language === 'hi' ? 'प्रत्येक आभूषण IGI/GIA द्वारा प्रमाणित और BIS हॉलमार्क युक्त है।' : 'Every piece is BIS Hallmarked and certified by top labs like GIA/IGI.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Free Insured Shipping */}
+                  <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-350">
+                    <Truck className="h-4.5 w-4.5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-slate-800 dark:text-slate-200">
+                        {language === 'hi' ? 'मुफ़्त बीमित शिपिंग' : 'Free Insured Shipping'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        {language === 'hi' ? 'सुरक्षित, बीमित डिलीवरी आपके घर तक बिना किसी शुल्क के।' : 'Safe, fully-insured delivery straight to your doorstep at zero cost.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Lifetime Exchange & Buyback */}
+                  <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-350">
+                    <RotateCcw className="h-4.5 w-4.5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-slate-800 dark:text-slate-200">
+                        {language === 'hi' ? 'लाइफटाइम एक्सचेंज और बायबैक' : 'Lifetime Buyback & Exchange'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        {language === 'hi' ? 'सभी आभूषणों पर आसान जीवनभर का एक्सचेंज और बायबैक पॉलिसी।' : 'Easy lifetime exchange and buyback policy on all our jewellery pieces.'}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="py-3 flex items-start gap-2.5">
-                  <Calendar className="h-4.5 w-4.5 text-slate-400 mt-0.5 shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('No Cost EMI')}</p>
-                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                      {language === 'hi' ? (
-                        <>₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/माह से शुरू होने वाले ब्याज मुक्त विकल्प</>
-                      ) : (
-                        <>Interest-free options starting from ₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/month</>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="py-3 flex items-start gap-2.5">
-                  <Tag className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('Bank Offer')}</p>
-                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">{translateText('10% Instant Discount on HDFC Bank Cards')}</p>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>

@@ -92,19 +92,19 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
   }, [isFullscreenOpen]);
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-4 w-full select-none">
+    <div className="flex flex-col-reverse gap-4 w-full select-none">
       {/* 1. THUMBNAIL GALLERY SECTION */}
       {safeImages.length > 1 && (
-        <div className="flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800 justify-center md:justify-start max-h-[450px] w-full md:w-20 lg:w-24 shrink-0">
+        <div className="flex flex-row gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800 justify-center w-full shrink-0">
           {safeImages.map((img, idx) => (
             <button
               key={idx}
               onMouseEnter={() => setActiveIndex(idx)}
               onClick={() => setActiveIndex(idx)}
               aria-label={`View ${productName} image ${idx + 1}`}
-              className={`relative h-16 w-16 md:w-full md:h-20 rounded-xl overflow-hidden border-2 bg-white dark:bg-slate-900 transition-all flex items-center justify-center focus-visible:ring-2 focus-visible:ring-emerald-500 outline-none ${
+              className={`relative h-16 w-16 rounded-xl overflow-hidden border-2 bg-white dark:bg-slate-900 transition-all flex items-center justify-center focus-visible:ring-2 focus-visible:ring-[#D4A75F] outline-none ${
                 activeIndex === idx
-                  ? 'border-emerald-500 shadow-md ring-2 ring-emerald-500/10 scale-95 md:scale-100'
+                  ? 'border-[#D4A75F] shadow-md ring-2 ring-[#D4A75F]/10 scale-95'
                   : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600'
               }`}
             >
@@ -127,7 +127,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
         {/* Placeholder / Loading State */}
         {!imageLoaded && !imageError && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/50 z-10 rounded-3xl">
-            <Loader2 className="h-8 w-8 text-emerald-500 animate-spin mb-2" />
+            <Loader2 className="h-8 w-8 text-[#D4A75F] animate-spin mb-2" />
             <span className="text-xs text-slate-400 font-medium tracking-wide">Loading image...</span>
           </div>
         )}
@@ -183,7 +183,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
                 width: `${lensPosition.width}px`,
                 height: `${lensPosition.height}px`,
               }}
-              className="hidden md:block absolute bg-emerald-500/15 border border-emerald-500/35 pointer-events-none rounded-xl shadow-[0_0_8px_rgba(16,185,129,0.15)] z-20"
+              className="hidden md:block absolute bg-[#D4A75F]/10 border border-[#D4A75F]/30 pointer-events-none rounded-xl shadow-[0_0_8px_rgba(212,167,95,0.15)] z-20"
             />
           )}
 
@@ -194,7 +194,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
               setIsFullscreenOpen(true);
             }}
             aria-label="Open fullscreen image viewer"
-            className={`absolute bottom-4 right-4 p-2.5 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 z-30 ${
+            className={`absolute bottom-4 right-4 p-2.5 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#D4A75F] z-30 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -237,7 +237,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
             <button
               onClick={() => setIsFullscreenOpen(false)}
               aria-label="Close viewer"
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-[#D4A75F]"
             >
               <X className="h-6 w-6" />
             </button>
@@ -250,7 +250,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
               <button
                 onClick={(e) => { e.stopPropagation(); prevImage(); }}
                 aria-label="Previous image"
-                className="absolute left-2 md:left-4 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 z-10"
+                className="absolute left-2 md:left-4 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-[#D4A75F] z-10"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -264,7 +264,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
             >
               {!imageLoaded && !imageError && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-10 w-10 text-emerald-500 animate-spin" />
+                  <Loader2 className="h-10 w-10 text-[#D4A75F] animate-spin" />
                 </div>
               )}
               <img
@@ -284,7 +284,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
               <button
                 onClick={(e) => { e.stopPropagation(); nextImage(); }}
                 aria-label="Next image"
-                className="absolute right-2 md:right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 z-10"
+                className="absolute right-2 md:right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white focus:outline-none focus:ring-2 focus:ring-[#D4A75F] z-10"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
@@ -300,7 +300,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
                   onClick={() => setActiveIndex(idx)}
                   className={`h-12 w-12 rounded-lg overflow-hidden border-2 bg-slate-900 shrink-0 transition-all ${
                     activeIndex === idx
-                      ? 'border-emerald-500 ring-2 ring-emerald-500/30 scale-110'
+                      ? 'border-[#D4A75F] ring-2 ring-[#D4A75F]/20 scale-110'
                       : 'border-slate-700/50 hover:border-slate-500'
                   }`}
                 >

@@ -607,6 +607,25 @@ export const ProductDetails = ({ productId }) => {
     }
   }, [id, isAdmin, token]);
 
+  // Auto-slideshow for product images (cycles every 3 seconds)
+  useEffect(() => {
+    const isCustomerView = !isAdmin || isPreviewMode;
+    const imgs = product?.images && product.images.length > 0 ? product.images : [];
+    
+    if (!isCustomerView || imgs.length <= 1) return;
+
+    const interval = setInterval(() => {
+      const currentImg = activeImage || imgs[0];
+      const currentIndex = imgs.indexOf(currentImg);
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % imgs.length;
+      
+      setActiveImage(imgs[nextIndex]);
+      setPreviewImageIndex(nextIndex);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [activeImage, product, isAdmin, isPreviewMode]);
+
   useEffect(() => {
     if (product) {
       // eslint-disable-next-line

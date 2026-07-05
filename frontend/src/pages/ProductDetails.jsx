@@ -1195,7 +1195,7 @@ export const ProductDetails = ({ productId }) => {
       </div>
     );
   };  return (
-    <div className={productId ? "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans" : "bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-6 font-sans"}>
+    <div className={productId ? "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans" : "bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pt-24 lg:pt-0 pb-6 font-sans"}>
       
       {/* Sticky Header Bar */}
       {!productId && (

@@ -491,7 +491,7 @@ export const MyOrders = () => {
                             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                               <div className="text-right sm:mr-4">
                                 <p className="text-[9px] text-slate-400 uppercase tracking-wider font-bold">{t('my_orders.subtotal')}</p>
-                                <p className="text-sm font-extrabold text-slate-850 dark:text-white">₹{order.total_amount}</p>
+                                <p className="text-sm font-extrabold text-slate-850 dark:text-white">₹{order.total_amount.toLocaleString('en-IN')}</p>
                               </div>
                               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${getStatusStyle(order.status)}`}>
                                 {t(`my_orders.status.${order.status}`)}
@@ -605,10 +605,10 @@ export const MyOrders = () => {
                                       <img src={item.image} alt="" className="h-8 w-8 rounded object-cover flex-shrink-0" />
                                       <div className="min-w-0">
                                         <p className="font-bold text-slate-800 dark:text-slate-200 truncate">{item.name}</p>
-                                        <p className="text-[10px] text-slate-400">{t('my_orders.qty')}: {item.quantity} • {t('my_orders.rate')}: ₹{item.price}</p>
+                                        <p className="text-[10px] text-slate-400">{t('my_orders.qty')}: {item.quantity} • {t('my_orders.rate')}: ₹{item.price.toLocaleString('en-IN')}</p>
                                       </div>
                                     </div>
-                                    <span className="font-extrabold text-slate-900 dark:text-white">₹{item.price * item.quantity}</span>
+                                    <span className="font-extrabold text-slate-900 dark:text-white">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                                   </div>
                                 ))}
                               </div>
@@ -869,10 +869,10 @@ export const MyOrders = () => {
                                 <Link to={`/product/${item._id || item.product_id}`}>{item.name}</Link>
                               </h4>
                               <div className="flex items-center space-x-1.5 mt-1">
-                                <span className="text-xs font-black text-slate-900 dark:text-white">₹{finalPrice.toFixed(2)}</span>
+                                <span className="text-xs font-black text-slate-900 dark:text-white">₹{Math.round(finalPrice).toLocaleString('en-IN')}</span>
                                 {item.discount > 0 && (
                                   <>
-                                    <span className="text-[10px] text-slate-400 line-through">₹{item.price}</span>
+                                    <span className="text-[10px] text-slate-400 line-through">₹{item.price.toLocaleString('en-IN')}</span>
                                     <span className="text-[9px] font-bold text-[#D4A75F] bg-[#D4A75F]/10/50 dark:bg-emerald-950/40 px-1 rounded">{item.discount}% {t('home.off')}</span>
                                   </>
                                 )}
@@ -931,7 +931,7 @@ export const MyOrders = () => {
                               <Link to={`/product/${item.product_id}`}>{item.name}</Link>
                             </h4>
                             <div className="flex items-center space-x-1.5 mt-1">
-                              <span className="text-xs font-black text-slate-900 dark:text-white">₹{item.price}</span>
+                              <span className="text-xs font-black text-slate-900 dark:text-white">₹{item.price.toLocaleString('en-IN')}</span>
                             </div>
                           </div>
 

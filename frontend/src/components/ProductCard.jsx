@@ -126,11 +126,11 @@ export const ProductCard = ({ product, onAdminAction }) => {
         {/* Price Row */}
         <div className="flex items-baseline space-x-1.5 mb-1 flex-wrap">
           <span className="text-sm sm:text-xl font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB]">
-            ₹{discountedPrice}
+            ₹{discountedPrice.toLocaleString('en-IN')}
           </span>
           {product.discount > 0 && (
             <span className="text-[10px] sm:text-sm text-slate-400 line-through font-medium">
-              ₹{product.price}
+              ₹{product.price.toLocaleString('en-IN')}
             </span>
           )}
         </div>

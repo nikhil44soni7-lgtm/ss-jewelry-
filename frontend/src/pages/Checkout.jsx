@@ -1276,7 +1276,7 @@ export const Checkout = () => {
                       {item.name} <span className="text-slate-455">x{item.quantity}</span>
                     </span>
                     <span className="text-xs font-bold text-slate-900 dark:text-slate-50 flex-shrink-0">
-                      ₹{Math.round(item.price * item.quantity)}
+                      ₹{Math.round(item.price * item.quantity).toLocaleString('en-IN')}
                     </span>
                   </div>
                 ))}
@@ -1284,19 +1284,19 @@ export const Checkout = () => {
               <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2 text-xs">
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.subtotal')}</span>
-                  <span>₹{Math.round(checkoutTotal)}</span>
+                  <span>₹{Math.round(checkoutTotal).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.gst')}</span>
-                  <span>₹{gstTax}</span>
+                  <span>₹{gstTax.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.shipping_fee')}</span>
-                  <span>{shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee}`}</span>
+                  <span>{shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee.toLocaleString('en-IN')}`}</span>
                 </div>
                 <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-100 dark:border-slate-805">
                   <span>{t('checkout_page.total_amount')}</span>
-                  <span>₹{grandTotal}</span>
+                  <span>₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
@@ -1457,19 +1457,19 @@ export const Checkout = () => {
               <div className="text-xs space-y-3">
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.subtotal')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{Math.round(checkoutTotal)}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{Math.round(checkoutTotal).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.gst')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{gstTax}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{gstTax.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.shipping_cost')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee}`}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee.toLocaleString('en-IN')}`}</span>
                 </div>
                 <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-100 dark:border-slate-805">
                   <span>{t('checkout_page.total_amount')}</span>
-                  <span className="text-base text-emerald-500 font-extrabold">₹{grandTotal}</span>
+                  <span className="text-base text-emerald-500 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
@@ -1496,7 +1496,7 @@ export const Checkout = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.total_paid')}</span>
-                <span className="font-bold text-slate-850 dark:text-slate-55">₹{successOrder.total_amount}</span>
+                <span className="font-bold text-slate-850 dark:text-slate-50">₹{successOrder.total_amount.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.est_delivery')}</span>

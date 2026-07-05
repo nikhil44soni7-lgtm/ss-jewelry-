@@ -67,11 +67,11 @@ export const Cart = () => {
                       </h3>
                       <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
                         <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                          ₹{finalItemPrice}
+                          ₹{finalItemPrice.toLocaleString('en-IN')}
                         </span>
                         {item.discount > 0 && (
                            <span className="text-xs text-slate-400 line-through">
-                            ₹{item.price}
+                            ₹{item.price.toLocaleString('en-IN')}
                           </span>
                         )}
                         {item.discount > 0 && (
@@ -134,29 +134,29 @@ export const Cart = () => {
                 <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                   <div className="flex justify-between">
                     <span>{t('cart_page.subtotal')}</span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{Math.round(cartTotal)}</span>
+                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{Math.round(cartTotal).toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>{t('cart_page.gst')}</span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{gstTax}</span>
+                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{gstTax.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>{t('cart_page.delivery_charges')}</span>
                     <span className={`font-semibold ${shippingFee === 0 ? 'text-emerald-500' : 'text-slate-850 dark:text-slate-100'}`}>
-                      {shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee}`}
+                      {shippingFee === 0 ? t('cart_page.free') : `₹${shippingFee.toLocaleString('en-IN')}`}
                     </span>
                   </div>
                 </div>
 
                 {shippingFee > 0 && (
                   <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 p-3 rounded-2xl text-[11px] font-bold">
-                    {t('cart_page.unlock_free', { amount: Math.round(1000 - cartTotal) })}
+                    {t('cart_page.unlock_free', { amount: Math.round(1000 - cartTotal).toLocaleString('en-IN') })}
                   </div>
                 )}
 
                 <div className="border-t border-slate-100 dark:border-slate-805 pt-4 flex justify-between items-baseline">
                   <span className="font-extrabold text-slate-800 dark:text-slate-200 text-base">{t('cart_page.total_amount')}</span>
-                  <span className="font-black text-2xl text-slate-900 dark:text-slate-50">₹{grandTotal}</span>
+                  <span className="font-black text-2xl text-slate-900 dark:text-slate-50">₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
 
                 <button

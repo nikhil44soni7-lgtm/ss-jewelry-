@@ -288,9 +288,9 @@ const BannerSlider = React.memo(({
         <div
           className="relative overflow-hidden"
           style={{
-            height: '100vh',
-            minHeight: '600px',
-            maxHeight: '1000px',
+            height: '70vh',
+            minHeight: '480px',
+            maxHeight: '720px',
             boxShadow: '0 0 80px rgba(212,167,95,0.12) inset',
             transformStyle: 'preserve-3d'
           }}

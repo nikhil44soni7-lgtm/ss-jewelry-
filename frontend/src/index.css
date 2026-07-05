@@ -412,11 +412,11 @@ html:not(.dark) .border-slate-300 {
 }
 
 .navbar-glass-3d-scrolled {
-  background: rgba(27, 11, 38, 0.82) !important;
-  border: 1px solid rgba(212, 167, 95, 0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
+  background: rgba(27, 11, 38, 0.88) !important;
+  border: 1px solid rgba(212, 167, 95, 0.28) !important;
+  backdrop-filter: blur(20px) saturate(1.8) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.8) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255,255,255,0.07) !important;
   transform: translateY(-4px);
 }
 
@@ -440,36 +440,34 @@ html:not(.dark) .border-slate-300 {
   color: #ffffff !important;
 }
 
-/* Make sure elements in dark and light modes look correct inside these glass styles */
-.dark .navbar-glass-3d-scrolled {
-  background: rgba(15, 23, 42, 0.85) !important;
-  border-color: rgba(212, 167, 95, 0.25) !important;
-}
-
-.dark .navbar-glass-3d-scrolled span, 
-.dark .navbar-glass-3d-scrolled a, 
-.dark .navbar-glass-3d-scrolled button, 
-.dark .navbar-glass-3d-scrolled select,
-.dark .navbar-glass-3d-scrolled svg {
+/* Mobile navbar - ALWAYS dark purple glass regardless of light/dark theme */
+.navbar-glass-3d-scrolled span,
+.navbar-glass-3d-scrolled a,
+.navbar-glass-3d-scrolled button,
+.navbar-glass-3d-scrolled select,
+.navbar-glass-3d-scrolled svg {
   color: #ffffff !important;
 }
 
-html:not(.dark) .navbar-glass-3d-scrolled {
-  background: rgba(255, 255, 255, 0.90) !important;
-  border-color: rgba(242, 232, 217, 0.7) !important;
-  box-shadow: 0 15px 40px rgba(27, 11, 38, 0.08) !important;
+.navbar-glass-3d-scrolled span.font-great-vibes,
+.navbar-glass-3d-scrolled .text-\[\#D4A75F\] {
+  color: #D4A75F !important;
 }
 
-html:not(.dark) .navbar-glass-3d-scrolled span, 
-html:not(.dark) .navbar-glass-3d-scrolled a, 
-html:not(.dark) .navbar-glass-3d-scrolled button, 
-html:not(.dark) .navbar-glass-3d-scrolled select,
-html:not(.dark) .navbar-glass-3d-scrolled svg {
-  color: #3F1D5A !important;
+.navbar-glass-3d-scrolled input {
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
 }
 
-html:not(.dark) .navbar-glass-3d-scrolled span.font-great-vibes {
-  color: #3F1D5A !important;
+.navbar-glass-3d-scrolled input::placeholder {
+  color: rgba(255,255,255,0.45) !important;
+}
+
+/* Badge / pill overrides inside scrolled navbar */
+.navbar-glass-3d-scrolled .bg-\[\#D4A75F\],
+.navbar-glass-3d-scrolled .bg-amber-500 {
+  background-color: #D4A75F !important;
 }
 
 /* Category Card Portrait image styles: Dull before hover, Glow on hover */

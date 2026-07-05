@@ -693,10 +693,10 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                     className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
                   >
                     <div
-                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-300 ${
+                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
                         isActive
-                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_12px_rgba(212,167,95,0.4)]'
-                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F] group-hover:shadow-[0_0_10px_rgba(212,167,95,0.3)]'
+                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_18px_rgba(212,167,95,0.85),_0_0_35px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_12px_rgba(212,167,95,0.45)]'
                       }`}
                       style={{
                         width: '76px',
@@ -708,7 +708,11 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         alt={cat.label}
                         width="76"
                         height="76"
-                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
+                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                          isActive
+                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                        }`}
                       />
                     </div>
 
@@ -762,10 +766,10 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                     className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
                   >
                     <div
-                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-300 ${
+                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
                         isActive
-                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_12px_rgba(212,167,95,0.4)]'
-                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F] group-hover:shadow-[0_0_10px_rgba(212,167,95,0.3)]'
+                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_15px_rgba(212,167,95,0.85),_0_0_30px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_10px_rgba(212,167,95,0.45)]'
                       }`}
                       style={{
                         width: '68px',
@@ -777,7 +781,11 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         alt={cat.label}
                         width="68"
                         height="68"
-                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105"
+                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                          isActive
+                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                        }`}
                       />
                     </div>
 

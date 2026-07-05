@@ -1981,8 +1981,8 @@ export const ProductDetails = ({ productId }) => {
 
               {/* Stock Status */}
               <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                <span className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className={`text-xs font-bold ${product.stock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
                   {product.stock > 0 
                     ? (language === 'hi' ? `स्टॉक में है (केवल ${product.stock} बचे हैं)` : `In Stock (Only ${product.stock} left)`)
                     : (language === 'hi' ? 'आउट ऑफ स्टॉक' : 'Out of stock')}
@@ -2060,15 +2060,15 @@ export const ProductDetails = ({ productId }) => {
                 <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{translateText('Product Highlights')}</h3>
                 <ul className="space-y-2 text-xs text-slate-650 dark:text-slate-400">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="h-4.5 w-4.5 text-green-500 mt-0.5 shrink-0" />
                     <span>{translateText('100% Genuine and authentic quality product sourced directly.')}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="h-4.5 w-4.5 text-green-500 mt-0.5 shrink-0" />
                     <span>{translateText('Eligible for Free Delivery and cash on delivery payments.')}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="h-4.5 w-4.5 text-green-500 mt-0.5 shrink-0" />
                     <span>{translateText('Top rated customer support and easy hassle-free return options.')}</span>
                   </li>
                 </ul>

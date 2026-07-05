@@ -1258,9 +1258,9 @@ export const ProductDetails = ({ productId }) => {
   };  return (
     <div className={productId ? "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans" : "bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-6 font-sans"}>
       
-      {/* Sticky Header Bar */}
+      {/* Header Bar */}
       {!productId && (
-        <div className="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md z-[35] border-b border-slate-200/80 dark:border-slate-800/80 py-3 mb-4 w-full shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/80 py-3 mb-4 w-full">
           <div className="max-w-[1700px] mx-auto px-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex flex-col space-y-0.5">
               <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">

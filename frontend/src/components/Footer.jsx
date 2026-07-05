@@ -138,7 +138,7 @@ export const Footer = () => {
         <div className="mt-12 border-t border-slate-800/80 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#E5E7EB]">
           <p className="font-medium">{t('footer.copyright')}</p>
           <p className="flex items-center mt-4 md:mt-0 font-medium">
-            Made with <Heart className="h-3.5 w-3.5 text-[#D4A75F] mx-1 fill-current" /> for jewelry lovers.
+            Made with <Heart className="h-3.5 w-3.5 text-[#D4A75F] mx-1 fill-current" /> for jewellery lovers.
           </p>
         </div>
       </div>

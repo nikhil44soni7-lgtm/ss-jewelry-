@@ -1,7 +1,7 @@
 {
   "common": {
     "namaste": "Namaste",
-    "search_placeholder": "Search jewelry, rings, necklaces, earrings...",
+    "search_placeholder": "Search jewellery, rings, necklaces, earrings...",
     "categories": "Categories",
     "all": "All",
     "electronics": "Necklaces",
@@ -65,7 +65,7 @@
   },
   "footer": {
     "about_title": "SSJewellery",
-    "about_desc": "Your premier online destination for premium luxury jewelry, rings, necklaces, earrings, and designer bracelets. Masterfully crafted with unmatched elegance and premium materials.",
+    "about_desc": "Your premier online destination for premium luxury jewellery, rings, necklaces, earrings, and designer bracelets. Masterfully crafted with unmatched elegance and premium materials.",
     "quick_links": "Quick Links",
     "help_support": "Help & Support",
     "faqs": "FAQs & Instructions",
@@ -120,7 +120,7 @@
     "confirm_password_placeholder": "Confirm new password",
     "back_to_verification": "Back to Verification",
     "create_account": "Create Account",
-    "register_desc": "Register below to start purchasing premium luxury jewelry on SSJewellery.",
+    "register_desc": "Register below to start purchasing premium luxury jewellery on SSJewellery.",
     "account_created_success": "Account created successfully! Redirecting you to login...",
     "full_name_label": "Full Name *",
     "mobile_number_label": "Mobile Number *",

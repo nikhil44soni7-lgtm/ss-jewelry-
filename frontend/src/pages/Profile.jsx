@@ -804,7 +804,7 @@ export const Profile = () => {
                     <div key={req.id} className="border border-slate-100 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-900/50 space-y-2">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-xs font-extrabold text-slate-800 dark:text-white">{req.product_name || "Custom Jewelry"}</p>
+                          <p className="text-xs font-extrabold text-slate-800 dark:text-white">{req.product_name || "Custom Jewellery"}</p>
                           <p className="text-[10px] text-slate-450">Category: {req.category || 'N/A'}</p>
                         </div>
                         <span className={`text-[9px] font-black px-2 py-0.5 rounded-lg ${

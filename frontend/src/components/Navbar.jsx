@@ -1463,7 +1463,7 @@ export const Navbar = () => {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden pl-7.5 mt-1 space-y-2 text-xs text-slate-400 leading-relaxed text-left"
                         >
-                          <p>SS Jewellery represents the pinnacle of handcrafted Indian heritage jewelry. Our legacy spans generations of fine craftsmanship and absolute purity.</p>
+                          <p>SS Jewellery represents the pinnacle of handcrafted Indian heritage jewellery. Our legacy spans generations of fine craftsmanship and absolute purity.</p>
                         </motion.div>
                       )}
                     </AnimatePresence>

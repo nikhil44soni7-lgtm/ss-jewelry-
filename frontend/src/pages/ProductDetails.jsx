@@ -35,8 +35,11 @@ import {
   Zap,
   Calendar,
   Share2,
-  RotateCcw
+  RotateCcw,
+  X,
+  BarChart2
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CartContext } from '../context/CartContext';
 import { AuthContext, API_BASE_URL } from '../context/AuthContext';
 import { ProductImageGallery } from '../components/ProductImageGallery';
@@ -196,6 +199,8 @@ export const ProductDetails = ({ productId }) => {
   
   // Gallery state
   const [activeImage, setActiveImage] = useState('');
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const [zoomedTitle, setZoomedTitle] = useState('');
   
   // Quantity selector state
   const [quantity, setQuantity] = useState(1);
@@ -1543,43 +1548,70 @@ export const ProductDetails = ({ productId }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-xs font-bold text-slate-500 block mb-3">Revenue Trend (30 Days)</span>
-                    <div className="h-64 w-full bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-start overflow-x-auto p-2 md:p-4">
-                      {analyticsData?.charts?.revenue_chart ? (
-                        <img src={`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.revenue_chart}`} alt="Revenue Trend" className="h-full min-w-[550px] md:min-w-0 object-contain mix-blend-multiply dark:mix-blend-normal" />
-                      ) : (
-                        <div className="w-full h-full animate-pulse flex flex-col items-end justify-end space-y-2 pb-2">
-                          <div className="w-full flex items-end justify-around space-x-2 h-4/5">
-                            <div className="w-1/6 h-[30%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[50%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[40%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[80%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[60%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                {/* Combined Charts Box - "One Box" */}
+                <div className="bg-slate-50 dark:bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-100 dark:border-slate-850">
+                  <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-1.5 pb-2 border-b border-slate-200/50 dark:border-slate-800/60">
+                    <BarChart2 className="h-4 w-4 text-[#D4A75F]" />
+                    Visual Trend Charts
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Revenue Chart */}
+                    <div>
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-2">Revenue Trend (30 Days)</span>
+                      <div className="h-44 sm:h-52 w-full bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-2 overflow-hidden shadow-inner cursor-zoom-in group/chart relative">
+                        {analyticsData?.charts?.revenue_chart ? (
+                          <img 
+                            src={`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.revenue_chart}`} 
+                            alt="Revenue Trend" 
+                            onClick={() => {
+                              setZoomedImage(`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.revenue_chart}`);
+                              setZoomedTitle('Revenue Trend (30 Days)');
+                            }}
+                            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-300 group-hover/chart:scale-[1.02]" 
+                          />
+                        ) : (
+                          <div className="w-full h-full animate-pulse flex flex-col items-end justify-end space-y-2 pb-2">
+                            <div className="w-full flex items-end justify-around space-x-2 h-4/5">
+                              <div className="w-1/6 h-[30%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[50%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[40%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[80%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[60%] bg-slate-200 dark:bg-slate-800 rounded-t-sm"></div>
+                            </div>
+                            <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded mt-2"></div>
                           </div>
-                          <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded mt-2"></div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-xs font-bold text-slate-500 block mb-3">Sales Volume & Orders Trend</span>
-                    <div className="h-64 w-full bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-start overflow-x-auto p-2 md:p-4">
-                      {analyticsData?.charts?.sales_trend ? (
-                        <img src={`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.sales_trend}`} alt="Sales Trend" className="h-full min-w-[550px] md:min-w-0 object-contain mix-blend-multiply dark:mix-blend-normal" />
-                      ) : (
-                        <div className="w-full h-full animate-pulse flex flex-col items-end justify-end space-y-2 pb-2">
-                          <div className="w-full flex items-end justify-around space-x-2 h-4/5">
-                            <div className="w-1/6 h-[20%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[45%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[65%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[35%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
-                            <div className="w-1/6 h-[85%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+
+                    {/* Sales Chart */}
+                    <div>
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-2">Sales Volume & Orders Trend</span>
+                      <div className="h-44 sm:h-52 w-full bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-2 overflow-hidden shadow-inner cursor-zoom-in group/chart relative">
+                        {analyticsData?.charts?.sales_trend ? (
+                          <img 
+                            src={`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.sales_trend}`} 
+                            alt="Sales Trend" 
+                            onClick={() => {
+                              setZoomedImage(`${API_BASE_URL.replace('/api', '')}${analyticsData.charts.sales_trend}`);
+                              setZoomedTitle('Sales Volume & Orders Trend');
+                            }}
+                            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-300 group-hover/chart:scale-[1.02]" 
+                          />
+                        ) : (
+                          <div className="w-full h-full animate-pulse flex flex-col items-end justify-end space-y-2 pb-2">
+                            <div className="w-full flex items-end justify-around space-x-2 h-4/5">
+                              <div className="w-1/6 h-[20%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[45%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[65%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[35%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+                              <div className="w-1/6 h-[85%] bg-indigo-100 dark:bg-indigo-900/40 rounded-t-sm"></div>
+                            </div>
+                            <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded mt-2"></div>
                           </div>
-                          <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded mt-2"></div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2694,6 +2726,56 @@ export const ProductDetails = ({ productId }) => {
           </div>
         </div>
       )}
+
+      {/* Zoomed Image Modal Overlay */}
+      <AnimatePresence>
+        {zoomedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              setZoomedImage(null);
+              setZoomedTitle('');
+            }}
+            className="fixed inset-0 bg-black/95 z-[999] flex flex-col items-center justify-center p-4 backdrop-blur-md cursor-zoom-out"
+          >
+            {/* Modal Header */}
+            <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+              <span className="text-white text-xs font-bold tracking-wider uppercase bg-black/40 px-3 py-1.5 rounded-full border border-white/10">{zoomedTitle}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomedImage(null);
+                  setZoomedTitle('');
+                }}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer border-none"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="w-full max-w-4xl max-h-[85vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={zoomedImage}
+                alt={zoomedTitle}
+                className="max-w-full max-h-[80vh] md:max-h-[85vh] object-contain rounded-xl shadow-2xl bg-white border border-white/5"
+              />
+            </motion.div>
+            
+            <span className="text-[10px] sm:text-xs text-slate-400 font-medium mt-4">
+              Tap anywhere to close • Pinch to zoom on your mobile screen
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   </div>

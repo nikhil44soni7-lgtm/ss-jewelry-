@@ -59,29 +59,28 @@ export const ProductCard = ({ product, onAdminAction }) => {
         </span>
       )}
 
-      <Link to={`/product/${product._id}`} className="block relative aspect-[4/3] w-full overflow-hidden bg-slate-50 dark:bg-slate-950 p-2 sm:p-3 flex items-center justify-center">
-        {/* Primary Image */}
+      <Link to={`/product/${product._id}`} className="block relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-950">
         <LuxuryImage
           src={product.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60'}
           alt={localize(product, 'name')}
-          className={`max-w-full max-h-full object-contain transition-all duration-700 ease-out ${
-            product.images[1] ? 'group-hover:opacity-0 group-hover:scale-95' : 'group-hover:scale-108'
+          className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${
+            product.images && product.images.length > 1
+              ? 'group-hover:scale-108 group-hover:opacity-0'
+              : 'group-hover:scale-108'
           }`}
           loading="lazy"
-          width="640"
-          height="480"
+          width="600"
+          height="600"
         />
-
-        {/* Secondary Image on Hover */}
-        {product.images[1] && (
-          <div className="absolute inset-0 p-2 sm:p-3 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out transform scale-105 group-hover:scale-100 pointer-events-none">
+        {product.images && product.images.length > 1 && (
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out pointer-events-none">
             <LuxuryImage
               src={product.images[1]}
               alt={`${localize(product, 'name')} - Alternate`}
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out scale-102 group-hover:scale-108"
               loading="lazy"
-              width="640"
-              height="480"
+              width="600"
+              height="600"
             />
           </div>
         )}
@@ -165,7 +164,7 @@ export const ProductCardSkeleton = () => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm p-3 sm:p-4 flex flex-col h-full space-y-3 sm:space-y-4">
       {/* Image skeleton */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50 dark:bg-slate-950 rounded-lg sm:rounded-xl flex items-center justify-center">
+      <div className="relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-950 rounded-lg sm:rounded-xl flex items-center justify-center">
         <div className="absolute inset-0 luxury-gold-shimmer pointer-events-none" />
         <img
           src="/logo.svg"

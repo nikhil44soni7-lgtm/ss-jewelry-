@@ -1083,22 +1083,22 @@ export const Navbar = () => {
                   </div>
                 )}
 
-                {/* Wishlist (Desktop & Mobile) */}
+                {/* Wishlist (Desktop only on mobile - shown in profile dropdown on xs) */}
                 {!isAdmin && (
                   <button
                     onClick={() => navigate('/orders?tab=wishlist')}
-                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer hidden sm:block"
                   >
                     <Heart className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                     {wishlistCount > 0 && <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 bg-[#D4A75F] text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">{wishlistCount}</span>}
                   </button>
                 )}
 
-                {/* Cart (Desktop & Mobile) */}
+                {/* Cart (Desktop only on mobile - shown in profile dropdown on xs) */}
                 {!isAdmin && (
                   <button
                     onClick={() => navigate('/cart')}
-                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="relative p-1.5 sm:p-2 rounded-xl text-[#3F1D5A] dark:text-[#EFE7DB] hover:bg-[#FAFAFA] dark:hover:bg-slate-800 transition-colors cursor-pointer hidden sm:block"
                   >
                     <ShoppingCart className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                     {cartCount > 0 && <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 sm:h-4 sm:w-4 bg-[#D4A75F] text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">{cartCount}</span>}
@@ -1110,10 +1110,10 @@ export const Navbar = () => {
                   <div className="relative profile-container-ref">
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center space-x-1.5 p-1.5 rounded-xl border border-[#F2E8D9] dark:border-slate-700 bg-[#FAFAFA] dark:bg-slate-800 cursor-pointer"
+                      className="flex items-center space-x-1.5 p-1 rounded-xl border border-[rgba(212,167,95,0.35)] bg-[#0d1b2a] cursor-pointer hover:bg-[#162236] transition-colors"
                     >
-                      <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-[#D4A75F] text-white flex items-center justify-center text-[10px] sm:text-xs font-bold uppercase">{user.name.charAt(0)}</div>
-                      <span className="text-xs font-bold text-[#3F1D5A] dark:text-slate-200 hidden sm:block">{user.name}</span>
+                      <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-[#D4A75F] text-white flex items-center justify-center text-[11px] sm:text-xs font-bold uppercase shadow-md">{user.name.charAt(0)}</div>
+                      <span className="text-xs font-bold text-white hidden sm:block">{user.name}</span>
                     </button>
                     <AnimatePresence>
                       {profileDropdownOpen && (
@@ -1127,6 +1127,28 @@ export const Navbar = () => {
                               <p className="text-[10px] text-[#D4A75F] font-bold uppercase tracking-wider">{language === 'hi' ? 'पंजीकृत ईमेल' : 'Signed in as'}</p>
                               <p className="text-sm font-bold text-white truncate mt-0.5">{user.email}</p>
                             </div>
+
+                            {/* Cart & Wishlist quick links - mobile only */}
+                            {!isAdmin && (
+                              <div className="flex gap-1 px-3 py-2 border-b border-[rgba(212,167,95,0.15)] sm:hidden">
+                                <button
+                                  onClick={() => { setProfileDropdownOpen(false); navigate('/orders?tab=wishlist'); }}
+                                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[rgba(212,167,95,0.10)] hover:bg-[rgba(212,167,95,0.20)] text-[#D4A75F] text-xs font-bold transition-all"
+                                >
+                                  <Heart className="h-3.5 w-3.5" />
+                                  Wishlist
+                                  {wishlistCount > 0 && <span className="bg-[#D4A75F] text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center">{wishlistCount}</span>}
+                                </button>
+                                <button
+                                  onClick={() => { setProfileDropdownOpen(false); navigate('/cart'); }}
+                                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[rgba(212,167,95,0.10)] hover:bg-[rgba(212,167,95,0.20)] text-[#D4A75F] text-xs font-bold transition-all"
+                                >
+                                  <ShoppingCart className="h-3.5 w-3.5" />
+                                  Cart
+                                  {cartCount > 0 && <span className="bg-[#D4A75F] text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center">{cartCount}</span>}
+                                </button>
+                              </div>
+                            )}
 
                             {isAdmin ? (
                               <Link

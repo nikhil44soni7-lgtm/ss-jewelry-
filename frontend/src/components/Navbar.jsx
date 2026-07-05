@@ -1121,20 +1121,20 @@ export const Navbar = () => {
                             initial={{ opacity: 0, y: 8, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#121826] border border-[#F2E8D9] dark:border-[rgba(212,167,95,0.25)] rounded-2xl shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-2 z-50 origin-top-right overflow-hidden"
+                            className="absolute right-0 mt-2 w-56 bg-[#0d1b2a] border border-[rgba(212,167,95,0.30)] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] py-2 z-50 origin-top-right overflow-hidden"
                           >
-                            <div className="px-4 py-2 border-b border-slate-105 dark:border-[rgba(212,167,95,0.15)]">
-                              <p className="text-xs text-slate-400">{language === 'hi' ? 'पंजीकृत ईमेल' : 'Signed in as'}</p>
-                              <p className="text-sm font-bold text-[#1F1F1F] dark:text-white truncate">{user.email}</p>
+                            <div className="px-4 py-2.5 border-b border-[rgba(212,167,95,0.18)]">
+                              <p className="text-[10px] text-[#D4A75F] font-bold uppercase tracking-wider">{language === 'hi' ? 'पंजीकृत ईमेल' : 'Signed in as'}</p>
+                              <p className="text-sm font-bold text-white truncate mt-0.5">{user.email}</p>
                             </div>
 
                             {isAdmin ? (
                               <Link
                                 to="/admin"
                                 onClick={() => setProfileDropdownOpen(false)}
-                                className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#3F1D5A] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                                className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[rgba(212,167,95,0.12)] hover:text-[#D4A75F] transition-all duration-200"
                               >
-                                <Shield className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                                <Shield className="h-4 w-4 opacity-75 text-[#D4A75F]" />
                                 <span>Admin Panel</span>
                               </Link>
                             ) : (
@@ -1142,27 +1142,27 @@ export const Navbar = () => {
                                 <Link
                                   to="/profile"
                                   onClick={() => setProfileDropdownOpen(false)}
-                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#1F1F1F] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[rgba(212,167,95,0.12)] hover:text-[#D4A75F] transition-all duration-200"
                                 >
-                                  <User className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                                  <User className="h-4 w-4 opacity-75 text-[#D4A75F]" />
                                   <span>{language === 'hi' ? 'मेरी प्रोफ़ाइल' : 'My Profile'}</span>
                                 </Link>
 
                                 <Link
                                   to="/orders"
                                   onClick={() => setProfileDropdownOpen(false)}
-                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#1F1F1F] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[rgba(212,167,95,0.12)] hover:text-[#D4A75F] transition-all duration-200"
                                 >
-                                  <ClipboardList className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                                  <ClipboardList className="h-4 w-4 opacity-75 text-[#D4A75F]" />
                                   <span>{language === 'hi' ? 'मेरे ऑर्डर' : 'My Orders'}</span>
                                 </Link>
 
                                 <Link
                                   to="/profile"
                                   onClick={() => setProfileDropdownOpen(false)}
-                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-[#1F1F1F] dark:text-white hover:bg-slate-55 dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200"
+                                  className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-200 hover:bg-[rgba(212,167,95,0.12)] hover:text-[#D4A75F] transition-all duration-200"
                                 >
-                                  <Settings className="h-4 w-4 opacity-75 text-[#3F1D5A] dark:text-[#D4A75F]" />
+                                  <Settings className="h-4 w-4 opacity-75 text-[#D4A75F]" />
                                   <span>{language === 'hi' ? 'खाता सेटिंग्स' : 'Account Settings'}</span>
                                 </Link>
                               </>
@@ -1174,9 +1174,9 @@ export const Navbar = () => {
                                 logout();
                                 navigate('/');
                               }}
-                              className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-500 hover:bg-[#FAFAFA] dark:text-white dark:hover:bg-[rgba(212,167,95,0.12)] dark:hover:text-[#D4A75F] transition-all duration-200 text-left cursor-pointer bg-transparent border-none"
+                              className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-400 hover:bg-[rgba(239,68,68,0.10)] hover:text-red-300 transition-all duration-200 text-left cursor-pointer bg-transparent border-none mt-1 border-t border-[rgba(212,167,95,0.12)]"
                             >
-                              <LogOut className="h-4 w-4 text-red-500 dark:text-[#D4A75F]" />
+                              <LogOut className="h-4 w-4 text-red-400" />
                               <span>{t('navbar.sign_out')}</span>
                             </button>
                           </motion.div>

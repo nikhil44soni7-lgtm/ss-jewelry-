@@ -2153,47 +2153,6 @@ export const ProductDetails = ({ productId }) => {
 
                 <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
 
-                {/* Pincode check */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                    <MapPin className="h-4 w-4 text-slate-455" />
-                    <span>{language === 'hi' ? 'वितरण पता' : 'Delivery Address'}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      maxLength="6"
-                      placeholder={language === 'hi' ? "6-अंकीय पिनकोड दर्ज करें" : "Enter 6-digit Pincode"}
-                      value={pincode}
-                      onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
-                      className="flex-1 px-3 py-2 text-xs bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4A75F] text-slate-880 dark:text-slate-100"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (pincode.length === 6) {
-                          setPincodeStatus('available');
-                        } else {
-                          setPincodeStatus('invalid');
-                        }
-                      }}
-                      className="px-4 py-2 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl text-xs font-bold hover:opacity-90 transition-all cursor-pointer border-none"
-                    >
-                      {language === 'hi' ? 'जांचें' : 'Check'}
-                    </button>
-                  </div>
-                  {pincodeStatus && (
-                    <p className={`text-[10px] font-bold ${pincodeStatus === 'available' ? 'text-[#D4A75F]' : 'text-rose-500'}`}>
-                      {pincodeStatus === 'available'
-                        ? (language === 'hi' ? 'एक्सप्रेस अगले दिन डिलीवरी के लिए उपलब्ध' : 'Available for express next-day delivery')
-                        : (language === 'hi' ? 'कृपया एक वैध 6-अंकीय पिनकोड दर्ज करें' : 'Please enter a valid 6-digit pincode')
-                      }
-                    </p>
-                  )}
-                </div>
-
-                <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
-
                 {/* Seller Info */}
                 <div className="space-y-1 text-xs">
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">{translateText('Seller Information')}</span>

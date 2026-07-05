@@ -97,7 +97,7 @@ function App() {
       <LanguageSelectionModal />
 
       {/* Main page content area */}
-      <main className={`flex-grow ${location.pathname === '/' ? '' : 'pt-24 md:pt-32'}`}>
+      <main className={`flex-grow ${location.pathname === '/' ? '' : 'pt-24 lg:pt-0'}`}>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />

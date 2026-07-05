@@ -15,13 +15,12 @@ class ReviewModel(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Asia/Kolkata')))
 
     def to_dict(self):
-        from backend.utils.security import mask_name
         return {
             "id": str(self.id),
             "_id": str(self.id),
             "product_id": str(self.product_id),
             "user_id": str(self.user_id) if self.user_id else None,
-            "user_name": mask_name(self.user_name),
+            "user_name": self.user_name,
             "rating": int(self.rating),
             "comment": self.comment or "",
             "created_at": format_iso_datetime(self.created_at)

@@ -2333,7 +2333,7 @@ export const ProductDetails = ({ productId }) => {
                                 <p className="font-semibold text-xs text-slate-880 dark:text-slate-100">{rev.user_name}</p>
                                 <div className="flex text-amber-400 mt-0.5">
                                   {[...Array(5)].map((_, idx) => (
-                                    <Star key={idx} className={`h-3 w-3 ${idx < rev.rating ? 'fill-current' : 'text-slate-200 dark:text-slate-700'}`} />
+                                    <Star key={idx} className={`h-3 w-3 ${idx < rev.rating ? 'fill-current text-amber-400' : 'text-amber-200 dark:text-amber-300/40'}`} />
                                   ))}
                                 </div>
                               </div>
@@ -2364,7 +2364,7 @@ export const ProductDetails = ({ productId }) => {
                             <div className="flex text-amber-400 gap-1">
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <button key={star} type="button" onClick={() => setRating(star)} className="hover:scale-110 transition-transform cursor-pointer bg-transparent border-none">
-                                  <Star className={`h-4.5 w-4.5 ${star <= rating ? 'fill-current' : 'text-slate-250 dark:text-slate-700'}`} />
+                                  <Star className={`h-4.5 w-4.5 ${star <= rating ? 'fill-current text-amber-400' : 'text-amber-200 dark:text-amber-300/50'}`} />
                                 </button>
                               ))}
                             </div>

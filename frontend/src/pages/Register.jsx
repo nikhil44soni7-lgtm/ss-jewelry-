@@ -184,9 +184,9 @@ export const Register = () => {
         <div className="absolute -top-12 -right-12 h-32 w-32 bg-emerald-500/10 rounded-full blur-2xl" />
         <div className="absolute -bottom-12 -left-12 h-32 w-32 bg-indigo-500/10 rounded-full blur-2xl" />
 
-        <div className="text-center relative">
-          <div className="bg-emerald-500/10 p-3 rounded-full w-fit mx-auto text-emerald-500 mb-3 border border-emerald-500/20">
-            <Sparkles className="h-6 w-6" />
+        <div className="text-center relative flex flex-col items-center">
+          <div className="p-1 bg-[#D4A75F]/10 dark:bg-[#D4A75F]/15 rounded-2xl border border-[#D4A75F]/20 w-fit mx-auto mb-3">
+            <img src="/logo-monogram.png" className="h-10 w-10 object-contain rounded-xl" alt="SSJewellery Monogram" />
           </div>
           <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
             Create Account

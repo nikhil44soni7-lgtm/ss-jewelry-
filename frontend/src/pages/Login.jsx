@@ -235,13 +235,12 @@ export const Login = () => {
         className="w-full max-w-md bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-slate-800/60 rounded-3xl shadow-2xl p-8 relative z-10"
       >
         
-        {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 mb-2">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-950/40 rounded-2xl border border-emerald-500/20">
-              <ShoppingBag className="h-6 w-6" />
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="inline-flex items-center space-x-2.5 mb-3">
+            <div className="p-1 bg-[#D4A75F]/10 dark:bg-[#D4A75F]/15 rounded-2xl border border-[#D4A75F]/20">
+              <img src="/logo-monogram.png" className="h-8 w-8 object-contain rounded-xl" alt="SSJewellery Monogram" />
             </div>
-            <span className="font-extrabold tracking-wider text-sm uppercase">SSJewellery</span>
+            <span className="font-extrabold tracking-wider text-sm uppercase text-[#D4A75F]">SSJEWELLERY</span>
           </div>
           <h2 className="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
             {showForgotPassword ? 'Reset Password' : 'Welcome Back'}

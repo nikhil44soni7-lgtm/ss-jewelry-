@@ -1811,9 +1811,9 @@ export const ProductDetails = ({ productId }) => {
             <span className="text-slate-700 dark:text-slate-350 font-bold truncate max-w-[200px] md:max-w-xs">{language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-8 lg:gap-10 items-start w-full">
-            {/* LEFT COLUMN: Gallery & Trust Section (40%) */}
-            <div className="space-y-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start w-full">
+            {/* LEFT COLUMN: Gallery & Trust Section */}
+            <div className="col-span-1 md:col-span-6 lg:col-span-5 space-y-6 w-full">
               {/* Product Gallery Container */}
               <div className="flex flex-col gap-4 items-start select-none w-full">
                 {/* Main Large Image Card with Zoom */}
@@ -1873,317 +1873,314 @@ export const ProductDetails = ({ productId }) => {
               </div>
             </div>
 
-            {/* RIGHT COLUMN: Info & Buying Options (60%) */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start w-full">
-              {/* MIDDLE SECTION: Product Details, Ratings, Variants (md:col-span-7) */}
-              <div className="md:col-span-7 space-y-5 w-full">
-                {/* Brand & Category */}
-                <div className="flex items-center gap-2 text-[10px] text-slate-455 dark:text-slate-400 font-bold uppercase tracking-wider">
-                  <span className="text-[#D4A75F]">{translateCategory(product.category)}</span>
-                  <span>•</span>
-                  <span>{language === 'hi' ? 'ब्रांड' : 'Brand'}: {product.brand || (language === 'hi' ? 'SSJewellery सिग्नेचर' : 'SSJewellery Signature')}</span>
+            {/* MIDDLE SECTION: Product Details, Ratings, Variants */}
+            <div className="col-span-1 md:col-span-6 lg:col-span-4 space-y-5 w-full">
+              {/* Brand & Category */}
+              <div className="flex items-center gap-2 text-[10px] text-slate-455 dark:text-slate-400 font-bold uppercase tracking-wider">
+                <span className="text-[#D4A75F]">{translateCategory(product.category)}</span>
+                <span>•</span>
+                <span>{language === 'hi' ? 'ब्रांड' : 'Brand'}: {product.brand || (language === 'hi' ? 'SSJewellery सिग्नेचर' : 'SSJewellery Signature')}</span>
+              </div>
+
+              {/* Product Name */}
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
+                {language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}
+              </h1>
+
+              {/* Ratings & reviews summary */}
+              <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex items-center text-amber-500 gap-1 font-extrabold bg-amber-500/10 px-2 py-0.5 rounded">
+                  <span>{product.rating || '4.5'}</span>
+                  <Star className="h-3 w-3 fill-amber-500" />
                 </div>
+                <span>|</span>
+                <span className="hover:text-[#D4A75F] cursor-pointer transition-colors" onClick={() => scrollToSection('tabs-section')}>
+                  {product.reviews?.length || 0} {language === 'hi' ? 'समीक्षाएं' : 'reviews'}
+                </span>
+                <span>|</span>
+                <span>{language === 'hi' ? '56 उत्तर दिए गए प्रश्न' : '56 answered questions'}</span>
+              </div>
 
-                {/* Product Name */}
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
-                  {language === 'hi' ? (product.name_hi || product.name) : (product.name_en || product.name)}
-                </h1>
+              <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
 
-                {/* Ratings & reviews summary */}
-                <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center text-amber-500 gap-1 font-extrabold bg-amber-500/10 px-2 py-0.5 rounded">
-                    <span>{product.rating || '4.5'}</span>
-                    <Star className="h-3 w-3 fill-amber-500" />
-                  </div>
-                  <span>|</span>
-                  <span className="hover:text-[#D4A75F] cursor-pointer transition-colors" onClick={() => scrollToSection('tabs-section')}>
-                    {product.reviews?.length || 0} {language === 'hi' ? 'समीक्षाएं' : 'reviews'}
+              {/* Price Section */}
+              <div className="py-1">
+                <div className="flex items-baseline gap-2.5">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white">
+                    ₹{discountedPrice.toLocaleString('en-IN')}
                   </span>
-                  <span>|</span>
-                  <span>{language === 'hi' ? '56 उत्तर दिए गए प्रश्न' : '56 answered questions'}</span>
+                  {product.discount > 0 && (
+                    <>
+                      <span className="text-base text-slate-400 line-through font-medium">
+                        {language === 'hi' ? 'एम.आर.पी' : 'M.R.P'}: ₹{product.price.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-xs font-black text-rose-500 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-0.5 rounded">
+                        {product.discount}% {language === 'hi' ? 'छूट' : 'OFF'}
+                      </span>
+                    </>
+                  )}
                 </div>
+                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{language === 'hi' ? 'सभी करों सहित' : 'Inclusive of all taxes'}</p>
+              </div>
 
-                <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
+              <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
 
-                {/* Price Section */}
-                <div className="py-1">
-                  <div className="flex items-baseline gap-2.5">
-                    <span className="text-3xl font-black text-slate-900 dark:text-white">
-                      ₹{discountedPrice.toLocaleString('en-IN')}
-                    </span>
-                    {product.discount > 0 && (
-                      <>
-                        <span className="text-base text-slate-400 line-through font-medium">
-                          {language === 'hi' ? 'एम.आर.पी' : 'M.R.P'}: ₹{product.price.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-xs font-black text-rose-500 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-0.5 rounded">
-                          {product.discount}% {language === 'hi' ? 'छूट' : 'OFF'}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{language === 'hi' ? 'सभी करों सहित' : 'Inclusive of all taxes'}</p>
-                </div>
+              {/* Stock Status */}
+              <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                  {product.stock > 0 
+                    ? (language === 'hi' ? `स्टॉक में है (केवल ${product.stock} बचे हैं)` : `In Stock (Only ${product.stock} left)`)
+                    : (language === 'hi' ? 'आउट ऑफ स्टॉक' : 'Out of stock')}
+                </span>
+              </div>
 
-                <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
+              {/* Variants Block based on Category */}
+              <div className="space-y-4 pt-2">
+                {Object.entries(getGroupedVariants()).map(([attrName, attrValues]) => {
+                  const isColor = attrName.toLowerCase().includes('color');
+                  const colorMap = {
+                    'Carbon Gray': '#4B5563',
+                    'Sapphire Blue': '#2563EB',
+                    'Forest Green': '#059669',
+                    'Rose Gold': '#FDA4AF',
+                    'Phantom Black': '#111827',
+                    'Black': '#000000',
+                    'Navy Blue': '#1E3A8A',
+                    'Olive Green': '#374151',
+                    'Burgundy': '#800020',
+                    'White': '#FFFFFF',
+                    'Charcoal Grey': '#374151'
+                  };
+                  const getColorCode = (col) => colorMap[col] || col;
 
-                {/* Stock Status */}
-                <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
-                    {product.stock > 0 
-                      ? (language === 'hi' ? `स्टॉक में है (केवल ${product.stock} बचे हैं)` : `In Stock (Only ${product.stock} left)`)
-                      : (language === 'hi' ? 'आउट ऑफ स्टॉक' : 'Out of stock')}
-                  </span>
-                </div>
-
-                {/* Variants Block based on Category */}
-                <div className="space-y-4 pt-2">
-                  {Object.entries(getGroupedVariants()).map(([attrName, attrValues]) => {
-                    const isColor = attrName.toLowerCase().includes('color');
-                    const colorMap = {
-                      'Carbon Gray': '#4B5563',
-                      'Sapphire Blue': '#2563EB',
-                      'Forest Green': '#059669',
-                      'Rose Gold': '#FDA4AF',
-                      'Phantom Black': '#111827',
-                      'Black': '#000000',
-                      'Navy Blue': '#1E3A8A',
-                      'Olive Green': '#374151',
-                      'Burgundy': '#800020',
-                      'White': '#FFFFFF',
-                      'Charcoal Grey': '#374151'
-                    };
-                    const getColorCode = (col) => colorMap[col] || col;
-
-                    return (
-                      <div key={attrName} className="space-y-1.5">
-                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                          {language === 'hi' ? `${translateText(attrName)} चुनें` : `Select ${attrName}`}
-                        </span>
-                        <div className="flex flex-wrap gap-2">
-                          {attrValues.map((val) => {
-                            const isSelected = selectedVariants[attrName] === val;
-                            return (
-                              <button
-                                key={val}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedVariants(prev => ({ ...prev, [attrName]: val }));
-                                  // Sync legacy states for compatibility
-                                  if (attrName === 'Color') setSelectedColor(val);
-                                  if (attrName === 'RAM') setSelectedRam(val);
-                                  if (attrName === 'Storage') setSelectedSize(val);
-                                  if (attrName === 'Size') setSelectedSize(val);
-                                  if (attrName === 'Weight') setSelectedWeight(val);
-                                  if (attrName === 'Pack Size') setSelectedPackSize(val);
-                                  if (attrName === 'Format') setSelectedFormat(val);
-                                }}
-                                className={`px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all flex items-center gap-2 cursor-pointer ${
-                                  isSelected
-                                    ? 'border-emerald-500 bg-emerald-555/10 text-emerald-600 dark:text-emerald-400 font-extrabold ring-1 ring-emerald-500/20'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 bg-transparent text-slate-600 dark:text-slate-400'
-                                }`}
-                              >
-                                {isColor && (
-                                  <span 
-                                    className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700" 
-                                    style={{ backgroundColor: getColorCode(val) }}
-                                  />
-                                )}
-                                <span>{translateText(val)}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                  return (
+                    <div key={attrName} className="space-y-1.5">
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        {language === 'hi' ? `${translateText(attrName)} चुनें` : `Select ${attrName}`}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {attrValues.map((val) => {
+                          const isSelected = selectedVariants[attrName] === val;
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => {
+                                setSelectedVariants(prev => ({ ...prev, [attrName]: val }));
+                                // Sync legacy states for compatibility
+                                if (attrName === 'Color') setSelectedColor(val);
+                                if (attrName === 'RAM') setSelectedRam(val);
+                                if (attrName === 'Storage') setSelectedSize(val);
+                                if (attrName === 'Size') setSelectedSize(val);
+                                if (attrName === 'Weight') setSelectedWeight(val);
+                                if (attrName === 'Pack Size') setSelectedPackSize(val);
+                                if (attrName === 'Format') setSelectedFormat(val);
+                              }}
+                              className={`px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all flex items-center gap-2 cursor-pointer ${
+                                isSelected
+                                  ? 'border-emerald-500 bg-emerald-555/10 text-emerald-600 dark:text-emerald-400 font-extrabold ring-1 ring-emerald-500/20'
+                                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 bg-transparent text-slate-600 dark:text-slate-400'
+                              }`}
+                            >
+                              {isColor && (
+                                <span 
+                                  className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700" 
+                                  style={{ backgroundColor: getColorCode(val) }}
+                                />
+                              )}
+                              <span>{translateText(val)}</span>
+                            </button>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-slate-100 dark:border-slate-800/80 my-4" />
+
+              {/* Highlights */}
+              <div className="space-y-2.5">
+                <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{translateText('Product Highlights')}</h3>
+                <ul className="space-y-2 text-xs text-slate-650 dark:text-slate-400">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>{translateText('100% Genuine and authentic quality product sourced directly.')}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>{translateText('Eligible for Free Delivery and cash on delivery payments.')}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                    <span>{translateText('Top rated customer support and easy hassle-free return options.')}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* RIGHT SECTION: Purchase Sidebar, Seller, Offers */}
+            <div className="col-span-1 md:col-span-12 lg:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit w-full">
+              {/* Buy Panel (No heavy outdated cards - clean modern border) */}
+              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-5 bg-white dark:bg-slate-900/50 space-y-5">
+                {/* Quantity Selector & Wishlist */}
+                <div className="flex items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold text-slate-455 dark:text-slate-400 uppercase tracking-wider block">{language === 'hi' ? 'मात्रा' : 'Quantity'}</span>
+                    <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-9 w-28">
+                      <button
+                        type="button"
+                        disabled={quantity <= 1}
+                        onClick={() => setQuantity(prev => prev - 1)}
+                        className="flex-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-all h-full cursor-pointer disabled:opacity-50 bg-transparent border-none"
+                      >
+                        -
+                      </button>
+                      <span className="px-2 font-extrabold text-sm text-slate-800 dark:text-slate-200 w-8 text-center">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={quantity >= (product.stock || 10)}
+                        onClick={() => setQuantity(prev => prev + 1)}
+                        className="flex-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-all h-full cursor-pointer disabled:opacity-50 bg-transparent border-none"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleWishlistToggle}
+                    disabled={isPreviewMode}
+                    className={`mt-4 px-3 py-2 rounded-xl border transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold h-9 disabled:cursor-not-allowed disabled:opacity-70 ${
+                      isProductInWishlist
+                        ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900 text-rose-500'
+                        : 'border-slate-200 dark:border-slate-750 hover:border-rose-450 dark:hover:border-rose-600 text-slate-455 hover:text-rose-500 bg-transparent'
+                    }`}
+                  >
+                    <Heart className={`h-4 w-4 ${isProductInWishlist ? 'fill-current text-rose-500' : ''}`} />
+                    <span>{isProductInWishlist ? (language === 'hi' ? 'विशलिस्ट में है' : 'Wishlisted') : (language === 'hi' ? 'विशलिस्ट' : 'Wishlist')}</span>
+                  </button>
                 </div>
 
-                <div className="border-t border-slate-100 dark:border-slate-800/80 my-4" />
+                {/* Desktop Action Buttons */}
+                <div className="space-y-2.5 hidden md:block">
+                  {product.stock > 0 ? (
+                    <>
+                      <button
+                        onClick={handleAddToCart}
+                        disabled={isPreviewMode}
+                        className="w-full bg-[#D4A75F] hover:opacity-90 active:scale-98 text-white font-black py-3 rounded-xl transition-all duration-200 shadow-sm shadow-[#D4A75F]/10 flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-sm border-none animate-pulse-slow"
+                      >
+                        <ShoppingCart className="h-4.5 w-4.5" />
+                        {language === 'hi' ? 'कार्ट में जोड़ें' : 'Add To Cart'}
+                      </button>
+                      <button
+                        onClick={handleBuyNow}
+                        disabled={isPreviewMode}
+                        className="w-full bg-[#0d1b2a] hover:bg-[#0d1b2a]/90 active:scale-98 border border-[#D4A75F] text-[#D4A75F] font-black py-3 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-sm"
+                      >
+                        {language === 'hi' ? 'अभी खरीदें' : 'Buy Now'}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={handleOpenRequestBuyModal}
+                      disabled={isPreviewMode}
+                      className="w-full bg-rose-500 hover:bg-rose-600 active:scale-98 text-white font-black py-3 rounded-xl transition-all duration-200 shadow-sm shadow-rose-500/10 flex items-center justify-center gap-2 cursor-pointer text-sm border-none"
+                    >
+                      {language === 'hi' ? 'खरीदने का अनुरोध' : 'Request To Buy'}
+                    </button>
+                  )}
+                </div>
 
-                {/* Highlights */}
-                <div className="space-y-2.5">
-                  <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{translateText('Product Highlights')}</h3>
-                  <ul className="space-y-2 text-xs text-slate-650 dark:text-slate-400">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
-                      <span>{translateText('100% Genuine and authentic quality product sourced directly.')}</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
-                      <span>{translateText('Eligible for Free Delivery and cash on delivery payments.')}</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
-                      <span>{translateText('Top rated customer support and easy hassle-free return options.')}</span>
-                    </li>
-                  </ul>
+                <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
+
+                {/* Pincode check */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <MapPin className="h-4 w-4 text-slate-455" />
+                    <span>{language === 'hi' ? 'वितरण पता' : 'Delivery Address'}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      maxLength="6"
+                      placeholder={language === 'hi' ? "6-अंकीय पिनकोड दर्ज करें" : "Enter 6-digit Pincode"}
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
+                      className="flex-1 px-3 py-2 text-xs bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4A75F] text-slate-880 dark:text-slate-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (pincode.length === 6) {
+                          setPincodeStatus('available');
+                        } else {
+                          setPincodeStatus('invalid');
+                        }
+                      }}
+                      className="px-4 py-2 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl text-xs font-bold hover:opacity-90 transition-all cursor-pointer border-none"
+                    >
+                      {language === 'hi' ? 'जांचें' : 'Check'}
+                    </button>
+                  </div>
+                  {pincodeStatus && (
+                    <p className={`text-[10px] font-bold ${pincodeStatus === 'available' ? 'text-[#D4A75F]' : 'text-rose-500'}`}>
+                      {pincodeStatus === 'available'
+                        ? (language === 'hi' ? 'एक्सप्रेस अगले दिन डिलीवरी के लिए उपलब्ध' : 'Available for express next-day delivery')
+                        : (language === 'hi' ? 'कृपया एक वैध 6-अंकीय पिनकोड दर्ज करें' : 'Please enter a valid 6-digit pincode')
+                      }
+                    </p>
+                  )}
+                </div>
+
+                <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
+
+                {/* Seller Info */}
+                <div className="space-y-1 text-xs">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">{translateText('Seller Information')}</span>
+                  <p className="font-bold text-slate-880 dark:text-slate-200">{product.seller || translateText('SSJewellery Retail Partner')}</p>
+                  <p className="text-[10px] text-slate-455 dark:text-slate-400">{translateText('4.8★ Seller Rating • 99% positive feedback')}</p>
                 </div>
               </div>
 
-              {/* RIGHT SECTION: Purchase Sidebar, Seller, Offers (md:col-span-5) */}
-              <div className="md:col-span-5 space-y-6 lg:sticky lg:top-24 h-fit w-full">
-                {/* Buy Panel (No heavy outdated cards - clean modern border) */}
-                <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-5 bg-white dark:bg-slate-900/50 space-y-5">
-                  {/* Quantity Selector & Wishlist */}
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-slate-455 dark:text-slate-400 uppercase tracking-wider block">{language === 'hi' ? 'मात्रा' : 'Quantity'}</span>
-                      <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden h-9 w-28">
-                        <button
-                          type="button"
-                          disabled={quantity <= 1}
-                          onClick={() => setQuantity(prev => prev - 1)}
-                          className="flex-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-all h-full cursor-pointer disabled:opacity-50 bg-transparent border-none"
-                        >
-                          -
-                        </button>
-                        <span className="px-2 font-extrabold text-sm text-slate-800 dark:text-slate-200 w-8 text-center">
-                          {quantity}
-                        </span>
-                        <button
-                          type="button"
-                          disabled={quantity >= (product.stock || 10)}
-                          onClick={() => setQuantity(prev => prev + 1)}
-                          className="flex-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-all h-full cursor-pointer disabled:opacity-50 bg-transparent border-none"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={handleWishlistToggle}
-                      disabled={isPreviewMode}
-                      className={`mt-4 px-3 py-2 rounded-xl border transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold h-9 disabled:cursor-not-allowed disabled:opacity-70 ${
-                        isProductInWishlist
-                          ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900 text-rose-500'
-                          : 'border-slate-200 dark:border-slate-750 hover:border-rose-450 dark:hover:border-rose-600 text-slate-455 hover:text-rose-500 bg-transparent'
-                      }`}
-                    >
-                      <Heart className={`h-4 w-4 ${isProductInWishlist ? 'fill-current text-rose-500' : ''}`} />
-                      <span>{isProductInWishlist ? (language === 'hi' ? 'विशलिस्ट में है' : 'Wishlisted') : (language === 'hi' ? 'विशलिस्ट' : 'Wishlist')}</span>
-                    </button>
-                  </div>
-
-                  {/* Desktop Action Buttons */}
-                  <div className="space-y-2.5 hidden md:block">
-                    {product.stock > 0 ? (
-                      <>
-                        <button
-                          onClick={handleAddToCart}
-                          disabled={isPreviewMode}
-                          className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-98 text-white font-black py-3 rounded-xl transition-all duration-200 shadow-sm shadow-emerald-500/10 flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-sm border-none"
-                        >
-                          <ShoppingCart className="h-4.5 w-4.5" />
-                          {language === 'hi' ? 'कार्ट में जोड़ें' : 'Add To Cart'}
-                        </button>
-                        <button
-                          onClick={handleBuyNow}
-                          disabled={isPreviewMode}
-                          className="w-full bg-amber-500 hover:bg-amber-600 active:scale-98 text-white font-black py-3 rounded-xl transition-all duration-200 shadow-sm shadow-amber-500/10 flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-sm border-none"
-                        >
-                          {language === 'hi' ? 'अभी खरीदें' : 'Buy Now'}
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        onClick={handleOpenRequestBuyModal}
-                        disabled={isPreviewMode}
-                        className="w-full bg-rose-500 hover:bg-rose-600 active:scale-98 text-white font-black py-3 rounded-xl transition-all duration-200 shadow-sm shadow-rose-500/10 flex items-center justify-center gap-2 cursor-pointer text-sm border-none"
-                      >
-                        {language === 'hi' ? 'खरीदने का अनुरोध' : 'Request To Buy'}
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
-
-                  {/* Pincode check */}
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                      <MapPin className="h-4 w-4 text-slate-455" />
-                      <span>{language === 'hi' ? 'वितरण पता' : 'Delivery Address'}</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        maxLength="6"
-                        placeholder={language === 'hi' ? "6-अंकीय पिनकोड दर्ज करें" : "Enter 6-digit Pincode"}
-                        value={pincode}
-                        onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
-                        className="flex-1 px-3 py-2 text-xs bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4A75F] text-slate-880 dark:text-slate-100"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (pincode.length === 6) {
-                            setPincodeStatus('available');
-                          } else {
-                            setPincodeStatus('invalid');
-                          }
-                        }}
-                        className="px-4 py-2 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl text-xs font-bold hover:opacity-90 transition-all cursor-pointer border-none"
-                      >
-                        {language === 'hi' ? 'जांचें' : 'Check'}
-                      </button>
-                    </div>
-                    {pincodeStatus && (
-                      <p className={`text-[10px] font-bold ${pincodeStatus === 'available' ? 'text-[#D4A75F]' : 'text-rose-500'}`}>
-                        {pincodeStatus === 'available'
-                          ? (language === 'hi' ? 'एक्सप्रेस अगले दिन डिलीवरी के लिए उपलब्ध' : 'Available for express next-day delivery')
-                          : (language === 'hi' ? 'कृपया एक वैध 6-अंकीय पिनकोड दर्ज करें' : 'Please enter a valid 6-digit pincode')
-                        }
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="border-t border-slate-100 dark:border-slate-800/80 my-3" />
-
-                  {/* Seller Info */}
-                  <div className="space-y-1 text-xs">
-                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">{translateText('Seller Information')}</span>
-                    <p className="font-bold text-slate-880 dark:text-slate-200">{product.seller || translateText('SSJewellery Retail Partner')}</p>
-                    <p className="text-[10px] text-slate-455 dark:text-slate-400">{translateText('4.8★ Seller Rating • 99% positive feedback')}</p>
+              {/* Bank Offers / EMI / SuperCoins - Styled with clean open dividers, NO cards */}
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs px-2">
+                <div className="py-3 flex items-start gap-2.5">
+                  <Zap className="h-4.5 w-4.5 text-amber-500 fill-amber-500 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('SuperCoin Benefits')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
+                      {language === 'hi' ? (
+                        <>इस ऑर्डर पर <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> सुपरकॉइन कमाएं</>
+                      ) : (
+                        <>Earn <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> SuperCoins on this order</>
+                      )}
+                    </p>
                   </div>
                 </div>
-
-                {/* Bank Offers / EMI / SuperCoins - Styled with clean open dividers, NO cards */}
-                <div className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs px-2">
-                  <div className="py-3 flex items-start gap-2.5">
-                    <Zap className="h-4.5 w-4.5 text-amber-500 fill-amber-500 mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('SuperCoin Benefits')}</p>
-                      <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                        {language === 'hi' ? (
-                          <>इस ऑर्डर पर <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> सुपरकॉइन कमाएं</>
-                        ) : (
-                          <>Earn <span className="font-bold text-[#D4A75F]">{Math.floor(discountedPrice * 0.01)}</span> SuperCoins on this order</>
-                        )}
-                      </p>
-                    </div>
+                <div className="py-3 flex items-start gap-2.5">
+                  <Calendar className="h-4.5 w-4.5 text-slate-400 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('No Cost EMI')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
+                      {language === 'hi' ? (
+                        <>₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/माह से शुरू होने वाले ब्याज मुक्त विकल्प</>
+                      ) : (
+                        <>Interest-free options starting from ₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/month</>
+                      )}
+                    </p>
                   </div>
-                  <div className="py-3 flex items-start gap-2.5">
-                    <Calendar className="h-4.5 w-4.5 text-slate-400 mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('No Cost EMI')}</p>
-                      <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                        {language === 'hi' ? (
-                          <>₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/माह से शुरू होने वाले ब्याज मुक्त विकल्प</>
-                        ) : (
-                          <>Interest-free options starting from ₹{Math.floor(discountedPrice / 12).toLocaleString('en-IN')}/month</>
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="py-3 flex items-start gap-2.5">
-                    <Tag className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('Bank Offer')}</p>
-                      <p className="text-slate-500 dark:text-slate-400 mt-0.5">{translateText('10% Instant Discount on HDFC Bank Cards')}</p>
-                    </div>
+                </div>
+                <div className="py-3 flex items-start gap-2.5">
+                  <Tag className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-bold text-slate-880 dark:text-slate-200">{translateText('Bank Offer')}</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">{translateText('10% Instant Discount on HDFC Bank Cards')}</p>
                   </div>
                 </div>
               </div>

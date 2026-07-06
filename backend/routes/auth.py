@@ -838,18 +838,26 @@ def add_user_notification(user_id, title, message):
         uid = int(user_id)
         user = UserModel.query.get(uid)
         if user:
-            notification = {
-                "id": str(uuid.uuid4()),
-                "title": title,
-                "message": message,
-                "read": False,
-                "created_at": format_iso_datetime(get_ist_time())
-            }
-            # SQLAlchemy mutable detection
             current_notifications = list(user.notifications or [])
-            current_notifications.append(notification)
-            user.notifications = current_notifications
-            db.session.commit()
+            
+            # Prevent duplicate unread notifications with the same title and message
+            duplicate = False
+            for n in current_notifications:
+                if n.get("title") == title and n.get("message") == message and not n.get("read", False):
+                    duplicate = True
+                    break
+            
+            if not duplicate:
+                notification = {
+                    "id": str(uuid.uuid4()),
+                    "title": title,
+                    "message": message,
+                    "read": False,
+                    "created_at": format_iso_datetime(get_ist_time())
+                }
+                current_notifications.append(notification)
+                user.notifications = current_notifications
+                db.session.commit()
     except Exception as e:
         print(f"Error adding notification: {e}")
 

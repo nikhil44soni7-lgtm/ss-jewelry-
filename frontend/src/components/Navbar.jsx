@@ -183,6 +183,13 @@ export const Navbar = () => {
     ? displayedNotifications.filter(n => n.status === 'unread').length
     : displayedNotifications.filter(n => !n.read).length;
 
+  // Automatically mark all notifications as read when the user opens the dropdown
+  useEffect(() => {
+    if (notificationsOpen && unreadCount > 0) {
+      handleMarkAllAsRead();
+    }
+  }, [notificationsOpen, unreadCount]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchVal.trim()) {

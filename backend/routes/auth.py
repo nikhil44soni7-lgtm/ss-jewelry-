@@ -857,6 +857,8 @@ def add_user_notification(user_id, title, message):
                 }
                 current_notifications.append(notification)
                 user.notifications = current_notifications
+                from sqlalchemy.orm.attributes import flag_modified
+                flag_modified(user, "notifications")
                 db.session.commit()
     except Exception as e:
         print(f"Error adding notification: {e}")
@@ -1151,6 +1153,8 @@ def read_notification(current_user, notification_id):
             n["read"] = True
             
     user_obj.notifications = notifications
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(user_obj, "notifications")
     db.session.commit()
     return jsonify({"message": "Notification read"}), 200
 
@@ -1166,6 +1170,8 @@ def read_all_notifications(current_user):
         n["read"] = True
             
     user_obj.notifications = notifications
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(user_obj, "notifications")
     db.session.commit()
     return jsonify({"message": "All notifications marked as read"}), 200
 
@@ -1180,6 +1186,8 @@ def clear_read_notifications(current_user):
     unread_notifications = [n for n in notifications if not n.get("read", False)]
             
     user_obj.notifications = unread_notifications
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(user_obj, "notifications")
     db.session.commit()
     return jsonify({"message": "Read notifications cleared"}), 200
 

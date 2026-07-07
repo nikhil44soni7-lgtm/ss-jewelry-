@@ -1785,7 +1785,7 @@ export const Home = () => {
 
       {/* Premium Video Showcase Section */}
       <div 
-        className="relative h-[320px] sm:h-[480px] md:h-[540px] overflow-hidden bg-black -mt-12 -mb-16"
+        className="relative h-[320px] sm:h-[480px] md:h-[540px] overflow-hidden bg-black -mt-20 -mb-16"
         style={{
           width: '100vw',
           position: 'relative',
@@ -1803,7 +1803,7 @@ export const Home = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-70"
         >
-          <source src="/luxury-loop.mp4" type="video/mp4" />
+          <source src="/jewelry-showcase.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 

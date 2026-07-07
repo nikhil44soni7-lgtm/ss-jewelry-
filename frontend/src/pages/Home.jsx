@@ -1784,7 +1784,17 @@ export const Home = () => {
       </div>
 
       {/* Premium Video Showcase Section */}
-      <div className="relative w-full h-[320px] sm:h-[480px] overflow-hidden bg-black">
+      <div 
+        className="relative h-[320px] sm:h-[480px] md:h-[540px] overflow-hidden bg-black mt-0 mb-0"
+        style={{
+          width: '100vw',
+          position: 'relative',
+          left: '50%',
+          right: '50%',
+          marginLeft: '-50vw',
+          marginRight: '-50vw'
+        }}
+      >
         {/* Background Video */}
         <video
           autoPlay

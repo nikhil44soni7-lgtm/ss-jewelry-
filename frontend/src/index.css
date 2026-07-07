@@ -29,11 +29,13 @@ html, body {
   background-color: #FFFFFF !important;
   color: #1F1F1F !important;
   font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
 html.dark, html.dark body {
   background-color: #111827 !important;
   color: #ffffff !important;
+  overflow-x: hidden;
 }
 
 /* Light mode overrides for premium pure white and section light gray */

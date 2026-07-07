@@ -296,17 +296,7 @@ const SearchSpotlight = ({ products, language }) => {
 
         </div>
       </div>
-      
-      {/* Floating Inquiry Button (Bottom Left) */}
-      <div className="absolute bottom-4 left-4 z-30">
-        <Link
-          to="/custom-order"
-          className="group inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5722] hover:bg-[#E64A19] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all duration-300 hover:scale-105"
-        >
-          {language === 'hi' ? 'कस्टम प्रोजेक्ट शुरू करें' : 'Start a custom project'}
-          <span className="inline-flex w-5 h-5 bg-white text-[#FF5722] rounded-full items-center justify-center font-bold transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[10px]">↗</span>
-        </Link>
-      </div>
+
     </div>
   );
 };

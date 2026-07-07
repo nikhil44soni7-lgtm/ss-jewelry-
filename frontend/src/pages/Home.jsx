@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo, Suspense, lazy } from 'react';
 import { useLocation, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { ChevronLeft, ChevronRight, ShoppingBag, Eye, Star, Sparkles, X, Search, Users, Calendar, Clock, DollarSign, MapPin, Check, Lock, RefreshCw, Plus, Trash2, Edit3, Upload } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag, Eye, Star, Sparkles, X, Search, Users, Calendar, Clock, DollarSign, MapPin, Check, Lock, RefreshCw, Plus, Trash2, Edit3, Upload, ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ProductCard, ProductCardSkeleton } from '../components/ProductCard';
 const ProductDetails = lazy(() => import('./ProductDetails').then(m => ({ default: m.ProductDetails })));
@@ -113,6 +113,150 @@ const MobileCategorySkeleton = () => (
     </div>
   </div>
 );
+
+const SearchSpotlight = ({ products, language }) => {
+  if (!products || products.length === 0) return null;
+
+  const mainProduct = products[0];
+  const leftProduct = products[1] || null;
+  const rightProduct = products[2] || null;
+
+  // Helper to extract first image
+  const getProductImage = (prod) => {
+    if (!prod) return null;
+    if (prod.product_images && prod.product_images.length > 0) {
+      const sorted = [...prod.product_images].sort((a, b) => a.image_order - b.image_order);
+      return sorted[0].image_url;
+    }
+    if (prod.images && prod.images.length > 0) {
+      return prod.images[0];
+    }
+    return '/logo.svg'; // fallback
+  };
+
+  const mainImg = getProductImage(mainProduct);
+  const leftImg = getProductImage(leftProduct);
+  const rightImg = getProductImage(rightProduct);
+
+  return (
+    <div className="relative w-full overflow-hidden py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#FDF9F3] to-[#F5ECE1] dark:from-[#150F0D] dark:to-[#221612] border-b border-[#D4A75F]/20">
+      {/* Background Decorative Rings/Ornaments */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none">
+        <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] rounded-full border border-[#D4A75F] -translate-y-1/2" />
+        <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] rounded-full border border-[#D4A75F] -translate-y-1/2" />
+      </div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-left">
+        {/* Left Side Column - Product Info */}
+        <div className="lg:col-span-4 order-2 lg:order-1 text-center lg:text-left flex flex-col justify-center">
+          <span className="inline-flex self-center lg:self-start items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-bold bg-[#D4A75F]/15 text-[#D4A75F] border border-[#D4A75F]/35 uppercase tracking-widest mb-4">
+            <Sparkles className="h-3 w-3 animate-pulse" />
+            {language === 'hi' ? 'शीर्ष मिलान' : 'Top Search Match'}
+          </span>
+          
+          <h2 className="font-serif font-bold text-slate-900 dark:text-white text-3xl md:text-4xl lg:text-5xl leading-tight mb-4">
+            {mainProduct.name}
+          </h2>
+          
+          <p className="text-slate-600 dark:text-slate-350 text-sm md:text-base leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+            {mainProduct.description || mainProduct.desc || (language === 'hi' ? 'हमारे उत्तम संग्रह से एक उत्कृष्ट हस्तनिर्मित आभूषण।' : 'An exquisite handcrafted piece from our luxury collection.')}
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+            <Link
+              to={`/product/${mainProduct._id || mainProduct.id}`}
+              className="group inline-flex items-center gap-2 px-8 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              {language === 'hi' ? 'विवरण देखें' : 'Explore The Craft'}
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            
+            <span className="font-serif text-xl md:text-2xl font-bold text-[#D4A75F]">
+              ₹{Number(mainProduct.price).toLocaleString('en-IN')}
+            </span>
+          </div>
+        </div>
+
+        {/* Center/Right Column - 3D Jewelry Stands display */}
+        <div className="lg:col-span-8 order-1 lg:order-2 relative h-[300px] md:h-[400px] flex items-center justify-center">
+          
+          {/* 1. Left Background Stand (Blurred) */}
+          {leftProduct && (
+            <div className="absolute left-[5%] md:left-[15%] bottom-[10%] scale-[0.7] opacity-40 blur-[1.5px] transition-all hover:opacity-75 hover:blur-0 duration-500 z-10 hidden sm:block">
+              <div className="relative flex flex-col items-center">
+                {/* Mannequin / Display shape */}
+                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#F2E6D6] to-[#D9C4A9] dark:from-[#3A2D27] dark:to-[#221815] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-white/20">
+                  <img src={leftImg} alt={leftProduct.name} className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
+                </div>
+                {/* Gold collar collar base */}
+                <div className="w-[100px] h-[8px] bg-gradient-to-r from-[#BF934B] via-[#D4A75F] to-[#BF934B] rounded-full shadow-inner" />
+                {/* Marble cylinder pedestal */}
+                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#EAEAEA] to-[#CCCCCC] dark:from-[#2C2C2C] dark:to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
+              </div>
+            </div>
+          )}
+
+          {/* 2. Main Center Stand (Highlighted) */}
+          <div className="relative z-20 scale-[0.95] md:scale-110 transform transition-transform duration-500 hover:scale-[1.03] md:hover:scale-[1.12]">
+            <div className="relative flex flex-col items-center">
+              
+              {/* Mannequin Bust */}
+              <div className="w-[180px] h-[230px] bg-gradient-to-b from-[#FAF5EF] to-[#EAE0D3] dark:from-[#3D302A] dark:to-[#261B17] rounded-t-[80px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex items-center justify-center p-4 border border-white/30 relative">
+                <motion.img 
+                  src={mainImg} 
+                  alt={mainProduct.name} 
+                  className="w-[130px] h-[130px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)]"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+              
+              {/* Gold neck joint */}
+              <div className="w-[130px] h-[10px] bg-gradient-to-r from-[#B38F4B] via-[#D4A75F] to-[#B38F4B] rounded-full shadow-md" />
+              
+              {/* Marble Pillar Pedestal */}
+              <div className="w-[150px] h-[40px] bg-gradient-to-b from-[#F2F2F2] to-[#E0E0E0] dark:from-[#333333] dark:to-[#222222] rounded-md shadow-lg border-t border-white/20 relative overflow-hidden">
+                {/* Marble texture gloss */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent" />
+              </div>
+              
+              {/* Gold Base Ring */}
+              <div className="w-[160px] h-[6px] bg-[#D4A75F] rounded-full shadow-md" />
+            </div>
+          </div>
+
+          {/* 3. Right Background Stand (Blurred) */}
+          {rightProduct && (
+            <div className="absolute right-[5%] md:right-[15%] bottom-[10%] scale-[0.7] opacity-40 blur-[1.5px] transition-all hover:opacity-75 hover:blur-0 duration-500 z-10 hidden sm:block">
+              <div className="relative flex flex-col items-center">
+                {/* Mannequin / Display shape */}
+                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#F2E6D6] to-[#D9C4A9] dark:from-[#3A2D27] dark:to-[#221815] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-white/20">
+                  <img src={rightImg} alt={rightProduct.name} className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
+                </div>
+                {/* Gold collar base */}
+                <div className="w-[100px] h-[8px] bg-gradient-to-r from-[#BF934B] via-[#D4A75F] to-[#BF934B] rounded-full shadow-inner" />
+                {/* Marble pedestal */}
+                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#EAEAEA] to-[#CCCCCC] dark:from-[#2C2C2C] dark:to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+      
+      {/* Floating Inquiry Button (Bottom Left) */}
+      <div className="absolute bottom-4 left-4 z-30">
+        <Link
+          to="/custom-order"
+          className="group inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF5722] hover:bg-[#E64A19] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+        >
+          {language === 'hi' ? 'कस्टम प्रोजेक्ट शुरू करें' : 'Start a custom project'}
+          <span className="inline-flex w-5 h-5 bg-white text-[#FF5722] rounded-full items-center justify-center font-bold transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[10px]">↗</span>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 const BannerSlider = React.memo(({ 
   slides, 
@@ -1353,7 +1497,7 @@ export const Home = () => {
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-16">
 
-      {!activeSearch && (
+      {!activeSearch ? (
         <BannerSlider
           slides={slides}
           activeSlide={activeSlide}
@@ -1366,6 +1510,8 @@ export const Home = () => {
           bannersLoading={bannersLoading}
           onCategoryClick={handleCategoryClick}
         />
+      ) : (
+        <SearchSpotlight products={products} language={language} />
       )}
 
       <CategoryGrid 

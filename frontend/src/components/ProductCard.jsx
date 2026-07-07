@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -9,16 +9,16 @@ import { LuxuryImage } from './LuxuryImage';
 import { formatPrice } from '../utils/priceFormatter';
 import { translateCategory } from '../utils/categoryTranslations';
 
-export const ProductCard = ({ product, onAdminAction }) => {
+export const ProductCard = React.memo(({ product, onAdminAction }) => {
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist, triggerAuthModal } = useContext(CartContext);
   const { user, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
   const { t, localize, language } = useTranslation();
 
-  const isProductInWishlist = isInWishlist(product._id);
-  const discountedPrice = Math.round(product.price - (product.price * (product.discount / 100)));
+  const isProductInWishlist = useMemo(() => isInWishlist(product._id), [isInWishlist, product._id]);
+  const discountedPrice = useMemo(() => Math.round(product.price - (product.price * (product.discount / 100))), [product.price, product.discount]);
 
-  const handleWishlistToggle = (e) => {
+  const handleWishlistToggle = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
@@ -30,14 +30,14 @@ export const ProductCard = ({ product, onAdminAction }) => {
     } else {
       addToWishlist(product);
     }
-  };
+  }, [user, triggerAuthModal, t, isProductInWishlist, product, removeFromWishlist, addToWishlist]);
 
-  const handleCardClick = (e) => {
+  const handleCardClick = useCallback((e) => {
     if (e.target.closest('button') || e.target.closest('a')) {
       return;
     }
     navigate(`/product/${product._id}`);
-  };
+  }, [navigate, product._id]);
 
   return (
     <div 
@@ -123,11 +123,11 @@ export const ProductCard = ({ product, onAdminAction }) => {
 
         {/* Price Row */}
         <div className="flex items-baseline space-x-1.5 mb-1 flex-wrap">
-          <span className="text-sm sm:text-xl font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB]">
+          <span className="text-sm sm:text-xl font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB] price-amount">
             ₹{formatPrice(discountedPrice)}
           </span>
           {product.discount > 0 && (
-            <span className="text-[10px] sm:text-sm text-slate-400 line-through font-medium">
+            <span className="text-[10px] sm:text-sm text-slate-400 line-through font-medium price-amount">
               ₹{formatPrice(product.price)}
             </span>
           )}
@@ -155,7 +155,7 @@ export const ProductCard = ({ product, onAdminAction }) => {
       </div>
     </div>
   );
-};
+});
 
 // Premium Shimmer Skeleton Loader for Product Cards
 export const ProductCardSkeleton = () => {

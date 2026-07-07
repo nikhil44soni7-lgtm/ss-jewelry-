@@ -10,6 +10,7 @@ import { AuthContext, API_BASE_URL } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { formatPrice } from '../utils/priceFormatter';
+import { LuxuryImage } from '../components/LuxuryImage';
 
 const formatTimestamp = (dateInput) => {
   if (!dateInput) return '';
@@ -492,7 +493,7 @@ export const MyOrders = () => {
                             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                               <div className="text-right sm:mr-4">
                                 <p className="text-[9px] text-slate-400 uppercase tracking-wider font-bold">{t('my_orders.subtotal')}</p>
-                                 <p className="text-sm font-extrabold text-slate-855 dark:text-white">₹{formatPrice(order.total_amount)}</p>
+                                 <p className="text-sm font-extrabold text-slate-855 dark:text-white price-amount">₹{formatPrice(order.total_amount)}</p>
                               </div>
                               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${getStatusStyle(order.status)}`}>
                                 {t(`my_orders.status.${order.status}`)}
@@ -506,7 +507,7 @@ export const MyOrders = () => {
                               <div className="flex -space-x-3 overflow-hidden py-1">
                                 {order.items.slice(0, 3).map((item, idx) => (
                                   <div key={idx} className="h-9 w-9 rounded-lg overflow-hidden border border-white dark:border-slate-900 bg-slate-50">
-                                    <img src={item.image} alt="" className="h-full w-full object-cover" />
+                                    <LuxuryImage src={item.image} alt="" className="h-full w-full object-cover" />
                                   </div>
                                 ))}
                                 {order.items.length > 3 && (
@@ -603,13 +604,15 @@ export const MyOrders = () => {
                                 {order.items.map((item, idx) => (
                                   <div key={idx} className="flex items-center justify-between p-2 border border-slate-100 dark:border-slate-855 rounded-xl bg-white dark:bg-slate-900 text-xs">
                                     <div className="flex items-center space-x-3 min-w-0">
-                                      <img src={item.image} alt="" className="h-8 w-8 rounded object-cover flex-shrink-0" />
+                                      <div className="h-8 w-8 rounded overflow-hidden flex-shrink-0 bg-slate-50 dark:bg-slate-950">
+                                        <LuxuryImage src={item.image} alt="" className="h-full w-full object-cover" />
+                                      </div>
                                       <div className="min-w-0">
                                         <p className="font-bold text-slate-800 dark:text-slate-200 truncate">{item.name}</p>
-                                        <p className="text-[10px] text-slate-400">{t('my_orders.qty')}: {item.quantity} • {t('my_orders.rate')}: ₹{formatPrice(item.price)}</p>
+                                        <p className="text-[10px] text-slate-400">{t('my_orders.qty')}: {item.quantity} • {t('my_orders.rate')}: <span className="price-amount">₹{formatPrice(item.price)}</span></p>
                                       </div>
                                     </div>
-                                    <span className="font-extrabold text-slate-900 dark:text-white">₹{formatPrice(item.price * item.quantity)}</span>
+                                    <span className="font-extrabold text-slate-900 dark:text-white price-amount">₹{formatPrice(item.price * item.quantity)}</span>
                                   </div>
                                 ))}
                               </div>
@@ -864,21 +867,23 @@ export const MyOrders = () => {
                       const finalPrice = item.price - (item.price * ((item.discount || 0) / 100));
                       return (
                         <div key={item._id || item.product_id} className="flex bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4 rounded-2xl gap-4 hover:shadow-sm transition-shadow">
-                          <img 
-                            src={item.images?.[0] || item.image || 'https://via.placeholder.com/150'} 
-                            alt={item.name} 
-                            className="h-20 w-20 rounded-xl object-cover bg-slate-50 flex-shrink-0"
-                          />
+                          <div className="h-20 w-20 rounded-xl overflow-hidden bg-slate-50 flex-shrink-0">
+                            <LuxuryImage 
+                              src={item.images?.[0] || item.image || 'https://via.placeholder.com/150'} 
+                              alt={item.name} 
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
                           <div className="flex-grow min-w-0 flex flex-col justify-between">
                             <div>
                               <h4 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate hover:text-[#D4A75F]">
                                 <Link to={`/product/${item._id || item.product_id}`}>{item.name}</Link>
                               </h4>
                               <div className="flex items-center space-x-1.5 mt-1">
-                                <span className="text-xs font-black text-slate-900 dark:text-white">₹{formatPrice(finalPrice)}</span>
+                                <span className="text-xs font-black text-slate-900 dark:text-white price-amount">₹{formatPrice(finalPrice)}</span>
                                 {item.discount > 0 && (
                                   <>
-                                    <span className="text-[10px] text-slate-400 line-through">₹{formatPrice(item.price)}</span>
+                                    <span className="text-[10px] text-slate-400 line-through price-amount">₹{formatPrice(item.price)}</span>
                                     <span className="text-[9px] font-bold text-[#D4A75F] bg-[#D4A75F]/10/50 dark:bg-emerald-950/40 px-1 rounded">{item.discount}% {t('home.off')}</span>
                                   </>
                                 )}
@@ -926,18 +931,20 @@ export const MyOrders = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {savedForLater.map((item) => (
                       <div key={item.product_id} className="flex bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4 rounded-2xl gap-4 hover:shadow-sm transition-shadow">
-                        <img 
-                          src={item.image || 'https://via.placeholder.com/150'} 
-                          alt={item.name} 
-                          className="h-20 w-20 rounded-xl object-cover bg-slate-50 flex-shrink-0"
-                        />
+                        <div className="h-20 w-20 rounded-xl overflow-hidden bg-slate-50 flex-shrink-0">
+                          <LuxuryImage 
+                            src={item.image || 'https://via.placeholder.com/150'} 
+                            alt={item.name} 
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
                         <div className="flex-grow min-w-0 flex flex-col justify-between">
                           <div>
                             <h4 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate hover:text-[#D4A75F]">
                               <Link to={`/product/${item.product_id}`}>{item.name}</Link>
                             </h4>
                             <div className="flex items-center space-x-1.5 mt-1">
-                              <span className="text-xs font-black text-slate-900 dark:text-white">₹{formatPrice(item.price)}</span>
+                              <span className="text-xs font-black text-slate-900 dark:text-white price-amount">₹{formatPrice(item.price)}</span>
                             </div>
                           </div>
 

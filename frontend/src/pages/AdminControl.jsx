@@ -1171,7 +1171,7 @@ export const AdminControl = () => {
                   </div>
                   <div className="bg-slate-55 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850">
                     <span className="text-[10px] text-slate-400 font-bold block mb-1">Total Spent</span>
-                    <span className="stats-value-highlight flex items-center gap-1.5">
+                    <span className="stats-value-highlight flex items-center gap-1.5 price-amount">
                       <DollarSign className="h-3.5 w-3.5" />
                       ₹{formatPrice(selectedUserDetails.total_spent || 0)}
                     </span>
@@ -1256,7 +1256,7 @@ export const AdminControl = () => {
                         <div key={order.id} className="border border-slate-100 dark:border-slate-800 rounded-2xl p-3 bg-slate-50/50 dark:bg-slate-900/50 space-y-2 text-xs">
                           <div className="flex justify-between items-center font-bold">
                             <span className="font-mono text-[10px] text-slate-450">{order.order_id}</span>
-                            <span className="text-emerald-500 font-black">₹{formatPrice(order.total_amount)}</span>
+                            <span className="text-emerald-500 font-black price-amount">₹{formatPrice(order.total_amount)}</span>
                           </div>
                           <div className="flex justify-between items-center text-[10px] text-slate-400">
                             <span>{order.created_at ? formatTimestamp(order.created_at) : ''}</span>
@@ -1930,7 +1930,7 @@ export const AdminControl = () => {
               <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Total Sales</span>
-                  <span className="text-2xl font-black block mt-1">₹{formatPrice(stats.total_sales ?? 0)}</span>
+                  <span className="text-2xl font-black block mt-1 price-amount">₹{formatPrice(stats.total_sales ?? 0)}</span>
                 </div>
                 <div className="bg-emerald-500/10 p-3 rounded-xl text-emerald-500">
                   <BarChart3 className="h-6 w-6" />
@@ -2089,7 +2089,7 @@ export const AdminControl = () => {
                                   <div key={c.category} className="space-y-1">
                                     <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400">
                                       <span>{c.category} ({c.count} items)</span>
-                                      <span className="font-extrabold text-slate-800 dark:text-slate-100">₹{formatPrice(c.value)}</span>
+                                      <span className="font-extrabold text-slate-800 dark:text-slate-100 price-amount">₹{formatPrice(c.value)}</span>
                                     </div>
                                     <div className="w-full h-3 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden">
                                       <div 
@@ -2243,7 +2243,7 @@ export const AdminControl = () => {
                             <div key={card.label} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                               <div>
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{card.label}</span>
-                                <span className={`text-xl font-black mt-1 block ${card.color}`}>{card.val}</span>
+                                <span className={`text-xl font-black mt-1 block ${card.color} ${card.label === "Total Revenue" ? "price-amount" : ""}`}>{card.val}</span>
                               </div>
                               <div className={`${card.bgColor} p-2.5 rounded-xl ${card.color}`}>
                                 <IconComponent className="h-5 w-5" />
@@ -2456,7 +2456,7 @@ export const AdminControl = () => {
                           <div key={p.id} className="p-3 border border-slate-100 dark:border-slate-850 hover:border-slate-200 dark:hover:border-slate-750 bg-slate-50/50 dark:bg-slate-950/20 rounded-xl flex items-center justify-between transition-all">
                             <div className="max-w-[70%]">
                               <span className="text-xs font-bold text-slate-800 dark:text-slate-250 block truncate">{p.name}</span>
-                              <span className="text-[10px] font-bold text-slate-400 block mt-0.5">{p.category} • ₹{formatPrice(p.price)}</span>
+                              <span className="text-[10px] font-bold text-slate-400 block mt-0.5">{p.category} • <span className="price-amount">₹{formatPrice(p.price)}</span></span>
                             </div>
                             <div className="text-right">
                               <span className="px-2 py-1 text-[11px] font-black bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-450 rounded-lg animate-pulse">
@@ -2507,7 +2507,7 @@ export const AdminControl = () => {
                                   <span className="text-[10px] font-bold text-slate-400">by User ID: {o.user_id}</span>
                                 </div>
                                 <span className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 block mt-1">
-                                  Refund Amount: <span className="text-emerald-500">₹{formatPrice(o.total_price)}</span>
+                                  Refund Amount: <span className="text-emerald-500 price-amount">₹{formatPrice(o.total_price)}</span>
                                 </span>
                               </div>
                               <span className="text-[10px] font-black text-rose-500 uppercase bg-rose-500/10 px-2 py-0.5 rounded-full">
@@ -2620,13 +2620,13 @@ export const AdminControl = () => {
                                 <div className="flex flex-wrap items-center gap-1">
                                   {p.discount > 0 ? (
                                     <>
-                                      <span className="text-slate-455 dark:text-slate-505 line-through">₹{formatPrice(p.price)}</span>
+                                      <span className="text-slate-455 dark:text-slate-505 line-through price-amount">₹{formatPrice(p.price)}</span>
                                       <span className="text-slate-400">↓</span>
-                                      <span className="text-slate-900 dark:text-slate-100 font-extrabold text-xs sm:text-sm">₹{formatPrice(discountedPrice)}</span>
+                                      <span className="text-slate-900 dark:text-slate-100 font-extrabold text-xs sm:text-sm price-amount">₹{formatPrice(discountedPrice)}</span>
                                       <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-455 rounded">{p.discount}% OFF</span>
                                     </>
                                   ) : (
-                                    <span className="text-slate-900 dark:text-slate-105 font-extrabold text-xs sm:text-sm">₹{formatPrice(p.price)}</span>
+                                    <span className="text-slate-900 dark:text-slate-105 font-extrabold text-xs sm:text-sm price-amount">₹{formatPrice(p.price)}</span>
                                   )}
                                 </div>
                               </div>
@@ -2729,7 +2729,7 @@ export const AdminControl = () => {
                       <tr key={o._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/20">
                         <td className="py-3.5 font-mono font-bold text-slate-700 dark:text-slate-300">{o.order_id}</td>
                         <td className="py-3.5 text-slate-500 admin-datetime-text">{formatTimestamp(o.created_at)}</td>
-                        <td className="py-3.5 font-bold text-slate-800 dark:text-slate-100">₹{formatPrice(o.total_amount)}</td>
+                        <td className="py-3.5 font-bold text-slate-800 dark:text-slate-100 price-amount">₹{formatPrice(o.total_amount)}</td>
                         <td className="py-3.5 max-w-[200px] truncate text-slate-550" title={o.shipping_address?.address}>
                           {o.shipping_address?.name} - {o.shipping_address?.address}, {o.shipping_address?.city}
                         </td>
@@ -3830,10 +3830,10 @@ export const AdminControl = () => {
                       </div>
                       <div>
                         <span className="font-semibold text-slate-855 dark:text-slate-100 block max-w-[250px] truncate">{item.name}</span>
-                        <span className="text-[10px] text-slate-400">Qty: {item.quantity} × ₹{formatPrice(item.price)}</span>
+                        <span className="text-[10px] text-slate-400">Qty: {item.quantity} × <span className="price-amount">₹{formatPrice(item.price)}</span></span>
                       </div>
                     </div>
-                    <span className="font-bold text-slate-855 dark:text-slate-100">₹{formatPrice(item.price * item.quantity)}</span>
+                    <span className="font-bold text-slate-855 dark:text-slate-100 price-amount">₹{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
@@ -3922,7 +3922,7 @@ export const AdminControl = () => {
             <div className="mt-6 pt-4 border-t border-slate-150 dark:border-slate-855 flex justify-between items-center">
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Grand Total</span>
-                <span className="text-2xl font-black text-slate-900 dark:text-slate-50">₹{formatPrice(selectedOrder.total_amount)}</span>
+                <span className="text-2xl font-black text-slate-900 dark:text-slate-50 price-amount">₹{formatPrice(selectedOrder.total_amount)}</span>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}

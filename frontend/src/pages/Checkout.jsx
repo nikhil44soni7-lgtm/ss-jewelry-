@@ -1397,7 +1397,7 @@ export const Checkout = () => {
                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 line-clamp-1 flex-grow">
                       {item.name} <span className="text-slate-455">x{item.quantity}</span>
                     </span>
-                    <span className="text-xs font-bold text-slate-900 dark:text-slate-50 flex-shrink-0">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-50 flex-shrink-0 price-amount">
                       ₹{formatPrice(Math.round(item.price * item.quantity))}
                     </span>
                   </div>
@@ -1406,19 +1406,19 @@ export const Checkout = () => {
               <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2 text-xs">
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.subtotal')}</span>
-                  <span>₹{formatPrice(Math.round(checkoutTotal))}</span>
+                  <span className="price-amount">₹{formatPrice(Math.round(checkoutTotal))}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.gst')}</span>
-                  <span>₹{formatPrice(gstTax)}</span>
+                  <span className="price-amount">₹{formatPrice(gstTax)}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.shipping_fee')}</span>
-                  <span>{shippingFee === 0 ? t('cart_page.free') : `₹${formatPrice(shippingFee)}`}</span>
+                  <span>{shippingFee === 0 ? t('cart_page.free') : <span className="price-amount">₹{formatPrice(shippingFee)}</span>}</span>
                 </div>
                 <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-100 dark:border-slate-805">
                   <span>{t('checkout_page.total_amount')}</span>
-                  <span>₹{formatPrice(grandTotal)}</span>
+                  <span className="price-amount">₹{formatPrice(grandTotal)}</span>
                 </div>
               </div>
             </div>
@@ -1579,19 +1579,19 @@ export const Checkout = () => {
               <div className="text-xs space-y-3">
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.subtotal')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{formatPrice(Math.round(checkoutTotal))}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 price-amount">₹{formatPrice(Math.round(checkoutTotal))}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.gst')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">₹{formatPrice(gstTax)}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 price-amount">₹{formatPrice(gstTax)}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>{t('checkout_page.shipping_cost')}</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{shippingFee === 0 ? t('cart_page.free') : `₹${formatPrice(shippingFee)}`}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{shippingFee === 0 ? t('cart_page.free') : <span className="price-amount">₹{formatPrice(shippingFee)}</span>}</span>
                 </div>
                 <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-100 dark:border-slate-805">
                   <span>{t('checkout_page.total_amount')}</span>
-                  <span className="text-base text-emerald-500 font-extrabold">₹{formatPrice(grandTotal)}</span>
+                  <span className="text-base text-emerald-500 font-extrabold price-amount">₹{formatPrice(grandTotal)}</span>
                 </div>
               </div>
             </div>
@@ -1618,7 +1618,7 @@ export const Checkout = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.total_paid')}</span>
-                <span className="font-bold text-slate-850 dark:text-slate-55">₹{formatPrice(successOrder.total_amount)}</span>
+                <span className="font-bold text-slate-855 dark:text-slate-55 price-amount">₹{formatPrice(successOrder.total_amount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.est_delivery')}</span>

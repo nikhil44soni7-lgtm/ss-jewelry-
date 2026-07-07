@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Suspense, lazy } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -9,6 +9,21 @@ import {
 import { AuthContext, API_BASE_URL, SERVER_BASE_URL } from '../context/AuthContext';
 import { formatPrice } from '../utils/priceFormatter';
 import { translateCategory } from '../utils/categoryTranslations';
+
+const AnalyticsTab = lazy(() => import('../components/admin/AnalyticsTab').then(m => ({ default: m.AnalyticsTab })));
+const ProductManagementTab = lazy(() => import('../components/admin/ProductManagementTab').then(m => ({ default: m.ProductManagementTab })));
+const OrderManagementTab = lazy(() => import('../components/admin/OrderManagementTab').then(m => ({ default: m.OrderManagementTab })));
+const UserManagementTab = lazy(() => import('../components/admin/UserManagementTab').then(m => ({ default: m.UserManagementTab })));
+const SupportTicketsTab = lazy(() => import('../components/admin/SupportTicketsTab').then(m => ({ default: m.SupportTicketsTab })));
+
+const TabLoadingFallback = () => (
+  <div className="w-full min-h-[300px] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-10 h-10 border-4 border-[#D4A75F] border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-xs text-slate-400 font-medium">Loading panel...</p>
+    </div>
+  </div>
+);
 
 const formatTimestamp = (dateInput) => {
   if (!dateInput) return '';
@@ -553,299 +568,6 @@ export const AdminDashboard = () => {
             </div>
           </div>
         )}
-      </div>
-    );
-  };
-
-  const renderUsersManagement = () => {
-    const filteredUsers = users.filter(u => {
-      const query = userSearchQuery.toLowerCase();
-      return (
-        (u.name || '').toLowerCase().includes(query) ||
-        (u.email || '').toLowerCase().includes(query) ||
-        (u.mobile || '').toLowerCase().includes(query) ||
-        (u.id || u._id || '').toString().toLowerCase().includes(query)
-      );
-    });
-
-    return (
-      <div className="space-y-6">
-        {/* Search and stats count row */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-500">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-slate-800 dark:text-slate-250">Customer Management Panel</h4>
-              <p className="text-xs text-slate-400">Total Registered Users: {users.length}</p>
-            </div>
-          </div>
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or mobile..."
-              value={userSearchQuery}
-              onChange={(e) => setUserSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-850 dark:text-slate-100"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* Left Column: Users Table */}
-          <div className="xl:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm overflow-x-auto">
-            <table className="w-full text-left text-xs min-w-[700px]">
-              <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 GFM-table-header uppercase font-bold">
-                  <th className="py-3 px-2">User ID</th>
-                  <th className="py-3 px-2">Full Name</th>
-                  <th className="py-3 px-2">Email</th>
-                  <th className="py-3 px-2">Mobile</th>
-                  <th className="py-3 px-2">Address</th>
-                  <th className="py-3 px-2">Registered</th>
-                  <th className="py-3 px-2">Last Login</th>
-                  <th className="py-3 px-2 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-slate-850">
-                {filteredUsers.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="py-8 text-center text-slate-450 italic">
-                      No users found matching your search.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredUsers.map(u => (
-                    <tr 
-                      key={u.id || u._id} 
-                      onClick={() => fetchUserDetails(u.id || u._id)}
-                      className={`hover:bg-slate-50/70 dark:hover:bg-slate-850/40 cursor-pointer transition-colors ${
-                        String(selectedUserDetails?.id || selectedUserDetails?._id) === String(u.id || u._id)
-                          ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border-l-4 border-l-emerald-500'
-                          : ''
-                      }`}
-                    >
-                      <td className="py-3.5 px-2 font-mono text-[10px] text-slate-450">
-                        {(u.id || u._id || '').toString().slice(-6).toUpperCase()}
-                      </td>
-                      <td className="py-3.5 px-2 font-bold text-slate-800 dark:text-slate-100">
-                        {u.name || "N/A"}
-                      </td>
-                      <td className="py-3.5 px-2 text-slate-550 dark:text-slate-350">
-                        {u.email}
-                      </td>
-                      <td className="py-3.5 px-2 font-mono text-slate-550 dark:text-slate-350">
-                        {u.mobile || "N/A"}
-                      </td>
-                      <td className="py-3.5 px-2 text-slate-400 max-w-[120px] truncate" title={formatAddress(u.address)}>
-                        {formatAddress(u.address)}
-                      </td>
-                      <td className="py-3.5 px-2 text-slate-400 admin-datetime-text">
-                        {u.created_at ? new Date(u.created_at).toLocaleDateString() : "N/A"}
-                      </td>
-                      <td className="py-3.5 px-2 text-slate-400 admin-datetime-text">
-                        {u.last_login ? new Date(u.last_login).toLocaleDateString() : "N/A"}
-                      </td>
-                      <td className="py-3.5 px-2 text-right">
-                        <span className={`px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                          (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'active'
-                            ? 'status-badge-active'
-                            : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'inactive'
-                            ? 'bg-[#6B7280] text-[#FFFFFF] border-[#4B5563]'
-                            : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'suspended'
-                            ? 'bg-[#EF4444] text-[#FFFFFF] border-[#DC2626]'
-                            : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'pending verification'
-                            ? 'bg-[#F59E0B] text-[#FFFFFF] border-[#D97706]'
-                            : 'bg-[#B91C1C] text-[#FFFFFF] border-[#991B1B]'
-                        }`}>
-                          {u.status || (u.is_blocked ? "Blocked" : "Active")}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Right Column: User Detail Panel */}
-          <div className="xl:col-span-1 border-t xl:border-t-0 xl:border-l border-slate-100 dark:border-slate-800 pt-6 xl:pt-0 xl:pl-8">
-            {selectedUserDetails ? (
-              <div className="space-y-6">
-                {/* Header info */}
-                <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500 font-black text-lg">
-                      {selectedUserDetails.name ? selectedUserDetails.name.charAt(0).toUpperCase() : 'U'}
-                    </div>
-                    <div>
-                      <h3 className="font-black text-sm text-slate-850 dark:text-slate-100">
-                        {selectedUserDetails.name}
-                      </h3>
-                      <span className="text-[10px] text-slate-400 block font-mono">
-                        ID: {selectedUserDetails.id || selectedUserDetails._id}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block font-mono">
-                        {selectedUserDetails.email}
-                      </span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => setSelectedUserDetails(null)} 
-                    className="text-slate-400 hover:text-slate-650 dark:hover:text-slate-200 p-1 cursor-pointer"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Profile Stats Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-[10px] text-slate-400 font-bold block mb-1">Joined Date</span>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                      {selectedUserDetails.created_at ? new Date(selectedUserDetails.created_at).toLocaleDateString() : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="bg-slate-50 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-[10px] text-slate-400 font-bold block mb-1">Role</span>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                      <Shield className="h-3.5 w-3.5 text-slate-400" />
-                      {selectedUserDetails.is_admin ? 'Admin' : 'Customer'}
-                    </span>
-                  </div>
-                  <div className="bg-slate-50 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850 col-span-2">
-                    <span className="text-[10px] text-slate-400 font-bold block mb-1">Last Login</span>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5 text-slate-400" />
-                      {selectedUserDetails.last_login ? new Date(selectedUserDetails.last_login).toLocaleString() : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="bg-slate-55 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-[10px] text-slate-400 font-bold block mb-1">Total Orders</span>
-                    <span className="stats-value-highlight flex items-center gap-1.5">
-                      <ShoppingBag className="h-3.5 w-3.5" />
-                      {selectedUserDetails.total_orders || 0}
-                    </span>
-                  </div>
-                  <div className="bg-slate-55 dark:bg-slate-955 p-3 rounded-2xl border border-slate-100 dark:border-slate-850">
-                    <span className="text-[10px] text-slate-400 font-bold block mb-1">Total Spent</span>
-                    <span className="stats-value-highlight flex items-center gap-1.5">
-                      <DollarSign className="h-3.5 w-3.5" />
-                      ₹{formatPrice(selectedUserDetails.total_spent || 0)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Address */}
-                <div className="bg-slate-50 dark:bg-slate-955 p-4 rounded-2xl border border-slate-100 dark:border-slate-850 space-y-1.5">
-                  <span className="text-[10px] text-slate-400 font-bold block">Delivery Address</span>
-                  <div className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-350">
-                    <MapPin className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
-                    <span>{formatAddress(selectedUserDetails.address)}</span>
-                  </div>
-                </div>
-
-
-
-                {/* Status History (Audit Trail) */}
-                {selectedUserDetails.audit_logs && selectedUserDetails.audit_logs.length > 0 && (
-                  <div className="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
-                    <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Status Audit Trail</h4>
-                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                      {selectedUserDetails.audit_logs.map((log, idx) => (
-                        <div key={idx} className="bg-slate-50 dark:bg-slate-955 p-2.5 rounded-xl border border-slate-100 dark:border-slate-850 text-[10px] space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className={`px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                              (log.status_changed_to || '').toLowerCase() === 'active'
-                                ? 'status-badge-active'
-                                : (log.status_changed_to || '').toLowerCase() === 'inactive'
-                                ? 'bg-[#6B7280] text-[#FFFFFF] border-[#4B5563]'
-                                : (log.status_changed_to || '').toLowerCase() === 'suspended'
-                                ? 'bg-[#EF4444] text-[#FFFFFF] border-[#DC2626]'
-                                : (log.status_changed_to || '').toLowerCase() === 'pending verification'
-                                ? 'bg-[#F59E0B] text-[#FFFFFF] border-[#D97706]'
-                                : 'bg-[#B91C1C] text-[#FFFFFF] border-[#991B1B]'
-                            }`}>
-                              {log.status_changed_to}
-                            </span>
-                            <span className="text-slate-450 font-mono">
-                              {log.created_at ? new Date(log.created_at).toLocaleDateString() : ''}
-                            </span>
-                          </div>
-                          <p className="text-slate-600 dark:text-slate-350 italic">"{log.reason}"</p>
-                          <span className="text-slate-400 block text-[9px] text-right font-mono">By Admin (ID: {log.admin_id})</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Order History */}
-                <div className="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Order History ({selectedUserDetails.orders?.length || 0})</h4>
-                  {selectedUserDetails.orders && selectedUserDetails.orders.length > 0 ? (
-                    <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-                      {selectedUserDetails.orders.map(order => (
-                        <div key={order.id} className="border border-slate-100 dark:border-slate-800 rounded-2xl p-3 bg-slate-50/50 dark:bg-slate-900/50 space-y-2 text-xs">
-                          <div className="flex justify-between items-center font-bold">
-                            <span className="font-mono text-[10px] text-slate-450">{order.order_id}</span>
-                            <span className="text-emerald-500 font-black">₹{formatPrice(order.total_amount)}</span>
-                          </div>
-                          <div className="flex justify-between items-center text-[10px] text-slate-400">
-                            <span>{order.created_at ? formatTimestamp(order.created_at) : ''}</span>
-                            <div className="flex items-center gap-1.5">
-                              <span className="capitalize">{order.payment_status}</span>
-                              <span className={`px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                                (order.order_status || '').toLowerCase() === 'pending'
-                                  ? 'status-badge-pending'
-                                  : (order.order_status || '').toLowerCase() === 'processing' || (order.order_status || '').toLowerCase() === 'confirmed' || (order.order_status || '').toLowerCase() === 'packed'
-                                  ? 'bg-[#3B82F6] text-white border-[#2563EB]'
-                                  : (order.order_status || '').toLowerCase() === 'shipped' || (order.order_status || '').toLowerCase() === 'dispatched'
-                                  ? 'bg-[#06B6D4] text-white border-[#0891B2]'
-                                  : (order.order_status || '').toLowerCase() === 'out for delivery'
-                                  ? 'bg-[#8B5CF6] text-white border-[#7C3AED]'
-                                  : (order.order_status || '').toLowerCase() === 'delivered'
-                                  ? 'status-badge-success'
-                                  : (order.order_status || '').toLowerCase() === 'cancelled'
-                                  ? 'bg-[#EF4444] text-white border-[#DC2626]'
-                                  : 'bg-[#6B7280] text-white border-[#4B5563]'
-                              }`}>
-                                {order.order_status}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => setViewingOrderItems(order.items)}
-                            className="w-full py-1.5 px-3 bg-white dark:bg-slate-950 border border-slate-150 dark:border-slate-850 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl transition-all font-bold text-[10px] flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-300"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                            <span>View Items</span>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-slate-450 italic text-[11px] py-2">No orders placed yet.</p>
-                  )}
-                </div>
-
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center py-12 px-4 h-[300px]">
-                <div className="bg-emerald-500/10 p-4 rounded-2xl text-emerald-500 mb-4 animate-bounce">
-                  <Users className="h-8 w-8" />
-                </div>
-                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">No User Selected</h4>
-                <p className="text-xs text-slate-450 max-w-[200px]">
-                  Click on any user in the table to display their full profile, stats, orders, and controls.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     );
   };
@@ -1542,7 +1264,7 @@ export const AdminDashboard = () => {
               <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-5 rounded-2xl shadow-sm flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Total Sales</span>
-                  <span className="text-2xl font-black block mt-1">₹{formatPrice(stats.total_sales ?? 0)}</span>
+                  <span className="text-2xl font-black block mt-1 price-amount">₹{formatPrice(stats.total_sales ?? 0)}</span>
                 </div>
                 <div className="bg-emerald-500/10 p-3 rounded-xl text-emerald-500">
                   <BarChart3 className="h-6 w-6" />
@@ -1675,1072 +1397,93 @@ export const AdminDashboard = () => {
               </button>
             </div>
 
-            {/* TAB CONTENT: OVERVIEW & INSIGHTS */}
-            {activeTab === 'overview' && (
-              <div className="space-y-8">
-                {/* Upper row: Extra Insight Cards & Refresh */}
-                <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-500">
-                      <BarChart3 className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">eCommerce Health & Status</h4>
-                      <p className="text-xs text-slate-400">Live warehouse distribution, fulfillment, return monitoring</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={loadDashboardData}
-                    className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 dark:bg-[#1E1E1E] dark:border-[#D4A75F] dark:text-[#D4A75F] dark:hover:bg-[#2A2A2A] rounded-[12px] dark:shadow-[0_4px_12px_rgba(212,167,95,0.25)] transition-all"
-                  >
-                    <RefreshCw className="h-3.5 w-3.5 text-slate-500 dark:text-[#D4A75F]" />
-                    <span>Sync Real-Time Data</span>
-                  </button>
-                </div>
+            <Suspense fallback={<TabLoadingFallback />}>
+              {activeTab === 'overview' && (
+                <AnalyticsTab
+                  loadDashboardData={loadDashboardData}
+                  getCategoryData={getCategoryData}
+                  formatPrice={formatPrice}
+                  getOrderStatusData={getOrderStatusData}
+                  orders={orders}
+                  overviewAnalytics={overviewAnalytics}
+                  SERVER_BASE_URL={SERVER_BASE_URL}
+                  getLowStockProducts={getLowStockProducts}
+                  handleTabChange={handleTabChange}
+                  setEditingProduct={setEditingProduct}
+                  setEditProductImages={setEditProductImages}
+                  initEditImages={initEditImages}
+                  setIsEditImagesOpen={setIsEditImagesOpen}
+                  getReturnRequests={getReturnRequests}
+                  returnNotes={returnNotes}
+                  setReturnNotes={setReturnNotes}
+                  handleManageReturn={handleManageReturn}
+                />
+              )}
 
-                {/* SVG Insights & Analytics Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Category Value Distribution SVG Bar Chart */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-2">
-                      <Package className="h-4 w-4 text-emerald-500" />
-                      <span>Category Stock Value Distribution (Price × Stock)</span>
-                    </h3>
-                    
-                    {/* SVG Graph */}
-                    <div className="w-full flex flex-col items-center justify-center min-h-[220px]">
-                      {(() => {
-                        const catData = getCategoryData();
-                        const maxVal = Math.max(...catData.map(c => c.value), 1);
-                        const colors = {
-                          'Rings': '#D4A75F',
-                          'Necklaces': '#3F1D5A',
-                          'Earrings': '#5C2E7E',
-                          'Bracelets': '#8A5A9E',
-                          'Bangles': '#A87BB5',
-                          'Bridal Collection': '#E2C391'
-                        };
-                        return (
-                          <div className="w-full">
-                            <div className="space-y-4">
-                              {catData.map(c => {
-                                const percentage = (c.value / maxVal) * 100;
-                                return (
-                                  <div key={c.category} className="space-y-1">
-                                    <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400">
-                                      <span>{c.category} ({c.count} items)</span>
-                                      <span className="font-extrabold text-slate-800 dark:text-slate-100">₹{formatPrice(c.value)}</span>
-                                    </div>
-                                    <div className="w-full h-3 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden">
-                                      <div 
-                                        className="h-full rounded-full transition-all duration-500" 
-                                        style={{ 
-                                          width: `${percentage}%`,
-                                          backgroundColor: colors[c.category] || '#10b981'
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            
-                            {/* SVG Mini Chart representation for aesthetics */}
-                            <div className="mt-6 flex justify-around border-t border-slate-100 dark:border-slate-800/50 pt-4">
-                              {catData.map(c => (
-                                <div key={c.category} className="text-center">
-                                  <span className="text-[10px] uppercase font-bold text-slate-400 block">{c.category}</span>
-                                  <span className="text-xs font-black text-slate-700 dark:text-slate-200">
-                                    {((c.value / (catData.reduce((a, b) => a + b.value, 0) || 1)) * 100).toFixed(0)}%
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
+              {activeTab === 'products' && (
+                <ProductManagementTab
+                  products={products}
+                  formatPrice={formatPrice}
+                  setEditingProduct={setEditingProduct}
+                  setEditProductImages={setEditProductImages}
+                  initEditImages={initEditImages}
+                  setIsEditImagesOpen={setIsEditImagesOpen}
+                  handleOpenStockModal={handleOpenStockModal}
+                  handleOpenOrdersModal={handleOpenOrdersModal}
+                  handleOpenAnalyticsModal={handleOpenAnalyticsModal}
+                />
+              )}
 
-                  {/* Order Status Breakdown Chart */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-2">
-                      <ShoppingBag className="h-4 w-4 text-emerald-500" />
-                      <span>Order Fulfillment Status Breakdown</span>
-                    </h3>
-                    
-                    <div className="w-full flex flex-col items-center justify-center min-h-[220px]">
-                      {(() => {
-                        const statusData = getOrderStatusData();
-                        const totalOrdersCount = orders.length || 1;
-                        
-                        const colors = {
-                          'Pending': '#F59E0B',
-                          'Confirmed': '#3B82F6',
-                          'Packed': '#3B82F6',
-                          'Shipped': '#06B6D4',
-                          'Out for Delivery': '#8B5CF6',
-                          'Delivered': '#22C55E',
-                          'Cancelled': '#EF4444',
-                          'Returned': '#6B7280'
-                        };
-                        
-                        return (
-                          <div className="w-full">
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                              {statusData.map(s => {
-                                const count = s.count;
-                                const pct = ((count / totalOrdersCount) * 100).toFixed(0);
-                                return (
-                                  <div key={s.status} className="bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/40 p-3 rounded-xl flex flex-col justify-between">
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: colors[s.status] || '#ccc' }} />
-                                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 line-clamp-1">{s.status}</span>
-                                    </div>
-                                    <div className="mt-2 flex items-baseline justify-between">
-                                      <span className="text-base font-black text-slate-850 dark:text-slate-150">{count}</span>
-                                      <span className="text-[10px] font-extrabold text-slate-400">{pct}%</span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            
-                            {/* Premium Segmented Bar */}
-                            <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full mt-5 overflow-hidden flex">
-                              {statusData.map(s => {
-                                const count = s.count;
-                                if (count === 0) return null;
-                                return (
-                                  <div 
-                                    key={s.status} 
-                                    style={{ 
-                                      width: `${(count / totalOrdersCount) * 100}%`,
-                                      backgroundColor: colors[s.status] 
-                                    }} 
-                                    title={`${s.status}: ${count}`}
-                                    className="h-full first:rounded-l-full last:rounded-r-full"
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                </div>
+              {(activeTab === 'orders' || activeTab === 'buy-requests') && (
+                <OrderManagementTab
+                  activeTab={activeTab}
+                  orders={orders}
+                  formatTimestamp={formatTimestamp}
+                  formatPrice={formatPrice}
+                  handleOrderStatusUpdate={handleOrderStatusUpdate}
+                  setSelectedOrder={setSelectedOrder}
+                  buyRequests={buyRequests}
+                  fetchBuyRequests={fetchBuyRequests}
+                  editingBuyRequest={editingBuyRequest}
+                  setEditingBuyRequest={setEditingBuyRequest}
+                  buyRequestNote={buyRequestNote}
+                  setBuyRequestNote={setBuyRequestNote}
+                  expectedAvailability={expectedAvailability}
+                  setExpectedAvailability={setExpectedAvailability}
+                  expectedDelivery={expectedDelivery}
+                  setExpectedDelivery={setExpectedDelivery}
+                  showConfirmModal={showConfirmModal}
+                  setShowConfirmModal={setShowConfirmModal}
+                  handleOpenProceedConfirmation={handleOpenProceedConfirmation}
+                  handleProceedBuyRequest={handleProceedBuyRequest}
+                  products={products}
+                  getTodayDateString={getTodayDateString}
+                />
+              )}
 
-                {/* Visual Analytics & Matplotlib Reports Section */}
-                {overviewAnalytics && (
-                  <div className="space-y-6">
-                    {/* Revenue Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                      {[
-                        { label: "Today's Revenue", val: overviewAnalytics.revenue_stats.today_revenue, color: "text-emerald-500" },
-                        { label: "Weekly Revenue", val: overviewAnalytics.revenue_stats.weekly_revenue, color: "text-indigo-500" },
-                        { label: "Monthly Revenue", val: overviewAnalytics.revenue_stats.monthly_revenue, color: "text-blue-500" },
-                        { label: "Total Revenue", val: overviewAnalytics.revenue_stats.total_revenue, color: "text-purple-500" }
-                      ].map(item => (
-                        <div key={item.label} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{item.label}</span>
-                          <span className={`text-xl font-black mt-1 block ${item.color}`}>₹{formatPrice(item.val)}</span>
-                        </div>
-                      ))}
-                    </div>
+              {activeTab === 'users' && (
+                <UserManagementTab
+                  users={users}
+                  userSearchQuery={userSearchQuery}
+                  setUserSearchQuery={setUserSearchQuery}
+                  selectedUserDetails={selectedUserDetails}
+                  setSelectedUserDetails={setSelectedUserDetails}
+                  fetchUserDetails={fetchUserDetails}
+                  formatAddress={formatAddress}
+                  formatPrice={formatPrice}
+                  formatTimestamp={formatTimestamp}
+                  setViewingOrderItems={setViewingOrderItems}
+                  handleOpenStatusModal={handleOpenStatusModal}
+                />
+              )}
 
-                    {/* Matplotlib Charts Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {[
-                        { title: "Revenue Trend (30 Days)", img: overviewAnalytics.charts.revenue_trend },
-                        { title: "Top Selling Products", img: overviewAnalytics.charts.top_selling_products },
-                        { title: "Low Stock Inventory Analytics", img: overviewAnalytics.charts.low_stock_inventory }
-                      ].map(chart => (
-                        <div key={chart.title} className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col items-center">
-                          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 self-start">{chart.title}</h4>
-                          <div className="w-full bg-slate-50 dark:bg-slate-955/60 border border-slate-105 dark:border-slate-850 p-2 rounded-2xl flex justify-start items-center overflow-x-auto">
-                            <img 
-                              src={`${SERVER_BASE_URL}${chart.img}`}
-                              alt={chart.title}
-                              className="max-h-[220px] min-w-[500px] lg:min-w-0 w-auto object-contain rounded-lg"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Return Request Manager & Low Stock Alerts Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                  {/* Left block (1/3 size): Low Stock Alerts */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm xl:col-span-1">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <AlertTriangle className="h-4.5 w-4.5 text-amber-500" />
-                        <span>Low Stock Warnings</span>
-                      </h3>
-                      <span className="px-2 py-0.5 text-[10px] font-extrabold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-450 rounded-full">
-                        {getLowStockProducts().length} items
-                      </span>
-                    </div>
-
-                    <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
-                      {getLowStockProducts().length === 0 ? (
-                        <div className="text-center py-8 text-xs font-semibold text-slate-400">
-                          All products are sufficiently stocked.
-                        </div>
-                      ) : (
-                        getLowStockProducts().map(p => (
-                          <div key={p.id} className="p-3 border border-slate-100 dark:border-slate-850 hover:border-slate-200 dark:hover:border-slate-750 bg-slate-50/50 dark:bg-slate-950/20 rounded-xl flex items-center justify-between transition-all">
-                            <div className="max-w-[70%]">
-                              <span className="text-xs font-bold text-slate-800 dark:text-slate-250 block truncate">{p.name}</span>
-                              <span className="text-[10px] font-bold text-slate-400 block mt-0.5">{p.category} • ₹{formatPrice(p.price)}</span>
-                            </div>
-                            <div className="text-right">
-                              <span className="px-2 py-1 text-[11px] font-black bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-450 rounded-lg animate-pulse">
-                                {p.stock} left
-                              </span>
-                              <button
-                                onClick={() => {
-                                  handleTabChange('products');
-                                  setEditingProduct(p);
-                                  setEditProductImages(initEditImages(p));
-                                  setIsEditImagesOpen(false);
-                                }}
-                                className="block text-[10px] font-black text-emerald-500 hover:text-emerald-600 mt-2 hover:underline"
-                              >
-                                Restock Item
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right block (2/3 size): Return & Refund Request Manager */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm xl:col-span-2">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <RefreshCw className="h-4.5 w-4.5 text-rose-500" />
-                        <span>Return & Refund Request Manager</span>
-                      </h3>
-                      <span className="px-2 py-0.5 text-[10px] font-extrabold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-450 rounded-full">
-                        {getReturnRequests().length} pending
-                      </span>
-                    </div>
-
-                    <div className="space-y-4 overflow-y-auto max-h-[380px] pr-1">
-                      {getReturnRequests().length === 0 ? (
-                        <div className="text-center py-12 text-xs font-semibold text-slate-400">
-                          No pending return or refund requests.
-                        </div>
-                      ) : (
-                        getReturnRequests().map(o => (
-                          <div key={o.id} className="p-4 border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 rounded-2xl space-y-3">
-                            <div className="flex flex-wrap justify-between items-start gap-2">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Order ID: {o.id}</span>
-                                  <span className="text-[10px] font-bold text-slate-400">by User ID: {o.user_id}</span>
-                                </div>
-                                <span className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 block mt-1">
-                                  Refund Amount: <span className="text-emerald-500">₹{formatPrice(o.total_price)}</span>
-                                </span>
-                              </div>
-                              <span className="text-[10px] font-black text-rose-500 uppercase bg-rose-500/10 px-2 py-0.5 rounded-full">
-                                Requested
-                              </span>
-                            </div>
-
-                            <div className="bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-850 p-2.5 rounded-xl text-xs text-slate-600 dark:text-slate-400">
-                              <span className="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">Return Reason:</span>
-                              {o.return_request.reason || "No reason provided"}
-                            </div>
-
-                            {/* Action note box */}
-                            <div className="flex flex-col gap-1">
-                              <label className="text-[10px] font-bold text-slate-400">Admin Action Note / Rejection Reason</label>
-                              <input
-                                type="text"
-                                placeholder="Enter note (e.g. Returned item verified, or Policy limit exceeded)..."
-                                value={returnNotes[o.id] || ''}
-                                onChange={(e) => setReturnNotes({ ...returnNotes, [o.id]: e.target.value })}
-                                className="w-full px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none"
-                              />
-                            </div>
-
-                            <div className="flex justify-end gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
-                              <button
-                                onClick={() => handleManageReturn(o.id, false, returnNotes[o.id])}
-                                className="px-3 py-1.5 text-[11px] font-bold text-slate-550 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-lg transition-all"
-                              >
-                                Reject Return
-                              </button>
-                              <button
-                                onClick={() => handleManageReturn(o.id, true, returnNotes[o.id])}
-                                className="px-3 py-1.5 text-[11px] font-bold bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-all"
-                              >
-                                Approve & Cancel Order
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'products' && (
-              <div className="w-full bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-base font-extrabold flex items-center gap-2">
-                    <span>Catalog Products</span>
-                    <span className="px-2.5 py-1 text-xs bg-[#D4A75F] text-[#111827] rounded-full font-bold shadow-sm">
-                      {products.length}
-                    </span>
-                  </h3>
-                </div>
-                  
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {products.map(p => {
-                      const discountedPrice = Math.round(p.price - (p.price * (p.discount / 100)));
-                      
-                      // Audit date formatting helper
-                      const formatAudit = (dateStr) => {
-                        if (!dateStr) return "N/A";
-                        try {
-                          const d = new Date(dateStr);
-                          return d.toLocaleString('en-IN', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                          });
-                        } catch(e) {
-                          return dateStr;
-                        }
-                      };
-
-                      return (
-                        <div key={p._id} className="border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-950/20 rounded-2xl p-4.5 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-                          <div>
-                            {/* Product Image and Category */}
-                            <div className="flex gap-4 mb-3">
-                              <div className="h-16 w-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex-shrink-0">
-                                <img src={p.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200'} alt="" className="h-full w-full object-cover" />
-                              </div>
-                              <div className="flex flex-col justify-center min-w-0">
-                                <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">{p.category}</span>
-                                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5" title={p.name}>{p.name}</h4>
-                              </div>
-                            </div>
-
-                            {/* Price / Discount History */}
-                            <div className="bg-white dark:bg-slate-900 border border-slate-150/40 dark:border-slate-800/80 p-2.5 rounded-xl text-xs space-y-1 mb-3">
-                              <div className="flex justify-between items-baseline">
-                                <span className="text-slate-400 font-medium">Pricing:</span>
-                                <div className="flex items-center gap-1.5">
-                                  {p.discount > 0 ? (
-                                    <>
-                                      <span className="text-slate-455 dark:text-slate-505 line-through">₹{formatPrice(p.price)}</span>
-                                      <span className="text-slate-400">↓</span>
-                                      <span className="text-slate-900 dark:text-slate-100 font-extrabold text-sm">₹{formatPrice(discountedPrice)}</span>
-                                      <span className="px-1.5 py-0.5 text-[9px] font-black bg-rose-100 text-rose-700 dark:bg-rose-955/40 dark:text-rose-455 rounded">{p.discount}% OFF</span>
-                                    </>
-                                  ) : (
-                                    <span className="text-slate-900 dark:text-slate-100 font-extrabold text-sm">₹{formatPrice(p.price)}</span>
-                                  )}
-                                </div>
-                              </div>
-                              {p.discount > 0 && p.discount_applied_at && (
-                                <div className="text-[9px] text-slate-400 flex justify-between border-t border-slate-100 dark:border-slate-850/50 pt-1 mt-1">
-                                  <span>Applied On:</span>
-                                  <span className="font-semibold">{formatAudit(p.discount_applied_at)}</span>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Stock Display */}
-                            <div className="flex justify-between items-center mb-3">
-                              <span className="text-xs text-slate-400 font-medium">Stock Status:</span>
-                              <span className={`stock-badge-container ${
-                                p.stock === 0 
-                                  ? 'stock-badge-out-of-stock' 
-                                  : p.stock < 10 
-                                    ? 'stock-badge-low-stock' 
-                                    : 'stock-badge-in-stock'
-                              }`}>
-                                {p.stock === 0 ? "Out Of Stock" : p.stock < 10 ? `Low Stock: ${p.stock} Units` : `Stock: ${p.stock} Units`}
-                              </span>
-                            </div>
-
-                            {/* Audit Logs */}
-                            <div className="border-t border-slate-100 dark:border-slate-850/60 pt-2.5 pb-2 text-[10px] text-slate-400 space-y-1">
-                              <div className="flex justify-between">
-                                <span>Created:</span>
-                                <span className="font-semibold text-slate-550 dark:text-slate-450">{formatAudit(p.created_at)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>Modified:</span>
-                                <span className="font-semibold text-slate-550 dark:text-slate-450">{formatAudit(p.updated_at || p.created_at)}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Quick Actions Grid */}
-                          <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-850/60">
-                            <button
-                              onClick={() => {
-                                setEditingProduct({ ...p, image_url: p.images?.[0] || '' });
-                                setEditProductImages(initEditImages(p));
-                                setIsEditImagesOpen(false);
-                              }}
-                              className="py-2 px-2.5 text-[10px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
-                            >
-                              <Edit2 className="h-3.5 w-3.5" />
-                              <span>Edit Product</span>
-                            </button>
-                            <button
-                              onClick={() => handleOpenStockModal(p)}
-                              className="py-2 px-2.5 text-[10px] font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-450 rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
-                            >
-                              <Package className="h-3.5 w-3.5" />
-                              <span>Manage Stock</span>
-                            </button>
-                            <button
-                              onClick={() => handleOpenOrdersModal(p)}
-                              className="py-2 px-2.5 text-[10px] font-bold bg-purple-50 hover:bg-purple-100 dark:bg-purple-500/10 dark:hover:bg-purple-500/20 text-purple-650 dark:text-purple-400 rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
-                            >
-                              <ShoppingBag className="h-3.5 w-3.5" />
-                              <span>View Orders</span>
-                            </button>
-                            <button
-                              onClick={() => handleOpenAnalyticsModal(p)}
-                              className="py-2 px-2.5 text-[10px] font-bold border border-[#D4A75F]/35 dark:border-[#D4A75F] bg-[#D4A75F]/8 dark:bg-[rgba(212,167,95,0.12)] text-[#9A7232] dark:text-[#D4A75F] hover:bg-[#D4A75F] hover:text-white dark:hover:bg-[#D4A75F] dark:hover:text-white dark:hover:border-transparent hover:translate-y-[-2px] shadow-[0_4px_12px_rgba(212,167,95,0.08)] dark:shadow-[0_4px_12px_rgba(212,167,95,0.20)] rounded-xl transition-all duration-[250ms] ease-in-out text-center flex items-center justify-center gap-1.5"
-                            >
-                              <BarChart3 className="h-3.5 w-3.5" />
-                              <span>View Sales</span>
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-            )}
-
-            {/* TAB CONTENT: ORDERS MANAGEMENT */}
-            {activeTab === 'orders' && (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm overflow-x-auto">
-                <h3 className="text-base font-bold mb-4">Customer Orders list ({orders.length})</h3>
-
-                <table className="w-full text-left text-xs min-w-[650px]">
-                  <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 uppercase font-bold">
-                      <th className="py-2.5">Order ID</th>
-                      <th className="py-2.5">Date</th>
-                      <th className="py-2.5">Total Amount</th>
-                      <th className="py-2.5">Customer / Address</th>
-                      <th className="py-2.5">Status</th>
-                      <th className="py-2.5">Update Status</th>
-                      <th className="py-2.5 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50 dark:divide-slate-850">
-                    {orders.map(o => (
-                      <tr key={o._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/20">
-                        <td className="py-3.5 font-mono font-bold text-slate-700 dark:text-slate-300">{o.order_id}</td>
-                        <td className="py-3.5 text-slate-500 admin-datetime-text">{formatTimestamp(o.created_at)}</td>
-                        <td className="py-3.5 font-bold text-slate-800 dark:text-slate-100">₹{formatPrice(o.total_amount)}</td>
-                        <td className="py-3.5 max-w-[200px] truncate text-slate-550" title={o.shipping_address?.address}>
-                          {o.shipping_address?.name} - {o.shipping_address?.address}, {o.shipping_address?.city}
-                        </td>
-                        <td className="py-3.5">
-                          <span className={`px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                            (o.status || '').toLowerCase() === 'pending'
-                              ? 'status-badge-pending'
-                              : (o.status || '').toLowerCase() === 'processing' || (o.status || '').toLowerCase() === 'confirmed' || (o.status || '').toLowerCase() === 'packed'
-                              ? 'bg-[#3B82F6] text-white border-[#2563EB]'
-                              : (o.status || '').toLowerCase() === 'shipped' || (o.status || '').toLowerCase() === 'dispatched'
-                              ? 'bg-[#06B6D4] text-white border-[#0891B2]'
-                              : (o.status || '').toLowerCase() === 'out for delivery'
-                              ? 'bg-[#8B5CF6] text-white border-[#7C3AED]'
-                              : (o.status || '').toLowerCase() === 'delivered'
-                              ? 'status-badge-success'
-                              : (o.status || '').toLowerCase() === 'cancelled'
-                              ? 'bg-[#EF4444] text-white border-[#DC2626]'
-                              : 'bg-[#6B7280] text-white border-[#4B5563]'
-                          }`}>
-                            {o.status}
-                          </span>
-                        </td>
-                        <td className="py-3.5">
-                          <select
-                            value={o.status}
-                            onChange={(e) => handleOrderStatusUpdate(o._id, e.target.value)}
-                            className="text-xs bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-855 px-2 py-1 rounded-lg focus:outline-none text-slate-850 dark:text-slate-100"
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Dispatched">Dispatched</option>
-                            <option value="Out for Delivery">Out for Delivery</option>
-                            <option value="Delivered">Delivered</option>
-                          </select>
-                        </td>
-                        <td className="py-3.5 text-right">
-                          <button
-                            onClick={() => setSelectedOrder(o)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-[#D4A75F]/10 dark:hover:bg-[#D4A75F]/15 dark:text-[#D4A75F] rounded-lg transition-colors font-bold"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                            <span>Details</span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {/* TAB CONTENT: BUY REQUESTS */}
-            {activeTab === 'buy-requests' && (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-                <div className="flex flex-col sm:flex-row justify-between items-baseline mb-6 gap-3">
-                  <div>
-                    <h3 className="text-base font-bold flex items-center gap-2">
-                      <ShoppingBag className="h-5 w-5 text-emerald-500" />
-                      <span>User Buy Requests ({buyRequests.length})</span>
-                    </h3>
-                    <p className="text-[11px] text-slate-400 mt-1">Approve, reject, or track requests for out-of-stock items</p>
-                  </div>
-                  <button 
-                    onClick={fetchBuyRequests}
-                    className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-705 dark:text-slate-300 flex items-center gap-1.5 transition-colors cursor-pointer border-none"
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    <span>Refresh</span>
-                  </button>
-                </div>
-
-                {editingBuyRequest && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200/50 dark:border-slate-800 flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-200 text-left">
-                      
-                      {/* Modal Header */}
-                      <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                        <div>
-                          <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                            <Eye className="h-5 w-5 text-[#5B1E7A]" />
-                            <span>Buy Request Details</span>
-                          </h3>
-                          <p className="text-[10px] text-slate-400 mt-0.5">Request ID: #{editingBuyRequest.id} &bull; Received on {editingBuyRequest.created_date} {editingBuyRequest.created_time}</p>
-                        </div>
-                        <button 
-                          onClick={() => {
-                            setEditingBuyRequest(null);
-                            setBuyRequestNote('');
-                            setExpectedAvailability('');
-                            setExpectedDelivery('');
-                          }}
-                          className="text-slate-400 hover:text-rose-500 cursor-pointer p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors bg-transparent border-none"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-
-                      {/* Modal Body */}
-                      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                          
-                          {/* Left Column: Product Info & Image (md:col-span-5) */}
-                          <div className="md:col-span-5 space-y-4">
-                            {/* Product Image */}
-                            <div className="bg-slate-50 dark:bg-slate-955 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-4 flex items-center justify-center min-h-[220px]">
-                              {(() => {
-                                const prod = products.find(p => String(p.id) === String(editingBuyRequest.product_id));
-                                const imgUrl = prod?.images?.[0] || '';
-                                return imgUrl ? (
-                                  <img 
-                                    src={imgUrl} 
-                                    alt={editingBuyRequest.product_name} 
-                                    className="max-h-[200px] w-full object-contain rounded-xl"
-                                  />
-                                ) : (
-                                  <div className="text-slate-350 dark:text-slate-650 flex flex-col items-center gap-2">
-                                    <ShoppingBag className="h-10 w-10" />
-                                    <span className="text-[10px]">No image available</span>
-                                  </div>
-                                );
-                              })()}
-                            </div>
-
-                            {/* Product Specifications Card */}
-                            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-105 dark:border-slate-850 p-4.5 rounded-2xl space-y-3 text-xs">
-                              <h4 className="font-extrabold text-[#5B1E7A] dark:text-[#D4A75F] text-[11px] uppercase tracking-wider mb-1">Product Information</h4>
-                              <div className="space-y-2">
-                                <div className="flex justify-between">
-                                  <span className="text-slate-400">Name</span>
-                                  <span className="font-bold text-slate-805 dark:text-slate-200 text-right max-w-[150px] truncate" title={editingBuyRequest.product_name}>{editingBuyRequest.product_name}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-slate-400">Product ID</span>
-                                  <span className="font-bold font-mono text-slate-800 dark:text-slate-200">#{editingBuyRequest.product_id}</span>
-                                </div>
-                                {(() => {
-                                  const prod = products.find(p => String(p.id) === String(editingBuyRequest.product_id));
-                                  if (!prod) return null;
-                                  
-                                  const getAttr = (key) => {
-                                    if (prod.variants && Array.isArray(prod.variants)) {
-                                      const v = prod.variants.find(x => (x.attribute_name || '').toLowerCase() === key.toLowerCase());
-                                      if (v && v.attribute_value) return v.attribute_value;
-                                    }
-                                    const specsText = prod.specifications_en || prod.specifications || '';
-                                    if (specsText) {
-                                      const lines = specsText.split('\n');
-                                      for (let line of lines) {
-                                        const idx = line.indexOf(':');
-                                        if (idx !== -1) {
-                                          const k = line.slice(0, idx).trim().toLowerCase();
-                                          const v = line.slice(idx + 1).trim();
-                                          if (k === key.toLowerCase()) return v;
-                                        }
-                                      }
-                                    }
-                                    const n = (prod.name || '').toLowerCase();
-                                    const d = (prod.description || '').toLowerCase();
-                                    if (key.toLowerCase() === 'metal') {
-                                      if (n.includes('white gold') || d.includes('white gold')) return 'White Gold';
-                                      if (n.includes('rose gold') || d.includes('rose gold')) return 'Rose Gold';
-                                      if (n.includes('platinum') || d.includes('platinum')) return 'Platinum';
-                                      return 'Yellow Gold';
-                                    }
-                                    if (key.toLowerCase() === 'purity') {
-                                      if (n.includes('18k') || d.includes('18k')) return '18K';
-                                      if (n.includes('22k') || d.includes('22k')) return '22K';
-                                      if (n.includes('24k') || d.includes('24k')) return '24K';
-                                      return '22K';
-                                    }
-                                    if (key.toLowerCase() === 'gemstone') {
-                                      if (n.includes('diamond') || d.includes('diamond')) return 'Diamond';
-                                      if (n.includes('ruby') || d.includes('ruby')) return 'Ruby';
-                                      if (n.includes('emerald') || d.includes('emerald')) return 'Emerald';
-                                      if (n.includes('sapphire') || d.includes('sapphire')) return 'Sapphire';
-                                      if (n.includes('pearl') || d.includes('pearl')) return 'Pearl';
-                                      return 'None';
-                                    }
-                                    return 'N/A';
-                                  };
-
-                                  return (
-                                    <>
-                                      <div className="flex justify-between">
-                                        <span className="text-slate-400">Category</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-205">{prod.category || 'Jewellery'}</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-slate-400">Metal</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-205">{getAttr('metal')}</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-slate-400">Purity</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-205">{getAttr('purity')}</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-slate-400">Gemstone</span>
-                                        <span className="font-bold text-slate-800 dark:text-slate-205">{getAttr('gemstone')}</span>
-                                      </div>
-                                      <div className="flex justify-between border-t border-slate-200/40 dark:border-slate-800 pt-2 mt-2">
-                                        <span className="text-slate-400">Current Stock</span>
-                                        <span className={`font-black ${prod.stock > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>{prod.stock} units</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-slate-400">Product Status</span>
-                                        <span className="font-bold capitalize text-slate-800 dark:text-slate-205">{prod.status || 'active'}</span>
-                                      </div>
-                                    </>
-                                  );
-                                })()}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Right Column: Customer Info, Request Info, Editable Inputs (md:col-span-7) */}
-                          <div className="md:col-span-7 space-y-5">
-                            {/* Customer Details Card */}
-                            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850 p-4.5 rounded-2xl space-y-3 text-xs">
-                              <h4 className="font-extrabold text-[#5B1E7A] dark:text-[#D4A75F] text-[11px] uppercase tracking-wider mb-1">Customer Information</h4>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">Name</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200">{editingBuyRequest.user_name || 'N/A'}</span>
-                                </div>
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">Email</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200">{editingBuyRequest.email || 'N/A'}</span>
-                                </div>
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">Mobile Number</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200">{editingBuyRequest.mobile || 'N/A'}</span>
-                                </div>
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">City & State</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200">{[editingBuyRequest.city, editingBuyRequest.state].filter(Boolean).join(', ') || 'N/A'}</span>
-                                </div>
-                                <div className="sm:col-span-2">
-                                  <span className="text-slate-400 block mb-0.5">Full Address</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200 break-words">{editingBuyRequest.address || 'No address specified.'}</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Request Details & Notes */}
-                            <div className="bg-slate-50 dark:bg-slate-955 border border-slate-100 dark:border-slate-850 p-4.5 rounded-2xl space-y-3 text-xs">
-                              <h4 className="font-extrabold text-[#5B1E7A] dark:text-[#D4A75F] text-[11px] uppercase tracking-wider mb-1">Request & Notes</h4>
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">Requested Quantity</span>
-                                  <span className="font-black text-slate-800 dark:text-slate-200 text-sm">{editingBuyRequest.quantity} units</span>
-                                </div>
-                                <div>
-                                  <span className="text-slate-400 block mb-0.5">Current Status</span>
-                                  <span className="font-bold text-slate-800 dark:text-slate-200">{editingBuyRequest.status}</span>
-                                </div>
-                                {editingBuyRequest.selected_variant && (
-                                  <div className="col-span-2">
-                                    <span className="text-slate-400 block mb-0.5">Selected Variant</span>
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 font-mono text-[10px]">{(() => {
-                                      try {
-                                        const v = typeof editingBuyRequest.selected_variant === 'string' ? JSON.parse(editingBuyRequest.selected_variant) : editingBuyRequest.selected_variant;
-                                        return Object.entries(v).map(([k, val]) => `${k}: ${val}`).join(' | ');
-                                      } catch(e) {
-                                        return String(editingBuyRequest.selected_variant);
-                                      }
-                                    })()}</span>
-                                  </div>
-                                )}
-                                {editingBuyRequest.customer_notes && (
-                                  <div className="col-span-2 border-t border-slate-200/40 dark:border-slate-805 pt-2">
-                                    <span className="text-slate-450 block mb-0.5">Customer Message / Note</span>
-                                    <p className="text-slate-700 dark:text-slate-300 italic">{editingBuyRequest.customer_notes}</p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Expected Details / Inputs */}
-                            <div className="bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 p-4.5 rounded-2xl space-y-3.5 text-xs">
-                              <h4 className="font-extrabold text-[#5B1E7A] dark:text-[#D4A75F] text-[11px] uppercase tracking-wider mb-1">Expected Availability & Delivery</h4>
-                              
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                                <div>
-                                  <label className="block font-bold text-slate-500 mb-1">Expected Availability Date <span className="text-rose-500">*</span></label>
-                                  <input
-                                    type="date"
-                                    value={expectedAvailability}
-                                    min={getTodayDateString()}
-                                    onChange={(e) => setExpectedAvailability(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[#5B1E7A] dark:focus:border-[#D4A75F] transition-all"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="block font-bold text-slate-500 mb-1">Expected Delivery Date <span className="text-rose-500">*</span></label>
-                                  <input
-                                    type="date"
-                                    value={expectedDelivery}
-                                    min={getTodayDateString()}
-                                    onChange={(e) => setExpectedDelivery(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[#5B1E7A] dark:focus:border-[#D4A75F] transition-all"
-                                  />
-                                </div>
-                              </div>
-
-                              <div>
-                                <label className="block font-bold text-slate-500 mb-1">Admin Notes / Customer Update message</label>
-                                <textarea
-                                  rows="3"
-                                  placeholder="e.g. The design will be restocked by next week. We will notify you to proceed with payment."
-                                  value={buyRequestNote}
-                                  onChange={(e) => setBuyRequestNote(e.target.value)}
-                                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-medium text-slate-855 dark:text-slate-200 outline-none focus:border-[#5B1E7A] dark:focus:border-[#D4A75F] transition-all resize-none"
-                                />
-                              </div>
-                            </div>
-
-                          </div>
-
-                        </div>
-                      </div>
-
-                      {/* Modal Footer */}
-                      <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center">
-                        {/* Left Side: Status Info */}
-                        <div className="text-[10px] text-slate-400 font-semibold">
-                          {editingBuyRequest.status === 'Pending' ? (
-                            <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-ping"></span>
-                              Awaiting confirmation
-                            </span>
-                          ) : (
-                            <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                              <span>✔</span> Processed (Status: {editingBuyRequest.status})
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Right Side Actions */}
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => {
-                              setEditingBuyRequest(null);
-                              setBuyRequestNote('');
-                              setExpectedAvailability('');
-                              setExpectedDelivery('');
-                            }}
-                            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-850 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs border-none cursor-pointer transition-all"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={handleOpenProceedConfirmation}
-                            className="px-5 py-2.5 bg-[#5B1E7A] hover:bg-[#D4A75F] text-white font-bold rounded-xl text-xs border-none cursor-pointer transition-all shadow-md shadow-[#5B1E7A]/10"
-                          >
-                            Proceed
-                          </button>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                )}
-
-                {showConfirmModal && (
-                  <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-150">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 text-center animate-in scale-in duration-200">
-                      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-955/30 text-amber-600 dark:text-amber-400 mb-4">
-                        <Mail className="h-6 w-6" />
-                      </div>
-                      <h3 className="text-sm font-extrabold text-slate-900 dark:text-white mb-2">Send confirmation to customer?</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
-                        Would you like to send an automated confirmation email to the customer with these expected availability and delivery dates?
-                      </p>
-                      
-                      <div className="flex flex-col gap-2">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setShowConfirmModal(false)}
-                            className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer border-none transition-colors"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => handleProceedBuyRequest(editingBuyRequest.id, 'Yes')}
-                            className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer border border-slate-250 dark:border-slate-700 transition-colors"
-                          >
-                            Yes
-                          </button>
-                        </div>
-                        <button
-                          onClick={() => handleProceedBuyRequest(editingBuyRequest.id, 'Send')}
-                          className="w-full py-2.5 bg-[#5B1E7A] hover:bg-[#D4A75F] text-white font-bold rounded-xl text-xs cursor-pointer border-none shadow-md shadow-[#5B1E7A]/10 transition-all"
-                        >
-                          Send
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {buyRequests.length === 0 ? (
-                  <div className="text-center py-12 text-slate-550">
-                    <p className="text-sm">No user buy requests submitted yet.</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-xs text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-bold">
-                          <th className="pb-3 pr-2">ID</th>
-                          <th className="pb-3 pr-2">User Details</th>
-                          <th className="pb-3 pr-2">Product Details</th>
-                          <th className="pb-3 pr-2">Qty & Specs</th>
-                          <th className="pb-3 pr-2">Date</th>
-                          <th className="pb-3 pr-2">Status</th>
-                          <th className="pb-3 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {buyRequests.map((req) => {
-                          let badgeClass = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
-                          if (req.status === 'Pending') badgeClass = 'bg-amber-100 text-amber-700 dark:bg-amber-955/20 dark:text-amber-400';
-                          if (req.status === 'Approved') badgeClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-955/20 dark:text-emerald-400';
-                          if (req.status === 'Rejected') badgeClass = 'bg-rose-100 text-rose-700 dark:bg-rose-955/20 dark:text-rose-400';
-                          if (req.status === 'Confirmed') badgeClass = 'bg-blue-100 text-blue-700 dark:bg-blue-955/20 dark:text-blue-400';
-                          if (req.status === 'Order Preparation') badgeClass = 'bg-indigo-100 text-indigo-700 dark:bg-indigo-955/20 dark:text-indigo-400';
-                          if (req.status === 'Available') badgeClass = 'bg-emerald-500 text-white dark:bg-emerald-600';
-                          if (req.status === 'Purchased') badgeClass = 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-400';
-
-                          let variantStr = 'N/A';
-                          if (req.selected_variant) {
-                            try {
-                              const vObj = typeof req.selected_variant === 'string' ? JSON.parse(req.selected_variant) : req.selected_variant;
-                              variantStr = Object.entries(vObj).map(([k, v]) => `${k}: ${v}`).join(' | ');
-                            } catch (e) {
-                              variantStr = String(req.selected_variant);
-                            }
-                          }
-
-                          return (
-                            <tr key={req.id} className="border-b border-slate-100 dark:border-slate-855 hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
-                              <td className="py-3.5 pr-2 font-mono font-bold">#{req.id}</td>
-                              <td className="py-3.5 pr-2">
-                                <p className="font-bold text-slate-805 dark:text-slate-200">{req.user_name || 'N/A'}</p>
-                                <p className="text-[10px] text-slate-400">{req.email}</p>
-                                <p className="text-[10px] text-slate-400">{req.mobile || 'No Mobile'}</p>
-                                {req.city && (
-                                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">City: {req.city}</p>
-                                )}
-                              </td>
-                              <td className="py-3.5 pr-2 max-w-[200px] truncate">
-                                <p className="font-bold text-slate-805 dark:text-slate-200 truncate" title={req.product_name}>{req.product_name}</p>
-                                <p className="text-[10px] text-slate-400 font-mono">PID: #{req.product_id}</p>
-                              </td>
-                              <td className="py-3.5 pr-2">
-                                <p className="font-bold text-slate-805 dark:text-slate-200">Qty: {req.quantity}</p>
-                                <p className="text-[10px] text-slate-450 truncate" title={variantStr}>{variantStr}</p>
-                              </td>
-                              <td className="py-3.5 pr-2 text-slate-500">
-                                <p>{req.created_date}</p>
-                                <p className="text-[10px]">{req.created_time}</p>
-                              </td>
-                              <td className="py-3.5 pr-2">
-                                <span className={`px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                                  (req.status || '').toLowerCase() === 'pending'
-                                    ? 'bg-[#F59E0B] text-white border-[#D97706]'
-                                    : (req.status || '').toLowerCase() === 'approved' || (req.status || '').toLowerCase() === 'available'
-                                    ? 'bg-[#22C55E] text-white border-[#16A34A]'
-                                    : (req.status || '').toLowerCase() === 'rejected'
-                                    ? 'bg-[#EF4444] text-white border-[#DC2626]'
-                                    : (req.status || '').toLowerCase() === 'confirmed' || (req.status || '').toLowerCase() === 'order preparation'
-                                    ? 'bg-[#3B82F6] text-white border-[#2563EB]'
-                                    : 'bg-[#6B7280] text-white border-[#4B5563]'
-                                }`}>
-                                  {req.status}
-                                </span>
-                              </td>
-                              <td className="py-3.5 text-right">
-                                <button
-                                  onClick={() => {
-                                    setEditingBuyRequest(req);
-                                    setBuyRequestNote(req.admin_note || '');
-                                    setExpectedAvailability(req.expected_availability_date || '');
-                                    setExpectedDelivery(req.expected_delivery_date || '');
-                                  }}
-                                  className="px-3 py-1.5 bg-[#5B1E7A] hover:bg-[#D4A75F] text-white font-bold rounded-lg border-none cursor-pointer shadow-sm transition-colors flex items-center justify-center gap-1.5 inline-flex"
-                                >
-                                  <Eye className="h-3.5 w-3.5" />
-                                  <span>Details</span>
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB CONTENT: SUPPORT TICKETS */}
-            {activeTab === 'support' && (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-                <h3 className="text-base font-bold mb-4 flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-emerald-500" />
-                  <span>Customer Support Messages ({messages.length})</span>
-                </h3>
-
-                {messages.length === 0 ? (
-                  <p className="text-slate-400 italic text-xs py-6 text-center">No contact support messages registered.</p>
-                ) : (
-                  <div className="divide-y divide-slate-100 dark:divide-slate-850 space-y-4">
-                    {messages.map((m, idx) => (
-                      <div key={m._id || idx} className="pt-4 first:pt-0 text-xs">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-bold text-sm text-slate-800 dark:text-slate-100">{m.name} <span className="text-slate-400 font-normal">({m.email})</span></p>
-                          </div>
-                          <span className="text-[10px] text-slate-400">
-                            {m.created_at ? new Date(m.created_at).toLocaleString() : "Recently"}
-                          </span>
-                        </div>
-                        <p className="text-slate-655 dark:text-slate-300 mt-2 bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-150 dark:border-slate-850 leading-relaxed font-sans select-all">
-                          {m.message}
-                        </p>
-
-                        {/* Existing Replies */}
-                        {m.replies && m.replies.length > 0 && (
-                          <div className="mt-3 ml-4 pl-3 border-l-2 border-slate-200 dark:border-slate-800 space-y-2.5">
-                            {m.replies.map((reply, rIdx) => (
-                              <div key={reply.id || rIdx} className="text-xs bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-900">
-                                <p className="font-bold text-slate-700 dark:text-slate-300">
-                                  {reply.sender} <span className="font-normal text-[10px] text-slate-400">({reply.created_at ? new Date(reply.created_at).toLocaleString() : 'Recently'})</span>
-                                </p>
-                                <p className="text-slate-600 dark:text-slate-450 mt-1 leading-relaxed">{reply.message}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Reply Input Form */}
-                        <div className="mt-3 ml-4 flex gap-2">
-                          <input
-                            type="text"
-                            placeholder="Type a reply to this customer..."
-                            id={`admin-reply-${m.id || m._id}`}
-                            className="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs text-slate-800 dark:text-white"
-                          />
-                          <button
-                            onClick={async () => {
-                              const inputEl = document.getElementById(`admin-reply-${m.id || m._id}`);
-                              const replyMsg = inputEl?.value?.trim();
-                              if (!replyMsg) return;
-                              try {
-                                const token = localStorage.getItem('token');
-                                const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-                                await axios.post(`${API_BASE_URL}/support/${m.id || m._id}/reply`, {
-                                  sender: "Admin Support",
-                                  message: replyMsg
-                                }, config);
-                                if (inputEl) inputEl.value = '';
-                                fetchMessages();
-                              } catch (err) {
-                                alert("Failed to send reply: " + (err.response?.data?.message || err.message));
-                              }
-                            }}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs border-none cursor-pointer"
-                          >
-                            Reply
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB CONTENT: USERS MANAGEMENT */}
-            {activeTab === 'users' && (
-              renderUsersManagement()
-            )}
+              {activeTab === 'support' && (
+                <SupportTicketsTab
+                  messages={messages}
+                  fetchMessages={fetchMessages}
+                />
+              )}
+            </Suspense>
 
             {/* TAB CONTENT: AUDIT LOGS */}
             {activeTab === 'audit' && (
@@ -3448,10 +2191,10 @@ export const AdminDashboard = () => {
                       </div>
                       <div>
                         <span className="font-semibold text-slate-855 dark:text-slate-100 block max-w-[250px] truncate">{item.name}</span>
-                        <span className="text-[10px] text-slate-400">Qty: {item.quantity} × ₹{formatPrice(item.price)}</span>
+                        <span className="text-[10px] text-slate-400">Qty: {item.quantity} × <span className="price-amount">₹{formatPrice(item.price)}</span></span>
                       </div>
                     </div>
-                    <span className="font-bold text-slate-855 dark:text-slate-100">₹{formatPrice(item.price * item.quantity)}</span>
+                    <span className="font-bold text-slate-855 dark:text-slate-100 price-amount">₹{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
@@ -3540,7 +2283,7 @@ export const AdminDashboard = () => {
             <div className="mt-6 pt-4 border-t border-slate-150 dark:border-slate-855 flex justify-between items-center">
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Grand Total</span>
-                <span className="text-2xl font-black text-slate-900 dark:text-slate-50">₹{formatPrice(selectedOrder.total_amount)}</span>
+                <span className="text-2xl font-black text-slate-900 dark:text-slate-50 price-amount">₹{formatPrice(selectedOrder.total_amount)}</span>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}

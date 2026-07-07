@@ -486,11 +486,11 @@ export const ProductDetails = ({ productId }) => {
 
           {/* Price Row */}
           <div className="flex items-baseline space-x-1.5 mb-1 mt-auto font-black text-slate-900 dark:text-slate-100">
-            <span className="text-sm sm:text-base font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB]">
+            <span className="text-sm sm:text-base font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB] price-amount">
               ₹{formatPrice(itemDiscountedPrice)}
             </span>
             {item.discount > 0 && (
-              <span className="text-[10px] sm:text-xs text-slate-400 line-through font-normal">
+              <span className="text-[10px] sm:text-xs text-slate-400 line-through font-normal price-amount">
                 ₹{formatPrice(item.price)}
               </span>
             )}
@@ -1314,7 +1314,7 @@ export const ProductDetails = ({ productId }) => {
             return (
               <div key={idx} className="flex-1 flex flex-col items-center group relative">
                 {/* Tooltip */}
-                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-slate-950 text-white text-[10px] py-1 px-2 rounded shadow-lg pointer-events-none whitespace-nowrap z-10 font-mono">
+                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-slate-950 text-white text-[10px] py-1 px-2 rounded shadow-lg pointer-events-none whitespace-nowrap z-10 font-mono price-amount">
                   ₹{formatPrice(day.revenue)}
                 </div>
                 {/* Bar */}
@@ -1828,7 +1828,7 @@ export const ProductDetails = ({ productId }) => {
                   </div>
                   <div className="bg-indigo-50/50 dark:bg-indigo-900/10 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
                     <span className="text-[10px] text-indigo-600 dark:text-[#4ADE80] font-bold uppercase tracking-wider block mb-1">Revenue Generated</span>
-                    <span className="text-xl font-black text-indigo-600 dark:text-[#4ADE80]">₹{formatPrice(analyticsData?.sales_stats?.revenue_generated ?? salesData?.total_revenue ?? 0)}</span>
+                    <span className="text-xl font-black text-indigo-600 dark:text-[#4ADE80] price-amount">₹{formatPrice(analyticsData?.sales_stats?.revenue_generated ?? salesData?.total_revenue ?? 0)}</span>
                   </div>
                   <div className="bg-emerald-50/50 dark:bg-[rgba(212,167,95,0.08)] p-4 rounded-xl border border-emerald-100 dark:border-[rgba(212,167,95,0.25)]">
                     <span className="text-[10px] text-emerald-600 dark:text-[#D4A75F] font-bold dark:font-semibold uppercase tracking-wider dark:tracking-[0.08em] block mb-1">CONVERSION RATE</span>
@@ -2120,13 +2120,13 @@ export const ProductDetails = ({ productId }) => {
               {/* Price Section */}
               <div className="py-1">
                 <div className="flex items-baseline gap-2.5">
-                  <span className="text-3xl font-black text-slate-900 dark:text-white">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white price-amount">
                     ₹{discountedPrice.toLocaleString('en-IN')}
                   </span>
                   {product.discount > 0 && (
                     <>
                       <span className="text-base text-slate-400 line-through font-medium">
-                        {language === 'hi' ? 'एम.आर.पी' : 'M.R.P'}: ₹{product.price.toLocaleString('en-IN')}
+                        {language === 'hi' ? 'एम.आर.पी' : 'M.R.P'}: <span className="price-amount">₹{product.price.toLocaleString('en-IN')}</span>
                       </span>
                       <span className="text-xs font-black text-rose-500 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-0.5 rounded">
                         {product.discount}% {language === 'hi' ? 'छूट' : 'OFF'}

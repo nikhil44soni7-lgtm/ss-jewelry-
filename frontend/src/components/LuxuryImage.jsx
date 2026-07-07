@@ -6,6 +6,7 @@ export const LuxuryImage = ({
   className = '',
   wrapperClassName = '',
   loading = 'lazy',
+  decoding = 'async',
   ...props
 }) => {
   const [status, setStatus] = useState('loading'); // 'loading' | 'loaded' | 'error'
@@ -15,17 +16,7 @@ export const LuxuryImage = ({
       setStatus('error');
       return;
     }
-    // Set to loading on src change
     setStatus('loading');
-
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      setStatus('loaded');
-    };
-    img.onerror = () => {
-      setStatus('error');
-    };
   }, [src]);
 
   return (
@@ -66,6 +57,7 @@ export const LuxuryImage = ({
           src={src}
           alt={alt}
           loading={loading}
+          decoding={decoding}
           className={`${className} transition-opacity duration-500 ease-in-out ${
             status === 'loaded' ? 'opacity-100' : 'opacity-0'
           }`}

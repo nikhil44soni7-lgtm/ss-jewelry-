@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useMemo, Suspense, lazy } from 'react';
 import { useLocation, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight, ShoppingBag, Eye, Star, Sparkles, X, Search, Users, Calendar, Clock, DollarSign, MapPin, Check, Lock, RefreshCw, Plus, Trash2, Edit3, Upload } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ProductCard, ProductCardSkeleton } from '../components/ProductCard';
-import { ProductDetails } from './ProductDetails';
+const ProductDetails = lazy(() => import('./ProductDetails').then(m => ({ default: m.ProductDetails })));
+const HomeAdminAnalytics = lazy(() => import('../components/HomeAdminAnalytics').then(m => ({ default: m.HomeAdminAnalytics })));
+const HomeUserManagement = lazy(() => import('../components/HomeUserManagement').then(m => ({ default: m.HomeUserManagement })));
 import { AuthContext, API_BASE_URL } from '../context/AuthContext';
 import { LuxuryImage } from '../components/LuxuryImage';
 import { formatPrice } from '../utils/priceFormatter';
@@ -823,6 +825,14 @@ export const Home = () => {
 
   const [generalAuditLogs, setGeneralAuditLogs] = useState([]);
   const [auditSearch, setAuditSearch] = useState('');
+  const [auditSearchVal, setAuditSearchVal] = useState('');
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setAuditSearch(auditSearchVal);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [auditSearchVal]);
   const [auditActionType, setAuditActionType] = useState('');
   const [auditStatus, setAuditStatus] = useState('');
   const [auditPage, setAuditPage] = useState(1);
@@ -941,505 +951,56 @@ export const Home = () => {
 
   const renderAdminAnalytics = () => {
     return (
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 mb-2">
-          Admin Analytics Summary Cards
-        </h2>
-        {/* Analytics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-blue-500/10 p-3 rounded-xl text-blue-500">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Total Registered</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.total_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-indigo-500/10 p-3 rounded-xl text-indigo-500">
-              <Calendar className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">New This Month</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.new_users_this_month ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-emerald-500/10 p-3 rounded-xl text-emerald-500">
-              <Check className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Active Customers</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.active_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-rose-500/10 p-3 rounded-xl text-rose-500">
-              <Lock className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Blocked Users</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.blocked_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
-            <div className="bg-amber-500/10 p-3 rounded-xl text-amber-500">
-              <DollarSign className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Total Revenue</span>
-              <span className="text-xl font-black text-slate-855 dark:text-white mt-0.5 block">
-                ₹{formatPrice(usersAnalytics?.total_revenue ?? 0)}
-              </span>
-            </div>
-          </div>
+      <Suspense fallback={
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm font-semibold">Loading analytics...</p>
         </div>
-
-        {/* Audit Logs */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-6 shadow-sm mt-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <Clock className="h-5 w-5 text-emerald-500" />
-              <span>Audit Logs</span>
-              <span className="audit-logs-count-badge">
-                {generalAuditLogs.length} total
-              </span>
-            </h2>
-
-            {/* Audit Logs Filter Controls */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <div className="relative min-w-[200px]">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search logs..."
-                  value={auditSearch}
-                  onChange={(e) => setAuditSearch(e.target.value)}
-                  className="pl-9 pr-4 py-2 w-full text-sm bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-700 dark:text-slate-200"
-                />
-              </div>
-
-              {/* Action Type Dropdown */}
-              <select
-                value={auditActionType}
-                onChange={(e) => setAuditActionType(e.target.value)}
-                className="px-3 py-2 text-sm bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-700 dark:text-slate-200"
-              >
-                <option value="">All Action Types</option>
-                {ACTION_TYPES.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-
-              {/* Status Dropdown */}
-              <select
-                value={auditStatus}
-                onChange={(e) => setAuditStatus(e.target.value)}
-                className="px-3 py-2 text-sm bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-700 dark:text-slate-200"
-              >
-                <option value="">All Statuses</option>
-                <option value="Success">Success</option>
-                <option value="Failed">Failed</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
-                  <th className="pb-3 pr-4">Timestamp</th>
-                  <th className="pb-3 px-4">Admin Name</th>
-                  <th className="pb-3 px-4">Action Type</th>
-                  <th className="pb-3 px-4">Module</th>
-                  <th className="pb-3 px-4">Details</th>
-                  <th className="pb-3 pl-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs">
-                {generalAuditLogs.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="py-8 text-center text-slate-400 font-semibold">
-                      No audit logs match the selected filters.
-                    </td>
-                  </tr>
-                ) : (
-                  (() => {
-                    const startIndex = (auditPage - 1) * auditPerPage;
-                    const paginatedLogs = generalAuditLogs.slice(startIndex, startIndex + auditPerPage);
-                    return paginatedLogs.map((log) => {
-                      // Action type styling helper
-                      let actionBadgeColor = "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
-                      const type = log.action_type || "";
-                      if (type.includes("Added") || type.includes("Unblocked")) {
-                        actionBadgeColor = "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-450";
-                      } else if (type.includes("Deleted") || type.includes("Blocked") || type.includes("Cancelled")) {
-                        actionBadgeColor = "bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-455";
-                      } else if (type.includes("Updated") || type.includes("Changed") || type.includes("Status")) {
-                        actionBadgeColor = "bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-455";
-                      } else if (type.includes("Login") || type.includes("Logout")) {
-                        actionBadgeColor = "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-450";
-                      }
-
-                      const { date, time } = formatDateTime(log.created_at);
-
-                      return (
-                        <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-955/20 transition-all border-b border-slate-100 dark:border-slate-800/50">
-                          <td className="py-3.5 pr-4 text-slate-500 admin-timestamp-text whitespace-nowrap">
-                            {date} <span className="text-[10px] text-slate-400 font-normal">{time}</span>
-                          </td>
-                          <td className="py-3.5 px-4 text-slate-800 admin-table-text">
-                            {log.admin_username}
-                          </td>
-                          <td className="py-3.5 px-4">
-                            <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase whitespace-nowrap ${actionBadgeColor}`}>
-                              {log.action_type}
-                            </span>
-                          </td>
-                          <td className="py-3.5 px-4 admin-table-text whitespace-nowrap">
-                            {log.module}
-                          </td>
-                          <td className="py-3.5 px-4 max-w-[280px] admin-table-text truncate" title={log.details}>
-                            {log.details}
-                          </td>
-                          <td className="py-3.5 pl-4">
-                            <span className={log.status === 'Success'
-                              ? 'status-badge-success'
-                              : 'px-2 py-0.5 rounded-lg text-[10px] font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-455'
-                            }>
-                              {log.status}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    });
-                  })()
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination Controls */}
-          {generalAuditLogs.length > auditPerPage && (
-            <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4 mt-4 text-xs">
-              <span className="font-medium text-slate-400">
-                Showing {((auditPage - 1) * auditPerPage) + 1} to {Math.min(auditPage * auditPerPage, generalAuditLogs.length)} of {generalAuditLogs.length} audit logs
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setAuditPage(prev => Math.max(prev - 1, 1))}
-                  disabled={auditPage === 1}
-                  className={`px-3 py-1.5 font-bold rounded-lg border border-slate-200 dark:border-slate-800 transition-all ${auditPage === 1
-                      ? 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850'
-                    }`}
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() => setAuditPage(prev => Math.min(prev + 1, Math.ceil(generalAuditLogs.length / auditPerPage)))}
-                  disabled={auditPage >= Math.ceil(generalAuditLogs.length / auditPerPage)}
-                  className={`px-3 py-1.5 font-bold rounded-lg border border-slate-200 dark:border-slate-800 transition-all ${auditPage >= Math.ceil(generalAuditLogs.length / auditPerPage)
-                      ? 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850'
-                    }`}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      }>
+        <HomeAdminAnalytics
+          usersAnalytics={usersAnalytics}
+          generalAuditLogs={generalAuditLogs}
+          auditSearchVal={auditSearchVal}
+          setAuditSearchVal={setAuditSearchVal}
+          auditActionType={auditActionType}
+          setAuditActionType={setAuditActionType}
+          auditStatus={auditStatus}
+          setAuditStatus={setAuditStatus}
+          auditPage={auditPage}
+          setAuditPage={setAuditPage}
+          auditPerPage={auditPerPage}
+          formatPrice={formatPrice}
+        />
+      </Suspense>
     );
   };
 
   const renderUsersData = () => {
     return (
-      <div className="space-y-6 animate-in fade-in duration-300">
-        {/* Analytics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-blue-500/10 p-3 rounded-xl text-blue-500">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Total Registered</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.total_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-indigo-500/10 p-3 rounded-xl text-indigo-500">
-              <Calendar className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">New This Month</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.new_users_this_month ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-emerald-500/10 p-3 rounded-xl text-emerald-500">
-              <Check className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Active Customers</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.active_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4">
-            <div className="bg-rose-500/10 p-3 rounded-xl text-rose-500">
-              <Lock className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Blocked Users</span>
-              <span className="text-xl font-black text-slate-850 dark:text-white mt-0.5 block">
-                {usersAnalytics?.blocked_users ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md flex items-center gap-4 col-span-1 sm:col-span-2 lg:col-span-1">
-            <div className="bg-amber-500/10 p-3 rounded-xl text-amber-500">
-              <DollarSign className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Total Revenue</span>
-              <span className="text-xl font-black text-slate-855 dark:text-white mt-0.5 block">
-                ₹{formatPrice(usersAnalytics?.total_revenue ?? 0)}
-              </span>
-            </div>
-          </div>
+      <Suspense fallback={
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm font-semibold">Loading user data...</p>
         </div>
-
-        {/* Search & Filters */}
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
-          <div className="relative w-full lg:w-96">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or mobile..."
-              value={userSearchQuery}
-              onChange={(e) => {
-                setUserSearchQuery(e.target.value);
-                setUserPage(1);
-              }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/35 text-xs text-slate-800 dark:text-slate-100"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2 w-full lg:w-auto items-center justify-start lg:justify-end">
-            {[
-              { label: 'All Users', value: 'all' },
-              { label: 'Active Users', value: 'active' },
-              { label: 'Blocked Users', value: 'blocked' },
-              { label: 'New Users', value: 'new' },
-              { label: 'With Orders', value: 'with_orders' },
-              { label: 'Without Orders', value: 'without_orders' }
-            ].map((f) => (
-              <button
-                key={f.value}
-                onClick={() => {
-                  setUserFilter(f.value);
-                  setUserPage(1);
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${userFilter === f.value
-                    ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-650 hover:bg-slate-50 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-850'
-                  }`}
-              >
-                {f.label}
-              </button>
-            ))}
-
-            <button
-              onClick={() => setShowAddUserModal(true)}
-              className="px-4 py-2 rounded-xl text-xs font-bold border border-emerald-550 bg-emerald-500 hover:bg-emerald-600 text-white transition-all cursor-pointer shadow-sm flex items-center gap-1.5 ml-0 lg:ml-2"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Add User</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Users Table */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-          <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead className="bg-slate-50 dark:bg-slate-950/70 border-b border-slate-150 dark:border-slate-800 sticky top-0 z-10">
-                <tr className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="py-4 px-6 font-bold">User ID</th>
-                  <th className="py-4 px-6 font-bold">Full Name</th>
-                  <th className="py-4 px-6 font-bold">Mobile Number</th>
-                  <th className="py-4 px-6 font-bold">Email Address</th>
-                  <th className="py-4 px-6 font-bold">Role</th>
-                  <th className="py-4 px-6 font-bold">Address</th>
-                  <th className="py-4 px-6 font-bold">Registration Date</th>
-                  <th className="py-4 px-6 font-bold">Registration Time</th>
-                  <th className="py-4 px-6 font-bold text-center">Total Orders</th>
-                  <th className="py-4 px-6 font-bold text-center">Total Spending</th>
-                  <th className="py-4 px-6 font-bold text-center">Pending Orders</th>
-                  <th className="py-4 px-6 font-bold text-center">Delivered Orders</th>
-                  <th className="py-4 px-6 font-bold">Account Status</th>
-                  <th className="py-4 px-6 font-bold text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-850">
-                {currentUsers.length === 0 ? (
-                  <tr>
-                    <td colSpan="14" className="py-12 text-center text-slate-450 italic">
-                      No users found matching current filters.
-                    </td>
-                  </tr>
-                ) : (
-                  currentUsers.map((u) => {
-                    const { date, time } = formatDateTime(u.created_at);
-                    const pendingOrdersCount = u.orders?.filter(o => o.order_status === 'Pending').length || 0;
-                    const deliveredOrdersCount = u.orders?.filter(o => o.order_status === 'Delivered').length || 0;
-                    return (
-                      <tr
-                        key={u.id}
-                        className="hover:bg-slate-55/30 dark:hover:bg-slate-850/30 transition-colors"
-                      >
-                        <td className="py-4 px-6 font-mono text-[10px] text-slate-400">
-                          {u.id}
-                        </td>
-                        <td className="py-4 px-6 font-bold text-slate-800 dark:text-slate-100">
-                          {u.name}
-                        </td>
-                        <td className="py-4 px-6 font-mono text-slate-650 dark:text-slate-350">
-                          {u.mobile}
-                        </td>
-                        <td className="py-4 px-6 text-slate-650 dark:text-slate-350">
-                          {u.email}
-                        </td>
-                        <td className="py-4 px-6">
-                          {u.is_admin ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
-                              Admin
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
-                              Customer
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-4 px-6 max-w-xs truncate text-slate-500 dark:text-slate-400" title={renderAddress(u.address)}>
-                          {renderAddress(u.address)}
-                        </td>
-                        <td className="py-4 px-6 text-slate-500 dark:text-slate-400 font-mono">
-                          {date}
-                        </td>
-                        <td className="py-4 px-6 text-slate-500 dark:text-slate-400 font-mono">
-                          {time}
-                        </td>
-                        <td className="py-4 px-6 text-center font-bold text-slate-700 dark:text-slate-300">
-                          {u.total_orders || 0}
-                        </td>
-                        <td className="py-4 px-6 text-center font-bold text-emerald-600 dark:text-emerald-400">
-                          ₹{formatPrice(u.total_spent || 0)}
-                        </td>
-                        <td className="py-4 px-6 text-center font-bold text-amber-500">
-                          {pendingOrdersCount}
-                        </td>
-                        <td className="py-4 px-6 text-center font-bold text-emerald-500">
-                          {deliveredOrdersCount}
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className={`inline-flex items-center px-[12px] py-[4px] rounded-full text-[10px] font-semibold border shadow-sm ${
-                            (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'active'
-                              ? 'bg-[#22C55E] text-[#FFFFFF] border-[#16A34A]'
-                              : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'inactive'
-                              ? 'bg-[#6B7280] text-[#FFFFFF] border-[#4B5563]'
-                              : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'suspended'
-                              ? 'bg-[#EF4444] text-[#FFFFFF] border-[#DC2626]'
-                              : (u.status || (u.is_blocked ? "Blocked" : "Active")).toLowerCase() === 'pending verification'
-                              ? 'bg-[#F59E0B] text-[#FFFFFF] border-[#D97706]'
-                              : 'bg-[#B91C1C] text-[#FFFFFF] border-[#991B1B]'
-                          }`}>
-                            {u.status || (u.is_blocked ? "Blocked" : "Active")}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => setSelectedUserForDetails(u)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-bold shadow-sm transition-all cursor-pointer"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                            <span>View Details</span>
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] text-slate-400">
-                Showing <span className="font-bold text-slate-700 dark:text-slate-300">{indexOfFirstItem + 1}</span> to{' '}
-                <span className="font-bold text-slate-700 dark:text-slate-300">
-                  {Math.min(indexOfLastItem, filteredUsers.length)}
-                </span>{' '}
-                of <span className="font-bold text-slate-700 dark:text-slate-300">{filteredUsers.length}</span> users
-              </span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setUserPage(p => Math.max(1, p - 1))}
-                  disabled={userPage === 1}
-                  className="p-1.5 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-850 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setUserPage(p)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${userPage === p
-                        ? 'bg-emerald-500 text-white shadow-sm'
-                        : 'border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-600 dark:text-slate-400'
-                      }`}
-                  >
-                    {p}
-                  </button>
-                ))}
-                <button
-                  onClick={() => setUserPage(p => Math.min(totalPages, p + 1))}
-                  disabled={userPage === totalPages}
-                  className="p-1.5 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-850 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      }>
+        <HomeUserManagement
+          usersAnalytics={usersAnalytics}
+          userSearchQuery={userSearchQuery}
+          setUserSearchQuery={setUserSearchQuery}
+          setUserPage={setUserPage}
+          userFilter={userFilter}
+          setUserFilter={setUserFilter}
+          setShowAddUserModal={setShowAddUserModal}
+          currentUsers={currentUsers}
+          formatPrice={formatPrice}
+          setSelectedUserForDetails={setSelectedUserForDetails}
+          indexOfFirstItem={indexOfFirstItem}
+          indexOfLastItem={indexOfLastItem}
+          filteredUsers={filteredUsers}
+          totalPages={totalPages}
+          userPage={userPage}
+        />
+      </Suspense>
     );
   };
 
@@ -2092,7 +1653,13 @@ export const Home = () => {
             </div>
             {/* Modal Body */}
             <div className="flex-1 overflow-y-auto p-2 sm:p-6 bg-slate-50 dark:bg-slate-950">
-              <ProductDetails productId={selectedAdminProductId} />
+              <Suspense fallback={
+                <div className="w-full min-h-[300px] flex items-center justify-center">
+                  <div className="w-10 h-10 border-4 border-[#D4A75F] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              }>
+                <ProductDetails productId={selectedAdminProductId} />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -2349,7 +1916,7 @@ export const Home = () => {
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 font-bold block uppercase">Total Orders</span>
-                    <span className="text-sm font-black text-slate-850 dark:text-white">
+                    <span className="text-sm font-black text-slate-850 dark:text-white price-amount">
                       {selectedUserForDetails.total_orders} orders
                     </span>
                   </div>
@@ -2361,7 +1928,7 @@ export const Home = () => {
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 font-bold block uppercase">Total Spending</span>
-                    <span className="text-sm font-black text-slate-850 dark:text-white">
+                    <span className="text-sm font-black text-slate-850 dark:text-white price-amount">
                       ₹{formatPrice(selectedUserForDetails.total_spent)}
                     </span>
                   </div>
@@ -2373,7 +1940,7 @@ export const Home = () => {
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 font-bold block uppercase">Last Order Date</span>
-                    <span className="text-sm font-black text-slate-855 dark:text-white">
+                    <span className="text-sm font-black text-slate-855 dark:text-white price-amount">
                       {selectedUserForDetails.last_order_date ? formatDateTime(selectedUserForDetails.last_order_date).date : 'No orders'}
                     </span>
                   </div>
@@ -2454,7 +2021,7 @@ export const Home = () => {
                               <td className="py-3 px-2 text-center font-mono font-bold text-slate-600 dark:text-slate-300">
                                 {order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
                               </td>
-                              <td className="py-3 px-2 text-right font-black text-emerald-500 font-mono">
+                              <td className="py-3 px-2 text-right font-black text-emerald-500 font-mono price-amount">
                                 ₹{formatPrice(order.total_amount)}
                               </td>
                               <td className="py-3 px-2 text-center text-slate-500 dark:text-slate-400 font-bold">

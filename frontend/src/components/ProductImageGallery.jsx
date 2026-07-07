@@ -54,8 +54,8 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    console.log("Mouse Move Event:", { mouseX: x, mouseY: y });
-    console.log("Image Dimensions:", { width, height });
+    
+    
 
     // Lens dimensions calculated based on zoom scale
     const lensWidth = width / zoomScale;
@@ -74,7 +74,7 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
     const pctX = (lensX / (width - lensWidth)) * 100;
     const pctY = (lensY / (height - lensHeight)) * 100;
     
-    console.log("Zoom Calculations:", { lensX, lensY, pctX, pctY });
+    
 
     setLensPosition({ x: pctX, y: pctY, width: lensWidth, height: lensHeight, left: lensX, top: lensY });
   };
@@ -150,11 +150,11 @@ export const ProductImageGallery = ({ images = [], productName = 'Product' }) =>
         <div
           onMouseMove={handleMouseMove}
           onMouseEnter={() => {
-            console.log("Hover state: true - Zoom Panel visible");
+            
             setZoomActive(true);
           }}
           onMouseLeave={() => {
-            console.log("Hover state: false - Zoom Panel hidden");
+            
             setZoomActive(false);
           }}
           onTouchStart={handleTouchStart}

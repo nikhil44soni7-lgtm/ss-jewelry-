@@ -4,6 +4,7 @@ import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft, ShieldCheck } from 'lucid
 import { CartContext } from '../context/CartContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { formatPrice } from '../utils/priceFormatter';
+import { LuxuryImage } from '../components/LuxuryImage';
 
 export const Cart = () => {
   const { cart, removeFromCart, updateQuantity, cartCount, cartTotal } = useContext(CartContext);
@@ -58,7 +59,7 @@ export const Cart = () => {
                   >
                     {/* Item Image */}
                     <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 flex-shrink-0">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      <LuxuryImage src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
 
                     {/* Specifications */}
@@ -67,11 +68,11 @@ export const Cart = () => {
                         {item.name}
                       </h3>
                       <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
-                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 price-amount">
                           ₹{formatPrice(finalItemPrice)}
                         </span>
                         {item.discount > 0 && (
-                           <span className="text-xs text-slate-400 line-through">
+                           <span className="text-xs text-slate-400 line-through price-amount">
                             ₹{formatPrice(item.price)}
                           </span>
                         )}
@@ -135,16 +136,16 @@ export const Cart = () => {
                 <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                   <div className="flex justify-between">
                     <span>{t('cart_page.subtotal')}</span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{formatPrice(Math.round(cartTotal))}</span>
+                    <span className="font-semibold text-slate-850 dark:text-slate-100 price-amount">₹{formatPrice(Math.round(cartTotal))}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>{t('cart_page.gst')}</span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-100">₹{formatPrice(gstTax)}</span>
+                    <span className="font-semibold text-slate-850 dark:text-slate-100 price-amount">₹{formatPrice(gstTax)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>{t('cart_page.delivery_charges')}</span>
                     <span className={`font-semibold ${shippingFee === 0 ? 'text-emerald-500' : 'text-slate-850 dark:text-slate-100'}`}>
-                      {shippingFee === 0 ? t('cart_page.free') : `₹${formatPrice(shippingFee)}`}
+                      {shippingFee === 0 ? t('cart_page.free') : <span className="price-amount">₹{formatPrice(shippingFee)}</span>}
                     </span>
                   </div>
                 </div>
@@ -157,7 +158,7 @@ export const Cart = () => {
 
                 <div className="border-t border-slate-100 dark:border-slate-805 pt-4 flex justify-between items-baseline">
                   <span className="font-extrabold text-slate-800 dark:text-slate-200 text-base">{t('cart_page.total_amount')}</span>
-                  <span className="font-black text-2xl text-slate-900 dark:text-slate-50">₹{formatPrice(grandTotal)}</span>
+                  <span className="font-black text-2xl text-slate-900 dark:text-slate-50 price-amount">₹{formatPrice(grandTotal)}</span>
                 </div>
 
                 <button

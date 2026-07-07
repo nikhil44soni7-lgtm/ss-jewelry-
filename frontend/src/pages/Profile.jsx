@@ -734,7 +734,7 @@ export const Profile = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-[10px] font-bold text-slate-400">ID: {order.order_id.substring(0, 12)}...</p>
-                            <p className="text-xs font-extrabold text-[#3F1D5A] dark:text-slate-205 mt-0.5">₹{formatPrice(order.total_amount)}</p>
+                            <p className="text-xs font-extrabold text-[#3F1D5A] dark:text-slate-205 mt-0.5 price-amount">₹{formatPrice(order.total_amount)}</p>
                           </div>
                           <div className="flex items-center space-x-2">
                             <span className={`text-[9px] font-black px-2 py-0.5 rounded-lg border ${getStatusStyle(order.status)}`}>
@@ -757,7 +757,7 @@ export const Profile = () => {
                               {order.items.map((item, idx) => (
                                 <div key={idx} className="py-1.5 flex justify-between">
                                   <span className="font-semibold text-slate-700 dark:text-slate-300">{item.name} x{item.quantity}</span>
-                                  <span className="font-extrabold text-slate-900 dark:text-white">₹{formatPrice(item.price * item.quantity)}</span>
+                                  <span className="font-extrabold text-slate-900 dark:text-white price-amount">₹{formatPrice(item.price * item.quantity)}</span>
                                 </div>
                               ))}
                             </div>
@@ -872,10 +872,12 @@ export const Profile = () => {
                         alt={item.name}
                         className="w-10 h-10 object-cover rounded-lg border border-slate-200/60 dark:border-slate-850"
                         onError={(e) => { e.target.src = "/placeholder.jpg"; }}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">{item.name}</p>
-                        <p className="text-[10px] font-extrabold text-[#D4A75F] mt-0.5">₹{formatPrice(item.price)}</p>
+                        <p className="text-[10px] font-extrabold text-[#D4A75F] mt-0.5 price-amount">₹{formatPrice(item.price)}</p>
                       </div>
                       <div className="flex gap-1.5 flex-shrink-0">
                         <button

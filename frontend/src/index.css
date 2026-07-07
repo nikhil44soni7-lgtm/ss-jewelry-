@@ -448,9 +448,9 @@ html:not(.dark) .border-slate-300 {
 }
 
 .navbar-glass-3d span.font-great-vibes,
-.navbar-glass-3d .text-[#D4A75F],
+.navbar-glass-3d .text-\[\#D4A75F\],
 .navbar-glass-3d-scrolled span.font-great-vibes,
-.navbar-glass-3d-scrolled .text-[#D4A75F] {
+.navbar-glass-3d-scrolled .text-\[\#D4A75F\] {
   color: #D4A75F !important;
 }
 
@@ -467,9 +467,9 @@ html:not(.dark) .border-slate-300 {
 }
 
 /* Badge / pill overrides inside mobile navbars */
-.navbar-glass-3d .bg-[#D4A75F],
+.navbar-glass-3d .bg-\[\#D4A75F\],
 .navbar-glass-3d .bg-amber-500,
-.navbar-glass-3d-scrolled .bg-[#D4A75F],
+.navbar-glass-3d-scrolled .bg-\[\#D4A75F\],
 .navbar-glass-3d-scrolled .bg-amber-500 {
   background-color: #D4A75F !important;
 }
@@ -644,6 +644,13 @@ html:not(.dark) .border-slate-300 {
   display: inline-flex !important;
   align-items: center !important;
   opacity: 1 !important;
+}
+
+/* Reusable styling for monetary values/prices in Dark Mode */
+.dark .price-amount,
+html.dark .price-amount {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
 }
 
 

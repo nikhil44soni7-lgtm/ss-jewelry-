@@ -7,21 +7,35 @@ import { LiveChat } from './components/LiveChat';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LanguageSelectionModal } from './components/LanguageSelectionModal';
 
-// Pages
 import { Home } from './pages/Home';
-import { ProductDetails } from './pages/ProductDetails';
-import { Cart } from './pages/Cart';
-import { Checkout } from './pages/Checkout';
-import { MyOrders } from './pages/MyOrders';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { Support } from './pages/Support';
-import { SupportCenter } from './pages/SupportCenter';
-import { AdminDashboard } from './pages/AdminDashboard';
-import { AdminControl } from './pages/AdminControl';
-import { ForgotPassword } from './pages/ForgotPassword';
-import { ResetPassword } from './pages/ResetPassword';
-import { Profile } from './pages/Profile';
+
+// Lazy load other pages for route-based code splitting
+const ProductDetails = React.lazy(() => import('./pages/ProductDetails').then(m => ({ default: m.ProductDetails })));
+const Cart = React.lazy(() => import('./pages/Cart').then(m => ({ default: m.Cart })));
+const Checkout = React.lazy(() => import('./pages/Checkout').then(m => ({ default: m.Checkout })));
+const MyOrders = React.lazy(() => import('./pages/MyOrders').then(m => ({ default: m.MyOrders })));
+const Login = React.lazy(() => import('./pages/Login').then(m => ({ default: m.Login })));
+const Register = React.lazy(() => import('./pages/Register').then(m => ({ default: m.Register })));
+const Support = React.lazy(() => import('./pages/Support').then(m => ({ default: m.Support })));
+const SupportCenter = React.lazy(() => import('./pages/SupportCenter').then(m => ({ default: m.SupportCenter })));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminControl = React.lazy(() => import('./pages/AdminControl').then(m => ({ default: m.AdminControl })));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword').then(m => ({ default: m.ForgotPassword })));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword').then(m => ({ default: m.ResetPassword })));
+const Profile = React.lazy(() => import('./pages/Profile').then(m => ({ default: m.Profile })));
+
+// Loading UI Fallback
+const LoadingFallback = () => (
+  <div className="flex flex-col items-center justify-center min-h-[50vh] w-full bg-slate-50/50 dark:bg-slate-950/50">
+    <div className="relative flex flex-col items-center">
+      <div className="w-10 h-10 rounded-full border-4 border-slate-200 border-t-[#D4A75F] animate-spin" />
+      <p className="text-[10px] tracking-[0.2em] uppercase text-[#D4A75F] mt-4 font-semibold animate-pulse">
+        Loading...
+      </p>
+    </div>
+  </div>
+);
+
 
 // Luxurious page transition wrapper
 const PageWrapper = ({ children }) => {
@@ -99,50 +113,52 @@ function App() {
       {/* Main page content area */}
       <main className={`flex-grow ${location.pathname === '/' ? '' : 'pt-24 lg:pt-0'}`}>
         <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
-            <Route path="/product/:id" element={<PageWrapper><ProductDetails /></PageWrapper>} />
-            <Route path="/cart" element={
-              <ProtectedRoute>
-                <PageWrapper><Cart /></PageWrapper>
-              </ProtectedRoute>
-            } />
-            <Route path="/checkout" element={
-              <ProtectedRoute>
-                <PageWrapper><Checkout /></PageWrapper>
-              </ProtectedRoute>
-            } />
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <PageWrapper><MyOrders /></PageWrapper>
-              </ProtectedRoute>
-            } />
-             <Route path="/profile" element={
-              <ProtectedRoute userOnly={true}>
-                <PageWrapper><Profile /></PageWrapper>
-              </ProtectedRoute>
-            } />
-            <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
-            <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
-            <Route path="/forgot-password" element={<PageWrapper><ForgotPassword /></PageWrapper>} />
-            <Route path="/reset-password" element={<PageWrapper><ResetPassword /></PageWrapper>} />
-            <Route path="/support" element={<PageWrapper><Support /></PageWrapper>} />
-            <Route path="/support-center" element={
-              <ProtectedRoute>
-                <PageWrapper><SupportCenter /></PageWrapper>
-              </ProtectedRoute>
-            } />
-            <Route path="/admin" element={
-              <ProtectedRoute adminOnly={true}>
-                <PageWrapper><AdminDashboard /></PageWrapper>
-              </ProtectedRoute>
-            } />
-            <Route path="/admin-control" element={
-              <ProtectedRoute adminOnly={true}>
-                <PageWrapper><AdminControl /></PageWrapper>
-              </ProtectedRoute>
-            } />
-          </Routes>
+          <React.Suspense fallback={<LoadingFallback />}>
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+              <Route path="/product/:id" element={<PageWrapper><ProductDetails /></PageWrapper>} />
+              <Route path="/cart" element={
+                <ProtectedRoute>
+                  <PageWrapper><Cart /></PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/checkout" element={
+                <ProtectedRoute>
+                  <PageWrapper><Checkout /></PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/orders" element={
+                <ProtectedRoute>
+                  <PageWrapper><MyOrders /></PageWrapper>
+                </ProtectedRoute>
+              } />
+               <Route path="/profile" element={
+                <ProtectedRoute userOnly={true}>
+                  <PageWrapper><Profile /></PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+              <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+              <Route path="/forgot-password" element={<PageWrapper><ForgotPassword /></PageWrapper>} />
+              <Route path="/reset-password" element={<PageWrapper><ResetPassword /></PageWrapper>} />
+              <Route path="/support" element={<PageWrapper><Support /></PageWrapper>} />
+              <Route path="/support-center" element={
+                <ProtectedRoute>
+                  <PageWrapper><SupportCenter /></PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute adminOnly={true}>
+                  <PageWrapper><AdminDashboard /></PageWrapper>
+                </ProtectedRoute>
+              } />
+              <Route path="/admin-control" element={
+                <ProtectedRoute adminOnly={true}>
+                  <PageWrapper><AdminControl /></PageWrapper>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </React.Suspense>
         </AnimatePresence>
       </main>
 

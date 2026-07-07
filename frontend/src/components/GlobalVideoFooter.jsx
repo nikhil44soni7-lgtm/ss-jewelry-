@@ -10,13 +10,13 @@ export const GlobalVideoFooter = () => {
         <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
       </div>
 
-      {/* Video Masked text container - Edge-to-edge, centered, full width */}
+      {/* Video Masked text container - Edge-to-edge, centered, full width, 2x height */}
       <div className="w-full mb-4 sm:mb-6 p-0 m-0 flex justify-center overflow-hidden">
-        <svg className="w-[100vw] h-auto select-none p-0 m-0" viewBox="0 0 1320 200">
+        <svg className="w-[100vw] h-auto select-none p-0 m-0" viewBox="0 0 1320 380">
           <defs>
             <mask id="text-mask" x="0" y="0" width="100%" height="100%">
               <rect x="0" y="0" width="100%" height="100%" fill="black" />
-              {/* Added white stroke to make the letter shapes themselves thicker/bolder inside the mask */}
+              {/* Thicker mask outline for taller letter shape area */}
               <text
                 x="50%"
                 y="50%"
@@ -24,11 +24,13 @@ export const GlobalVideoFooter = () => {
                 dominantBaseline="middle"
                 fill="white"
                 stroke="white"
-                strokeWidth="2.5"
-                fontSize="135"
+                strokeWidth="4.5"
+                fontSize="240"
                 fontWeight="950"
                 fontFamily="'Outfit', 'Inter', sans-serif"
-                letterSpacing="0.14em"
+                letterSpacing="0.08em"
+                textLength="1300"
+                lengthAdjust="spacingAndGlyphs"
               >
                 SS JEWELLERY
               </text>
@@ -47,7 +49,7 @@ export const GlobalVideoFooter = () => {
             />
           </foreignObject>
 
-          {/* Thicker golden outline framing to match the bold weight style */}
+          {/* Golden outline framing scaled to match 2x height and bold weight */}
           <text
             x="50%"
             y="50%"
@@ -55,12 +57,14 @@ export const GlobalVideoFooter = () => {
             dominantBaseline="middle"
             fill="none"
             stroke="#D4A75F"
-            strokeWidth="1.6"
+            strokeWidth="3.2"
             strokeOpacity="0.9"
-            fontSize="135"
+            fontSize="240"
             fontWeight="950"
             fontFamily="'Outfit', 'Inter', sans-serif"
-            letterSpacing="0.14em"
+            letterSpacing="0.08em"
+            textLength="1300"
+            lengthAdjust="spacingAndGlyphs"
             className="pointer-events-none"
           >
             SS JEWELLERY

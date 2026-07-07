@@ -260,47 +260,66 @@ const BannerSlider = React.memo(({
 
           {/* ---- CONTENT OVERLAY ---- */}
           <div
-            ref={contentRef}
-            style={{ position: 'absolute', inset: 0, zIndex: 30, display: 'flex', alignItems: 'center' }}
+            className="absolute inset-0 z-30 flex items-center"
           >
-            <div className="w-full max-w-2xl xl:max-w-3xl px-8 sm:px-12 md:px-14 lg:px-20">
+            <div className="w-full max-w-2xl xl:max-w-3xl px-8 sm:px-12 md:px-14 lg:px-20 text-left">
               {/* Badge */}
-              <div ref={badgeRef} style={{ opacity: 0 }} className="mb-4 sm:mb-5">
+              <motion.div
+                key={`badge-${activeSlide}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="mb-4 sm:mb-5"
+              >
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#D4A75F]/15 text-[#D4A75F] border border-[#D4A75F]/35 backdrop-blur-sm tracking-[0.15em] uppercase shadow-sm">
                   <Sparkles className="h-3.5 w-3.5 animate-pulse" />
                   {currentSlide.badge}
                 </span>
-              </div>
+              </motion.div>
 
               {/* Main Title */}
-              <h1
-                ref={titleRef}
+              <motion.h1
+                key={`title-${activeSlide}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.25 }}
                 className="font-serif font-bold text-white leading-[1.07] tracking-tight mb-3 sm:mb-4"
-                style={{ opacity: 0, fontSize: 'clamp(1.85rem, 4.8vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
+                style={{ fontSize: 'clamp(1.85rem, 4.8vw, 4.5rem)', textShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
               >
                 {currentSlide.title}
-              </h1>
+              </motion.h1>
 
               {/* Gold Subtitle */}
-              <p
-                ref={subtitleRef}
+              <motion.p
+                key={`subtitle-${activeSlide}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
                 className="font-serif text-[#D4A75F] mb-3"
-                style={{ opacity: 0, fontSize: 'clamp(1rem, 2vw, 1.45rem)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
+                style={{ fontSize: 'clamp(1rem, 2vw, 1.45rem)', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}
               >
                 {currentSlide.subtitle}
-              </p>
+              </motion.p>
 
               {/* Description */}
-              <p
-                ref={descRef}
+              <motion.p
+                key={`desc-${activeSlide}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
                 className="text-slate-300/85 leading-relaxed mb-7 sm:mb-8 max-w-lg hidden sm:block text-sm"
-                style={{ opacity: 0 }}
               >
                 {currentSlide.desc}
-              </p>
+              </motion.p>
 
               {/* CTA Row */}
-              <div ref={btnRef} className="flex items-center gap-4" style={{ opacity: 0 }}>
+              <motion.div
+                key={`cta-${activeSlide}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.55 }}
+                className="flex items-center gap-4"
+              >
                 <Link
                   to={currentSlide.btnLink || `/?category=${currentSlide.catFilter}`}
                   onClick={(e) => handleBannerButtonClick(e, currentSlide)}
@@ -322,7 +341,7 @@ const BannerSlider = React.memo(({
                   View All
                   <ChevronRight className="h-3 w-3" />
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
 

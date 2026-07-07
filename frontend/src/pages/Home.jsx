@@ -115,11 +115,25 @@ const MobileCategorySkeleton = () => (
 );
 
 const SearchSpotlight = ({ products, language }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [products]);
+
+  useEffect(() => {
+    if (!products || products.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % products.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [products]);
+
   if (!products || products.length === 0) return null;
 
-  const mainProduct = products[0];
-  const leftProduct = products[1] || null;
-  const rightProduct = products[2] || null;
+  const mainProduct = products[activeIndex];
+  const leftProduct = products.length > 1 ? products[(activeIndex - 1 + products.length) % products.length] : null;
+  const rightProduct = products.length > 2 ? products[(activeIndex + 1) % products.length] : null;
 
   // Helper to extract first image
   const getProductImage = (prod) => {
@@ -139,7 +153,7 @@ const SearchSpotlight = ({ products, language }) => {
   const rightImg = getProductImage(rightProduct);
 
   return (
-    <div className="relative w-full overflow-hidden py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#FDF9F3] to-[#F5ECE1] dark:from-[#150F0D] dark:to-[#221612] border-b border-[#D4A75F]/20">
+    <div className="relative w-full overflow-hidden py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#0A0512] via-[#150A21] to-[#0A0512] dark:from-[#0A0512] dark:to-[#150A21] border-b border-[#D4A75F]/20 text-white">
       {/* Background Decorative Rings/Ornaments */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none">
         <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] rounded-full border border-[#D4A75F] -translate-y-1/2" />
@@ -154,26 +168,43 @@ const SearchSpotlight = ({ products, language }) => {
             {language === 'hi' ? 'शीर्ष मिलान' : 'Top Search Match'}
           </span>
           
-          <h2 className="font-serif font-bold text-slate-900 dark:text-white text-3xl md:text-4xl lg:text-5xl leading-tight mb-4">
+          <motion.h2 
+            key={`title-${activeIndex}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="font-serif font-bold text-white text-3xl md:text-4xl lg:text-5xl leading-tight mb-4"
+          >
             {mainProduct.name}
-          </h2>
+          </motion.h2>
           
-          <p className="text-slate-600 dark:text-slate-350 text-sm md:text-base leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+          <motion.p 
+            key={`desc-${activeIndex}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="text-slate-300 text-sm md:text-base leading-relaxed mb-6 max-w-md mx-auto lg:mx-0"
+          >
             {mainProduct.description || mainProduct.desc || (language === 'hi' ? 'हमारे उत्तम संग्रह से एक उत्कृष्ट हस्तनिर्मित आभूषण।' : 'An exquisite handcrafted piece from our luxury collection.')}
-          </p>
+          </motion.p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
             <Link
               to={`/product/${mainProduct._id || mainProduct.id}`}
-              className="group inline-flex items-center gap-2 px-8 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+              className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#D4A75F] hover:bg-[#BF934B] text-slate-950 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 shadow-lg animate-pulse"
             >
               {language === 'hi' ? 'विवरण देखें' : 'Explore The Craft'}
-              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform text-slate-950" />
             </Link>
             
-            <span className="font-serif text-xl md:text-2xl font-bold text-[#D4A75F]">
+            <motion.span 
+              key={`price-${activeIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="font-serif text-xl md:text-2xl font-bold text-[#D4A75F]"
+            >
               ₹{Number(mainProduct.price).toLocaleString('en-IN')}
-            </span>
+            </motion.span>
           </div>
         </div>
 
@@ -185,13 +216,21 @@ const SearchSpotlight = ({ products, language }) => {
             <div className="absolute left-[5%] md:left-[15%] bottom-[10%] scale-[0.7] opacity-40 blur-[1.5px] transition-all hover:opacity-75 hover:blur-0 duration-500 z-10 hidden sm:block">
               <div className="relative flex flex-col items-center">
                 {/* Mannequin / Display shape */}
-                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#F2E6D6] to-[#D9C4A9] dark:from-[#3A2D27] dark:to-[#221815] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-white/20">
-                  <img src={leftImg} alt={leftProduct.name} className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
+                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#20142A] to-[#0F0715] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-[#D4A75F]/15">
+                  <motion.img 
+                    key={`left-img-${activeIndex}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    src={leftImg} 
+                    alt={leftProduct.name} 
+                    className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" 
+                  />
                 </div>
                 {/* Gold collar collar base */}
                 <div className="w-[100px] h-[8px] bg-gradient-to-r from-[#BF934B] via-[#D4A75F] to-[#BF934B] rounded-full shadow-inner" />
                 {/* Marble cylinder pedestal */}
-                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#EAEAEA] to-[#CCCCCC] dark:from-[#2C2C2C] dark:to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
+                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#2C2C2C] to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
               </div>
             </div>
           )}
@@ -201,13 +240,19 @@ const SearchSpotlight = ({ products, language }) => {
             <div className="relative flex flex-col items-center">
               
               {/* Mannequin Bust */}
-              <div className="w-[180px] h-[230px] bg-gradient-to-b from-[#FAF5EF] to-[#EAE0D3] dark:from-[#3D302A] dark:to-[#261B17] rounded-t-[80px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex items-center justify-center p-4 border border-white/30 relative">
+              <div className="w-[180px] h-[230px] bg-gradient-to-b from-[#2B1B35] to-[#140C1A] rounded-t-[80px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] flex items-center justify-center p-4 border border-[#D4A75F]/35 relative">
                 <motion.img 
+                  key={`main-img-${activeIndex}`}
                   src={mainImg} 
                   alt={mainProduct.name} 
                   className="w-[130px] h-[130px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)]"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
+                  transition={{ 
+                    opacity: { duration: 0.4 },
+                    scale: { duration: 0.4 },
+                    y: { duration: 4, repeat: Infinity, ease: "easeInOut" } 
+                  }}
                 />
               </div>
               
@@ -215,7 +260,7 @@ const SearchSpotlight = ({ products, language }) => {
               <div className="w-[130px] h-[10px] bg-gradient-to-r from-[#B38F4B] via-[#D4A75F] to-[#B38F4B] rounded-full shadow-md" />
               
               {/* Marble Pillar Pedestal */}
-              <div className="w-[150px] h-[40px] bg-gradient-to-b from-[#F2F2F2] to-[#E0E0E0] dark:from-[#333333] dark:to-[#222222] rounded-md shadow-lg border-t border-white/20 relative overflow-hidden">
+              <div className="w-[150px] h-[40px] bg-gradient-to-b from-[#333333] to-[#222222] rounded-md shadow-lg border-t border-white/20 relative overflow-hidden">
                 {/* Marble texture gloss */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent" />
               </div>
@@ -230,13 +275,21 @@ const SearchSpotlight = ({ products, language }) => {
             <div className="absolute right-[5%] md:right-[15%] bottom-[10%] scale-[0.7] opacity-40 blur-[1.5px] transition-all hover:opacity-75 hover:blur-0 duration-500 z-10 hidden sm:block">
               <div className="relative flex flex-col items-center">
                 {/* Mannequin / Display shape */}
-                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#F2E6D6] to-[#D9C4A9] dark:from-[#3A2D27] dark:to-[#221815] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-white/20">
-                  <img src={rightImg} alt={rightProduct.name} className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
+                <div className="w-[120px] h-[160px] bg-gradient-to-b from-[#20142A] to-[#0F0715] rounded-t-[50px] shadow-lg flex items-center justify-center p-3 border border-[#D4A75F]/15">
+                  <motion.img 
+                    key={`right-img-${activeIndex}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    src={rightImg} 
+                    alt={rightProduct.name} 
+                    className="w-[85px] h-[85px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" 
+                  />
                 </div>
                 {/* Gold collar base */}
                 <div className="w-[100px] h-[8px] bg-gradient-to-r from-[#BF934B] via-[#D4A75F] to-[#BF934B] rounded-full shadow-inner" />
                 {/* Marble pedestal */}
-                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#EAEAEA] to-[#CCCCCC] dark:from-[#2C2C2C] dark:to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
+                <div className="w-[110px] h-[30px] bg-gradient-to-b from-[#2C2C2C] to-[#1A1A1A] rounded-md shadow-md border-t border-white/10" />
               </div>
             </div>
           )}

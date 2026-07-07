@@ -1784,7 +1784,7 @@ export const Home = () => {
       </div>
 
       {/* Premium Video Showcase Section */}
-      <div className="relative w-full h-[320px] sm:h-[480px] overflow-hidden my-16 border-y border-[#D4A75F]/20 bg-black">
+      <div className="relative w-full h-[320px] sm:h-[480px] overflow-hidden bg-black">
         {/* Background Video */}
         <video
           autoPlay
@@ -1793,7 +1793,7 @@ export const Home = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-70"
         >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-golden-dust-particles-in-the-air-loop-42867-large.mp4" type="video/mp4" />
+          <source src="/luxury-loop.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 

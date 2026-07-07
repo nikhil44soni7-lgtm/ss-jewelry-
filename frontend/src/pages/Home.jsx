@@ -723,6 +723,8 @@ export const Home = () => {
   const yParallax = useTransform(scrollY, [0, 500], [0, 80]);
   const opacityParallax = useTransform(scrollY, [0, 400], [1, 0]);
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [allProductsLoading, setAllProductsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedAdminProductId, setSelectedAdminProductId] = useState(null);
@@ -1762,6 +1764,20 @@ export const Home = () => {
 
         const response = await axios.get(url);
         setProducts(response.data);
+
+        // Fetch all products (filtered by category if selected, but NOT by search query) if searching
+        if (activeSearch) {
+          setAllProductsLoading(true);
+          let allUrl = `${API_BASE_URL}/products`;
+          if (activeCategory && activeCategory !== 'All') {
+            allUrl += `?category=${encodeURIComponent(activeCategory)}`;
+          }
+          const allResponse = await axios.get(allUrl);
+          setAllProducts(allResponse.data);
+          setAllProductsLoading(false);
+        } else {
+          setAllProducts([]);
+        }
       } catch (err) {
         console.error("Error fetching products", err);
         setError("Could not connect to the backend server. Make sure MongoDB and the Flask app are running.");
@@ -1900,7 +1916,7 @@ export const Home = () => {
         )}
 
         {/* Empty State */}
-        {activeTab === 'products' && !loading && !error && products.length === 0 && (
+        {activeTab === 'products' && !activeSearch && !loading && !error && products.length === 0 && (
           <div className="text-center py-20 max-w-md mx-auto">
             <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto text-slate-400">
               <ShoppingBag className="h-8 w-8" />
@@ -1921,8 +1937,8 @@ export const Home = () => {
           </div>
         )}
 
-        {/* Product Grid */}
-        {activeTab === 'products' && !loading && !error && products.length > 0 && (
+        {/* Product Grid (No Search) */}
+        {activeTab === 'products' && !activeSearch && !loading && !error && products.length > 0 && (
           <motion.div
             key={activeCategory}
             initial={{ opacity: 0 }}
@@ -1938,6 +1954,74 @@ export const Home = () => {
               />
             ))}
           </motion.div>
+        )}
+
+        {/* Product Grid & All Products (With Search) */}
+        {activeTab === 'products' && activeSearch && !loading && !error && (
+          <>
+            {/* Search Results */}
+            {products.length === 0 ? (
+              <div className="text-center py-10 max-w-md mx-auto">
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  {language === 'hi' ? 'खोज के अनुसार कोई उत्पाद नहीं मिला।' : 'No products matched your search query.'}
+                </p>
+              </div>
+            ) : (
+              <motion.div
+                key={`search-${activeCategory}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="product-grid"
+              >
+                {products.map(product => (
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    onAdminAction={(productId) => setSelectedAdminProductId(productId)}
+                  />
+                ))}
+              </motion.div>
+            )}
+
+            {/* Divider and All Products heading */}
+            <div className="w-full border-t border-slate-200/50 dark:border-slate-800 pt-10 mt-16 mb-8 text-left">
+              <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                {activeCategory === 'All' 
+                  ? translateUiLabel("All Products", language) 
+                  : `${translateCategory(activeCategory, language)} ${language === 'hi' ? 'उत्पाद' : 'Products'}`
+                }
+              </h2>
+              <p className="text-xs text-slate-400 mt-1">
+                {translateUiLabel("Explore our complete premium collection.", language)}
+              </p>
+            </div>
+
+            {/* All Products Grid */}
+            {allProductsLoading ? (
+              <div className="product-grid">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <ProductCardSkeleton key={idx} />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                key={`all-${activeCategory}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="product-grid"
+              >
+                {allProducts.map(product => (
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    onAdminAction={(productId) => setSelectedAdminProductId(productId)}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </>
         )}
 
         {/* Users Data Tab Content */}

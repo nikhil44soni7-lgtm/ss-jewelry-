@@ -8,6 +8,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { LanguageSelectionModal } from './components/LanguageSelectionModal';
 
 import { Home } from './pages/Home';
+import { GlobalVideoFooter } from './components/GlobalVideoFooter';
 
 // Lazy load other pages for route-based code splitting
 const ProductDetails = React.lazy(() => import('./pages/ProductDetails').then(m => ({ default: m.ProductDetails })));
@@ -161,6 +162,9 @@ function App() {
           </React.Suspense>
         </AnimatePresence>
       </main>
+
+      {/* Global Video Footer */}
+      <GlobalVideoFooter />
 
       {/* Interactive chatbot bubble widget */}
       <LiveChat />

@@ -38,41 +38,75 @@ TITLE_FILL = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="so
 def init_report_database():
     """Ensure report logs, settings, and archive tables exist in the database."""
     try:
-        # 1. Report logs table
-        db.session.execute(db.text("""
-        CREATE TABLE IF NOT EXISTS monthly_report_logs (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            report_month VARCHAR(50) NOT NULL,
-            report_year INT NOT NULL,
-            excel_filename VARCHAR(255) NOT NULL,
-            email_status VARCHAR(50) NOT NULL,
-            archive_status VARCHAR(50) NOT NULL,
-            cleanup_status VARCHAR(50) NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB;
-        """))
-        
-        # 2. System settings table for owner email and SMTP config
-        db.session.execute(db.text("""
-        CREATE TABLE IF NOT EXISTS system_settings (
-            setting_key VARCHAR(100) PRIMARY KEY,
-            setting_value TEXT NOT NULL
-        ) ENGINE=InnoDB;
-        """))
-        
-        # 3. Archive tables matching active schemas (no foreign keys to avoid cascade issues in archives)
-        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS orders_archive LIKE orders;"))
-        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS sales_archive LIKE order_items;"))
-        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS buy_requests_archive LIKE buy_requests;"))
-        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS support_tickets_archive LIKE support_messages;"))
-        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS transactions_archive LIKE transactions;"))
+        is_postgresql = "postgresql" in str(db.engine.url) or db.engine.name == "postgresql"
+        if is_postgresql:
+            # 1. Report logs table (PostgreSQL)
+            db.session.execute(db.text("""
+            CREATE TABLE IF NOT EXISTS monthly_report_logs (
+                id SERIAL PRIMARY KEY,
+                report_month VARCHAR(50) NOT NULL,
+                report_year INT NOT NULL,
+                excel_filename VARCHAR(255) NOT NULL,
+                email_status VARCHAR(50) NOT NULL,
+                archive_status VARCHAR(50) NOT NULL,
+                cleanup_status VARCHAR(50) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """))
+            
+            # 2. System settings table (PostgreSQL)
+            db.session.execute(db.text("""
+            CREATE TABLE IF NOT EXISTS system_settings (
+                setting_key VARCHAR(100) PRIMARY KEY,
+                setting_value TEXT NOT NULL
+            );
+            """))
+            
+            # 3. Archive tables (PostgreSQL)
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS orders_archive (LIKE orders);"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS sales_archive (LIKE order_items);"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS buy_requests_archive (LIKE buy_requests);"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS support_tickets_archive (LIKE support_messages);"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS transactions_archive (LIKE transactions);"))
+        else:
+            # 1. Report logs table (MySQL/Standard)
+            db.session.execute(db.text("""
+            CREATE TABLE IF NOT EXISTS monthly_report_logs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                report_month VARCHAR(50) NOT NULL,
+                report_year INT NOT NULL,
+                excel_filename VARCHAR(255) NOT NULL,
+                email_status VARCHAR(50) NOT NULL,
+                archive_status VARCHAR(50) NOT NULL,
+                cleanup_status VARCHAR(50) NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB;
+            """))
+            
+            # 2. System settings table (MySQL/Standard)
+            db.session.execute(db.text("""
+            CREATE TABLE IF NOT EXISTS system_settings (
+                setting_key VARCHAR(100) PRIMARY KEY,
+                setting_value TEXT NOT NULL
+            ) ENGINE=InnoDB;
+            """))
+            
+            # 3. Archive tables (MySQL/Standard)
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS orders_archive LIKE orders;"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS sales_archive LIKE order_items;"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS buy_requests_archive LIKE buy_requests;"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS support_tickets_archive LIKE support_messages;"))
+            db.session.execute(db.text("CREATE TABLE IF NOT EXISTS transactions_archive LIKE transactions;"))
         
         db.session.commit()
         print("[REPORT AUTOMATION] Database tables verified/created successfully.")
         
         # Ensure email_status column is TEXT to store detailed exceptions
         try:
-            db.session.execute(db.text("ALTER TABLE monthly_report_logs MODIFY COLUMN email_status TEXT NOT NULL;"))
+            if is_postgresql:
+                db.session.execute(db.text("ALTER TABLE monthly_report_logs ALTER COLUMN email_status TYPE TEXT;"))
+            else:
+                db.session.execute(db.text("ALTER TABLE monthly_report_logs MODIFY COLUMN email_status TEXT NOT NULL;"))
             db.session.commit()
             print("[REPORT AUTOMATION] Altered email_status column to TEXT successfully.")
         except Exception as alter_err:
@@ -82,6 +116,7 @@ def init_report_database():
     except Exception as e:
         db.session.rollback()
         print(f"[REPORT AUTOMATION ERROR] Failed to initialize tables: {e}")
+
 
 def seed_default_settings():
     """Seed system SMTP and Owner settings from env if not already configured in DB."""

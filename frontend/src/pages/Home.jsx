@@ -153,7 +153,7 @@ const SearchSpotlight = ({ products, language }) => {
   const rightImg = getProductImage(rightProduct);
 
   return (
-    <div className="relative w-full overflow-hidden py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#0A0512] via-[#150A21] to-[#0A0512] dark:from-[#0A0512] dark:to-[#150A21] border-b border-[#D4A75F]/20 text-white">
+    <div className="relative w-full overflow-hidden mt-[108px] md:mt-[120px] py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#0A0512] via-[#150A21] to-[#0A0512] dark:from-[#0A0512] dark:to-[#150A21] border-b border-[#D4A75F]/20 text-white">
       {/* Background Decorative Rings/Ornaments */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none">
         <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] rounded-full border border-[#D4A75F] -translate-y-1/2" />

@@ -10,9 +10,9 @@ export const GlobalVideoFooter = () => {
         <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
       </div>
 
-      {/* Video Masked text container - Centered and full width */}
+      {/* Video Masked text container - Centered and full screen width */}
       <div className="w-full px-4 mb-4 sm:mb-6 flex justify-center">
-        <svg className="w-full max-w-7xl h-auto select-none" viewBox="0 0 1000 180">
+        <svg className="w-full max-w-[95vw] sm:max-w-[90vw] h-auto select-none" viewBox="0 0 1300 200">
           <defs>
             <mask id="text-mask" x="0" y="0" width="100%" height="100%">
               <rect x="0" y="0" width="100%" height="100%" fill="black" />
@@ -22,10 +22,10 @@ export const GlobalVideoFooter = () => {
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fill="white"
-                fontSize="115"
+                fontSize="135"
                 fontWeight="950"
                 fontFamily="'Outfit', 'Inter', sans-serif"
-                letterSpacing="0.08em"
+                letterSpacing="0.16em"
               >
                 SS JEWELLERY
               </text>
@@ -52,12 +52,12 @@ export const GlobalVideoFooter = () => {
             dominantBaseline="middle"
             fill="none"
             stroke="#D4A75F"
-            strokeWidth="0.8"
+            strokeWidth="0.9"
             strokeOpacity="0.85"
-            fontSize="115"
+            fontSize="135"
             fontWeight="950"
             fontFamily="'Outfit', 'Inter', sans-serif"
-            letterSpacing="0.08em"
+            letterSpacing="0.16em"
             className="pointer-events-none"
           >
             SS JEWELLERY

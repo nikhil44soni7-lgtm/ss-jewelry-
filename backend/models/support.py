@@ -48,7 +48,8 @@ class SupportModel(db.Model):
     @staticmethod
     def find_all():
         try:
-            messages = SupportModel.query.order_by(SupportModel.created_at.desc()).all()
+            from sqlalchemy.orm import selectinload
+            messages = SupportModel.query.options(selectinload(SupportModel.replies)).order_by(SupportModel.created_at.desc()).all()
             return [m.to_dict() for m in messages]
         except Exception:
             return []

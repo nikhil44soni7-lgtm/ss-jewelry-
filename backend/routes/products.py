@@ -81,13 +81,21 @@ def get_product(id):
 
 @products_bp.route('/categories', methods=['GET'])
 def get_all_categories():
+    from backend.utils.cache import categories_cache
+    cached_val = categories_cache.get('all_categories')
+    if cached_val is not None:
+        return jsonify(cached_val), 200
+
     from backend.models.category import Category
     from backend.models.product import ProductModel
+    from sqlalchemy.orm import joinedload
     categories = Category.query.all()
     
     result = []
     for cat in categories:
-        first_product = ProductModel.query.filter_by(category_id=cat.id).first()
+        first_product = ProductModel.query.options(
+            joinedload(ProductModel.product_images)
+        ).filter_by(category_id=cat.id).first()
         image_url = None
         if first_product:
             if first_product.product_images:
@@ -103,13 +111,22 @@ def get_all_categories():
             "name": cat.name,
             "image_url": image_url
         })
+    categories_cache.set('all_categories', result)
     return jsonify(result), 200
 
 @products_bp.route('/categories/<category_name>/attributes', methods=['GET'])
 def get_category_attributes(category_name):
+    from backend.utils.cache import category_attributes_cache
+    cache_key = f"attrs_{category_name}"
+    cached_val = category_attributes_cache.get(cache_key)
+    if cached_val is not None:
+        return jsonify(cached_val), 200
+
     from backend.models.product import CategoryAttributeModel
     attrs = CategoryAttributeModel.query.filter_by(category_name=category_name).all()
-    return jsonify([a.to_dict() for a in attrs]), 200
+    result = [a.to_dict() for a in attrs]
+    category_attributes_cache.set(cache_key, result)
+    return jsonify(result), 200
 
 
 @products_bp.route('/<id>/review', methods=['POST'])
@@ -150,6 +167,10 @@ def create_product():
     data["admin_name"] = admin_name
     product = ProductModel.create_product(data)
     
+    # Invalidate category cache
+    from backend.utils.cache import categories_cache
+    categories_cache.clear()
+    
     # Audit Log
     from backend.utils.audit import log_admin_action
     log_admin_action("Product Added", "Product Management", f"Added product: '{name}' (Category: '{category}', Price: ₹{price}, Stock: {stock})")
@@ -180,6 +201,10 @@ def update_product(id):
     data["modified_by"] = admin_name
     data["admin_name"] = admin_name
     updated_product = ProductModel.update_product(id, data)
+    
+    # Invalidate category cache
+    from backend.utils.cache import categories_cache
+    categories_cache.clear()
     
     # Audit Log
     from backend.utils.audit import log_admin_action
@@ -214,6 +239,10 @@ def delete_product(id):
     success = ProductModel.delete_product(id)
     if not success:
         return jsonify({"message": "Failed to delete product."}), 500
+        
+    # Invalidate category cache
+    from backend.utils.cache import categories_cache
+    categories_cache.clear()
         
     # Audit Log
     from backend.utils.audit import log_admin_action

@@ -37,8 +37,15 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @banners_bp.route('', methods=['GET'])
 def get_active_banners():
     try:
+        from backend.utils.cache import banners_cache
+        cached_val = banners_cache.get('active_banners')
+        if cached_val is not None:
+            return jsonify(cached_val), 200
+
         banners = BannerModel.query.filter_by(is_active=True).order_by(BannerModel.display_order.asc()).all()
-        return jsonify([b.to_dict() for b in banners]), 200
+        result = [b.to_dict() for b in banners]
+        banners_cache.set('active_banners', result)
+        return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": f"Error fetching active banners: {str(e)}"}), 500
 
@@ -78,6 +85,9 @@ def create_banner():
         
         db.session.add(banner)
         db.session.commit()
+        
+        from backend.utils.cache import banners_cache
+        banners_cache.clear()
         
         log_admin_action("Banner Added", "Banner Management", f"Created banner: '{title}'")
         
@@ -123,6 +133,9 @@ def update_banner(id):
             
         db.session.commit()
         
+        from backend.utils.cache import banners_cache
+        banners_cache.clear()
+        
         log_admin_action("Banner Updated", "Banner Management", f"Updated banner: '{banner.title}'")
         
         return jsonify({
@@ -145,6 +158,9 @@ def delete_banner(id):
         title = banner.title
         db.session.delete(banner)
         db.session.commit()
+        
+        from backend.utils.cache import banners_cache
+        banners_cache.clear()
         
         log_admin_action("Banner Deleted", "Banner Management", f"Deleted banner: '{title}'")
         

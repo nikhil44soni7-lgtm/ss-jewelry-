@@ -59,7 +59,7 @@ function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAppLoading(false);
-    }, 1500);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 

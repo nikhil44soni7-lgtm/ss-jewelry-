@@ -1557,11 +1557,13 @@ export const Home = () => {
         <SearchSpotlight products={products} language={language} />
       )}
 
-      <CategoryGrid 
-        activeCategory={activeCategory} 
-        loading={loading} 
-        onCategoryClick={handleCategoryClick}
-      />
+      {!activeSearch && (
+        <CategoryGrid 
+          activeCategory={activeCategory} 
+          loading={loading} 
+          onCategoryClick={handleCategoryClick}
+        />
+      )}
 
 
       {/* Main Content Area */}
@@ -1734,43 +1736,6 @@ export const Home = () => {
               </motion.div>
             )}
 
-            {/* Divider and All Products heading */}
-            <div className="w-full border-t border-slate-200/50 dark:border-slate-800 pt-10 mt-16 mb-8 text-left">
-              <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                {activeCategory === 'All' 
-                  ? translateUiLabel("All Products", language) 
-                  : `${translateCategory(activeCategory, language)} ${language === 'hi' ? 'उत्पाद' : 'Products'}`
-                }
-              </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                {translateUiLabel("Explore our complete premium collection.", language)}
-              </p>
-            </div>
-
-            {/* All Products Grid */}
-            {allProductsLoading ? (
-              <div className="product-grid">
-                {Array.from({ length: 4 }).map((_, idx) => (
-                  <ProductCardSkeleton key={idx} />
-                ))}
-              </div>
-            ) : (
-              <motion.div
-                key={`all-${activeCategory}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
-                className="product-grid"
-              >
-                {allProducts.map(product => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    onAdminAction={(productId) => setSelectedAdminProductId(productId)}
-                  />
-                ))}
-              </motion.div>
-            )}
           </>
         )}
 

@@ -539,10 +539,26 @@ const BannerSlider = React.memo(({
   );
 });
 
-const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) => {
+const CategoryGrid = React.memo(({ activeCategory, onCategoryClick }) => {
   const { language } = useContext(AuthContext);
+  const [categories, setCategories] = useState([]);
+  const [gridLoading, setGridLoading] = useState(true);
 
-  if (loading) {
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/products/categories`);
+        setCategories(response.data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      } finally {
+        setGridLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  if (gridLoading) {
     return (
       <>
         <CategorySkeleton />
@@ -551,13 +567,28 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
     );
   }
 
-  const categories = [
-    { name: "Rings", label: "Rings", img: "/cat_rings.png" },
-    { name: "Necklaces", label: "Necklaces", img: "/cat_necklaces.png" },
-    { name: "Earrings", label: "Earrings", img: "/cat_earrings.png" },
-    { name: "Bracelets", label: "Bracelets", img: "/cat_bracelets.png" },
-    { name: "Bridal Collection", label: "Bridal Collection", img: "/cat_bridal.png" }
-  ];
+  const isCollection = (name) => {
+    const lowercase = name.toLowerCase();
+    return lowercase.includes('collection') || lowercase.includes('set') || lowercase.includes('theme') || lowercase.includes('bridal') || lowercase.includes('special');
+  };
+
+  const productCats = categories.filter(cat => !isCollection(cat.name));
+  const collectionCats = categories.filter(cat => isCollection(cat.name));
+
+  const getCatImage = (cat) => {
+    if (cat.image_url) return cat.image_url;
+    
+    // Static fallback mappings
+    const standardImages = {
+      "Rings": "/cat_rings.png",
+      "Necklaces": "/cat_necklaces.png",
+      "Earrings": "/cat_earrings.png",
+      "Bracelets": "/cat_bracelets.png",
+      "Bangles": "/cat_bangles.png",
+      "Bridal Collection": "/cat_bridal.png"
+    };
+    return standardImages[cat.name] || "/placeholder_luxury.png";
+  };
 
   return (
     <>
@@ -580,60 +611,139 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
             </p>
           </div>
 
-          <div className="flex justify-center items-center gap-8 lg:gap-14 flex-wrap">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.name;
-              return (
-                <motion.div
-                  key={cat.name}
-                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="flex flex-col items-center justify-center"
-                >
-                  <Link
-                    to={`/?category=${encodeURIComponent(cat.name)}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onCategoryClick(cat.name);
-                    }}
-                    className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
-                  >
-                    <div
-                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
-                        isActive
-                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_18px_rgba(212,167,95,0.85),_0_0_35px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
-                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_12px_rgba(212,167,95,0.45)]'
-                      }`}
-                      style={{
-                        width: '76px',
-                        height: '76px'
-                      }}
-                    >
-                      <LuxuryImage
-                        src={cat.img}
-                        alt={translateCategory(cat.name, language)}
-                        width="76"
-                        height="76"
-                        wrapperClassName="rounded-full"
-                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
-                          isActive
-                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
-                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
-                        }`}
-                      />
-                    </div>
+          <div className="flex flex-col gap-10">
+            {/* Products Section */}
+            {productCats.length > 0 && (
+              <div>
+                <h3 className="text-center text-xs tracking-[0.2em] font-extrabold uppercase text-[#D4A75F] mb-6">
+                  {translateUiLabel("Products", language)}
+                </h3>
+                <div className="flex justify-center items-center gap-8 lg:gap-14 flex-wrap">
+                  {productCats.map((cat) => {
+                    const isActive = activeCategory === cat.name;
+                    return (
+                      <motion.div
+                        key={cat.name}
+                        animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="flex flex-col items-center justify-center"
+                      >
+                        <Link
+                          to={`/?category=${encodeURIComponent(cat.name)}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onCategoryClick(cat.name);
+                          }}
+                          className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
+                        >
+                          <div
+                            className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
+                              isActive
+                                ? 'bg-transparent border-[#D4A75F] shadow-[0_0_18px_rgba(212,167,95,0.85),_0_0_35px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                                : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_12px_rgba(212,167,95,0.45)]'
+                            }`}
+                            style={{
+                              width: '76px',
+                              height: '76px'
+                            }}
+                          >
+                            <LuxuryImage
+                              src={getCatImage(cat)}
+                              alt={translateCategory(cat.name, language)}
+                              width="76"
+                              height="76"
+                              wrapperClassName="rounded-full"
+                              className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                                isActive
+                                  ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                                  : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                              }`}
+                            />
+                          </div>
 
-                    <span className={`mt-2 text-xs md:text-sm font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
-                      isActive
-                        ? 'text-[#D4A75F]'
-                        : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
-                    }`}>
-                      {translateCategory(cat.name, language)}
-                    </span>
-                  </Link>
-                </motion.div>
-              );
-            })}
+                          <span className={`mt-2 text-xs md:text-sm font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
+                            isActive
+                              ? 'text-[#D4A75F]'
+                              : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
+                          }`}>
+                            {translateCategory(cat.name, language)}
+                          </span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Divider line if both sections exist */}
+            {productCats.length > 0 && collectionCats.length > 0 && (
+              <div className="w-24 h-[1px] bg-slate-200 dark:bg-slate-800 mx-auto" />
+            )}
+
+            {/* Collections Section */}
+            {collectionCats.length > 0 && (
+              <div>
+                <h3 className="text-center text-xs tracking-[0.2em] font-extrabold uppercase text-[#D4A75F] mb-6">
+                  {translateUiLabel("Collections", language)}
+                </h3>
+                <div className="flex justify-center items-center gap-8 lg:gap-14 flex-wrap">
+                  {collectionCats.map((cat) => {
+                    const isActive = activeCategory === cat.name;
+                    return (
+                      <motion.div
+                        key={cat.name}
+                        animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="flex flex-col items-center justify-center"
+                      >
+                        <Link
+                          to={`/?category=${encodeURIComponent(cat.name)}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onCategoryClick(cat.name);
+                          }}
+                          className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
+                        >
+                          <div
+                            className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
+                              isActive
+                                ? 'bg-transparent border-[#D4A75F] shadow-[0_0_18px_rgba(212,167,95,0.85),_0_0_35px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                                : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_12px_rgba(212,167,95,0.45)]'
+                            }`}
+                            style={{
+                              width: '76px',
+                              height: '76px'
+                            }}
+                          >
+                            <LuxuryImage
+                              src={getCatImage(cat)}
+                              alt={translateCategory(cat.name, language)}
+                              width="76"
+                              height="76"
+                              wrapperClassName="rounded-full"
+                              className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                                isActive
+                                  ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                                  : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                              }`}
+                            />
+                          </div>
+
+                          <span className={`mt-2 text-xs md:text-sm font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
+                            isActive
+                              ? 'text-[#D4A75F]'
+                              : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
+                          }`}>
+                            {translateCategory(cat.name, language)}
+                          </span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -646,69 +756,138 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="block md:hidden w-full bg-white dark:bg-[#0B1020] border-y border-[#F2E8D9] dark:border-slate-800/80 py-4 transition-colors duration-300"
       >
-        <div className="w-[94vw] mx-auto px-1">
-          <div className="text-center mb-4">
-            <h2 className="text-lg font-serif font-bold text-[#3F1D5A] dark:text-[#D4A75F] tracking-wider relative inline-block pb-1.5 transition-colors duration-300">
-              {translateUiLabel("Shop By Category", language)}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-0.5 bg-[#D4A75F]"></span>
-            </h2>
-          </div>
-
-          <div className="flex overflow-x-auto gap-4 pb-2 scroll-smooth snap-x snap-mandatory justify-start no-scrollbar">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.name;
-              return (
-                <motion.div
-                  key={cat.name}
-                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="flex-none flex flex-col items-center justify-center"
-                >
-                  <Link
-                    to={`/?category=${encodeURIComponent(cat.name)}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onCategoryClick(cat.name);
-                    }}
-                    className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
-                  >
-                    <div
-                      className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
-                        isActive
-                          ? 'bg-transparent border-[#D4A75F] shadow-[0_0_15px_rgba(212,167,95,0.85),_0_0_30px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
-                          : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_10px_rgba(212,167,95,0.45)]'
-                      }`}
-                      style={{
-                        width: '68px',
-                        height: '68px'
-                      }}
+        <div className="w-[94vw] mx-auto px-1 flex flex-col gap-4">
+          {/* Products Subsection */}
+          {productCats.length > 0 && (
+            <div>
+              <div className="text-center mb-2">
+                <h3 className="text-[10px] tracking-[0.15em] font-extrabold uppercase text-[#D4A75F]">
+                  {translateUiLabel("Products", language)}
+                </h3>
+              </div>
+              <div className="flex overflow-x-auto gap-4 pb-2 scroll-smooth snap-x snap-mandatory justify-start no-scrollbar">
+                {productCats.map((cat) => {
+                  const isActive = activeCategory === cat.name;
+                  return (
+                    <motion.div
+                      key={cat.name}
+                      animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="flex-none flex flex-col items-center justify-center"
                     >
-                      <LuxuryImage
-                        src={cat.img}
-                        alt={translateCategory(cat.name, language)}
-                        width="68"
-                        height="68"
-                        wrapperClassName="rounded-full"
-                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
-                          isActive
-                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
-                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
-                        }`}
-                      />
-                    </div>
+                      <Link
+                        to={`/?category=${encodeURIComponent(cat.name)}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onCategoryClick(cat.name);
+                        }}
+                        className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
+                      >
+                        <div
+                          className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
+                            isActive
+                              ? 'bg-transparent border-[#D4A75F] shadow-[0_0_15px_rgba(212,167,95,0.85),_0_0_30px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                              : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_10px_rgba(212,167,95,0.45)]'
+                          }`}
+                          style={{
+                            width: '68px',
+                            height: '68px'
+                          }}
+                        >
+                          <LuxuryImage
+                            src={getCatImage(cat)}
+                            alt={translateCategory(cat.name, language)}
+                            width="68"
+                            height="68"
+                            wrapperClassName="rounded-full"
+                            className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                              isActive
+                                ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                                : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                            }`}
+                          />
+                        </div>
 
-                    <span className={`mt-2 text-[10px] sm:text-xs font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
-                      isActive
-                        ? 'text-[#D4A75F]'
-                        : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
-                    }`}>
-                      {translateCategory(cat.name, language)}
-                    </span>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
+                        <span className={`mt-2 text-[10px] sm:text-xs font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
+                          isActive
+                            ? 'text-[#D4A75F]'
+                            : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
+                        }`}>
+                          {translateCategory(cat.name, language)}
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Collections Subsection */}
+          {collectionCats.length > 0 && (
+            <div>
+              <div className="text-center mb-2">
+                <h3 className="text-[10px] tracking-[0.15em] font-extrabold uppercase text-[#D4A75F]">
+                  {translateUiLabel("Collections", language)}
+                </h3>
+              </div>
+              <div className="flex overflow-x-auto gap-4 pb-2 scroll-smooth snap-x snap-mandatory justify-start no-scrollbar">
+                {collectionCats.map((cat) => {
+                  const isActive = activeCategory === cat.name;
+                  return (
+                    <motion.div
+                      key={cat.name}
+                      animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="flex-none flex flex-col items-center justify-center"
+                    >
+                      <Link
+                        to={`/?category=${encodeURIComponent(cat.name)}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onCategoryClick(cat.name);
+                        }}
+                        className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
+                      >
+                        <div
+                          className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
+                            isActive
+                              ? 'bg-transparent border-[#D4A75F] shadow-[0_0_15px_rgba(212,167,95,0.85),_0_0_30px_rgba(212,167,95,0.4)] ring-2 ring-[#D4A75F]/20'
+                              : 'bg-transparent border-slate-200 dark:border-slate-800 group-hover:border-[#D4A75F]/70 group-hover:shadow-[0_0_10px_rgba(212,167,95,0.45)]'
+                          }`}
+                          style={{
+                            width: '68px',
+                            height: '68px'
+                          }}
+                        >
+                          <LuxuryImage
+                            src={getCatImage(cat)}
+                            alt={translateCategory(cat.name, language)}
+                            width="68"
+                            height="68"
+                            wrapperClassName="rounded-full"
+                            className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                              isActive
+                                ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
+                                : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                            }`}
+                          />
+                        </div>
+
+                        <span className={`mt-2 text-[10px] sm:text-xs font-bold tracking-wide transition-colors duration-300 text-center w-full px-0.5 ${
+                          isActive
+                            ? 'text-[#D4A75F]'
+                            : 'text-slate-800 dark:text-[#F8FAFC] group-hover:text-[#D4A75F]'
+                        }`}>
+                          {translateCategory(cat.name, language)}
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
     </>
@@ -1791,7 +1970,6 @@ export const Home = () => {
 
       <CategoryGrid 
         activeCategory={activeCategory} 
-        loading={loading} 
         onCategoryClick={handleCategoryClick}
       />
 

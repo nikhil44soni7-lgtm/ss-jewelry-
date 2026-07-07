@@ -79,6 +79,32 @@ def get_product(id):
     product['reviews'] = reviews
     return jsonify(product), 200
 
+@products_bp.route('/categories', methods=['GET'])
+def get_all_categories():
+    from backend.models.category import Category
+    from backend.models.product import ProductModel
+    categories = Category.query.all()
+    
+    result = []
+    for cat in categories:
+        first_product = ProductModel.query.filter_by(category_id=cat.id).first()
+        image_url = None
+        if first_product:
+            if first_product.product_images:
+                images_sorted = sorted(first_product.product_images, key=lambda x: x.image_order)
+                if images_sorted:
+                    image_url = images_sorted[0].image_url
+            elif first_product.images:
+                image_url = first_product.images[0] if len(first_product.images) > 0 else None
+                
+        result.append({
+            "id": str(cat.id),
+            "_id": str(cat.id),
+            "name": cat.name,
+            "image_url": image_url
+        })
+    return jsonify(result), 200
+
 @products_bp.route('/categories/<category_name>/attributes', methods=['GET'])
 def get_category_attributes(category_name):
     from backend.models.product import CategoryAttributeModel

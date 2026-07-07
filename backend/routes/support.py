@@ -119,7 +119,8 @@ def get_my_tickets(current_user):
     if not email:
         return jsonify([]), 200
     
-    tickets = SupportModel.query.filter(SupportModel.email == email).order_by(SupportModel.created_at.desc()).all()
+    from sqlalchemy.orm import selectinload
+    tickets = SupportModel.query.options(selectinload(SupportModel.replies)).filter(SupportModel.email == email).order_by(SupportModel.created_at.desc()).all()
     return jsonify([t.to_dict() for t in tickets]), 200
 
 

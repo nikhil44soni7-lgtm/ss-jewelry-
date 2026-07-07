@@ -309,14 +309,24 @@ class UserModel(db.Model):
 
     @staticmethod
     def find_by_email(email):
-        user = UserModel.query.filter_by(email=email).first()
+        from sqlalchemy.orm import selectinload, joinedload
+        user = UserModel.query.options(
+            selectinload(UserModel.addresses),
+            selectinload(UserModel.wishlist_items).joinedload(Wishlist.product),
+            selectinload(UserModel.cart).selectinload(Cart.items).joinedload(CartItem.product)
+        ).filter_by(email=email).first()
         return user.to_dict() if user else None
 
     @staticmethod
     def find_by_id(user_id):
         try:
             uid = int(user_id)
-            user = UserModel.query.get(uid)
+            from sqlalchemy.orm import selectinload, joinedload
+            user = UserModel.query.options(
+                selectinload(UserModel.addresses),
+                selectinload(UserModel.wishlist_items).joinedload(Wishlist.product),
+                selectinload(UserModel.cart).selectinload(Cart.items).joinedload(CartItem.product)
+            ).get(uid)
             return user.to_dict() if user else None
         except Exception:
             return None
@@ -490,7 +500,12 @@ class UserModel(db.Model):
     @staticmethod
     def find_all():
         try:
-            users = UserModel.query.all()
+            from sqlalchemy.orm import selectinload, joinedload
+            users = UserModel.query.options(
+                selectinload(UserModel.addresses),
+                selectinload(UserModel.wishlist_items).joinedload(Wishlist.product),
+                selectinload(UserModel.cart).selectinload(Cart.items).joinedload(CartItem.product)
+            ).all()
             user_list = []
             for u in users:
                 d = u.to_dict()

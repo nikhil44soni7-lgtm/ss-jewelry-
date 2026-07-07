@@ -84,9 +84,14 @@ class ProductModel(db.Model):
 
         cat_name = self.category.name if self.category else "Uncategorized"
         try:
-            from backend.models.product import CategoryAttributeModel
-            attributes = CategoryAttributeModel.query.filter_by(category_name=cat_name).all()
-            attributes_list = [attr.to_dict() for attr in attributes]
+            from backend.utils.cache import category_attributes_cache
+            cache_key = f"attrs_{cat_name}"
+            attributes_list = category_attributes_cache.get(cache_key)
+            if attributes_list is None:
+                from backend.models.product import CategoryAttributeModel
+                attributes = CategoryAttributeModel.query.filter_by(category_name=cat_name).all()
+                attributes_list = [attr.to_dict() for attr in attributes]
+                category_attributes_cache.set(cache_key, attributes_list)
         except Exception:
             attributes_list = []
 
@@ -136,7 +141,13 @@ class ProductModel(db.Model):
 
     @staticmethod
     def get_all(category=None, search_query=None, homepage_only=False):
-        query = ProductModel.query
+        from sqlalchemy.orm import joinedload
+        query = ProductModel.query.options(
+            joinedload(ProductModel.category),
+            joinedload(ProductModel.product_images),
+            joinedload(ProductModel.variants),
+            joinedload(ProductModel.reviews)
+        )
         
         if homepage_only:
             query = query.filter(ProductModel.show_on_homepage == True)
@@ -164,7 +175,13 @@ class ProductModel(db.Model):
     def find_by_id(product_id):
         try:
             prod_id = int(product_id)
-            product = ProductModel.query.get(prod_id)
+            from sqlalchemy.orm import joinedload
+            product = ProductModel.query.options(
+                joinedload(ProductModel.category),
+                joinedload(ProductModel.product_images),
+                joinedload(ProductModel.variants),
+                joinedload(ProductModel.reviews)
+            ).get(prod_id)
             return product.to_dict() if product else None
         except Exception:
             return None
@@ -707,42 +724,33 @@ class BuyRequestModel(db.Model):
     
     product = db.relationship('ProductModel', foreign_keys=[product_id])
     user = db.relationship('UserModel', foreign_keys=[user_id])
+    converted_order = db.relationship('OrderModel', foreign_keys=[converted_order_id])
+    selected_address = db.relationship('DeliveryAddress', foreign_keys=[selected_address_id])
     
     def to_dict(self):
         created_date = self.created_at.strftime('%Y-%m-%d') if self.created_at else None
         created_time = self.created_at.strftime('%H:%M:%S') if self.created_at else None
         
         converted_order_tracking_id = None
-        if self.converted_order_id:
-            try:
-                from backend.models.order import OrderModel
-                order_obj = OrderModel.query.get(self.converted_order_id)
-                if order_obj:
-                    converted_order_tracking_id = order_obj.order_id
-            except Exception:
-                pass
+        if self.converted_order:
+            converted_order_tracking_id = self.converted_order.order_id
 
         address_str = ""
         state_str = ""
-        if self.selected_address_id:
-            try:
-                from backend.models.user import DeliveryAddress
-                addr_obj = DeliveryAddress.query.get(self.selected_address_id)
-                if addr_obj:
-                    parts = [
-                        addr_obj.house_number,
-                        addr_obj.building_name,
-                        addr_obj.street,
-                        addr_obj.area,
-                        addr_obj.landmark,
-                        addr_obj.city,
-                        addr_obj.state,
-                        addr_obj.pincode
-                    ]
-                    address_str = ", ".join([p.strip() for p in parts if p and p.strip()])
-                    state_str = addr_obj.state or ""
-            except Exception:
-                pass
+        if self.selected_address:
+            addr_obj = self.selected_address
+            parts = [
+                addr_obj.house_number,
+                addr_obj.building_name,
+                addr_obj.street,
+                addr_obj.area,
+                addr_obj.landmark,
+                addr_obj.city,
+                addr_obj.state,
+                addr_obj.pincode
+            ]
+            address_str = ", ".join([p.strip() for p in parts if p and p.strip()])
+            state_str = addr_obj.state or ""
 
         if not address_str and self.user:
             try:

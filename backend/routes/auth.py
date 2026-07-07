@@ -1794,7 +1794,14 @@ def transition_buy_request(request_id):
 @token_required
 def get_user_buy_requests(current_user):
     from backend.models.product import BuyRequestModel
-    requests = BuyRequestModel.query.filter_by(user_id=int(current_user["_id"])).order_by(BuyRequestModel.created_at.desc()).all()
+    from backend.models.user import UserModel
+    from sqlalchemy.orm import joinedload, selectinload
+    requests = BuyRequestModel.query.options(
+        joinedload(BuyRequestModel.product),
+        joinedload(BuyRequestModel.user).selectinload(UserModel.addresses),
+        joinedload(BuyRequestModel.converted_order),
+        joinedload(BuyRequestModel.selected_address)
+    ).filter_by(user_id=int(current_user["_id"])).order_by(BuyRequestModel.created_at.desc()).all()
     return jsonify([r.to_dict() for r in requests]), 200
 
 
@@ -1876,12 +1883,18 @@ def respond_user_buy_request(current_user, id):
 @token_required
 def get_single_buy_request(current_user, id):
     from backend.models.product import BuyRequestModel, ProductModel
-    req = BuyRequestModel.query.filter_by(id=id, user_id=int(current_user["_id"])).first()
+    from backend.models.user import UserModel
+    from sqlalchemy.orm import joinedload, selectinload
+    req = BuyRequestModel.query.options(
+        joinedload(BuyRequestModel.product),
+        joinedload(BuyRequestModel.user).selectinload(UserModel.addresses),
+        joinedload(BuyRequestModel.converted_order),
+        joinedload(BuyRequestModel.selected_address)
+    ).filter_by(id=id, user_id=int(current_user["_id"])).first()
     if not req:
         return jsonify({"message": "Buy request not found"}), 404
         
-    product = ProductModel.query.get(req.product_id)
-    product_dict = product.to_dict() if product else None
+    product_dict = ProductModel.find_by_id(req.product_id)
     
     return jsonify({
         "buy_request": req.to_dict(),

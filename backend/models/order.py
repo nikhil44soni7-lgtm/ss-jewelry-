@@ -161,7 +161,11 @@ class OrderModel(db.Model):
     def find_by_user_id(user_id):
         try:
             uid = int(user_id)
-            orders = OrderModel.query.filter_by(user_id=uid).order_by(OrderModel.created_at.desc()).all()
+            from sqlalchemy.orm import selectinload, joinedload
+            orders = OrderModel.query.options(
+                selectinload(OrderModel.items),
+                joinedload(OrderModel.user)
+            ).filter_by(user_id=uid).order_by(OrderModel.created_at.desc()).all()
             return [o.to_dict() for o in orders]
         except Exception:
             return []
@@ -170,7 +174,11 @@ class OrderModel(db.Model):
     def find_all():
         try:
             from backend.models.user import UserModel
-            orders = OrderModel.query.outerjoin(UserModel, OrderModel.user_id == UserModel.id).order_by(OrderModel.created_at.desc()).all()
+            from sqlalchemy.orm import selectinload, joinedload
+            orders = OrderModel.query.outerjoin(UserModel, OrderModel.user_id == UserModel.id).options(
+                selectinload(OrderModel.items),
+                joinedload(OrderModel.user)
+            ).order_by(OrderModel.created_at.desc()).all()
             return [o.to_dict() for o in orders]
         except Exception:
             return []

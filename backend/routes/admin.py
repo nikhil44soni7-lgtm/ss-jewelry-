@@ -73,29 +73,25 @@ def get_dashboard_stats():
     # 4. Registered Users
     total_users = UserModel.query.filter_by(is_admin=False).count()
 
-    # Calculate revenues
+    # Calculate revenues today and this month using database aggregation
     now = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
-    # We query all non-cancelled orders
-    orders = OrderModel.query.filter(OrderModel.order_status != 'Cancelled').all()
+    today_start_naive = today_start.replace(tzinfo=None)
+    month_start_naive = month_start.replace(tzinfo=None)
     
-    # Let's compute revenue today and revenue this month
-    revenue_today = 0.0
-    revenue_month = 0.0
-    
-    for o in orders:
-        o_date = o.created_at
-        if o_date.tzinfo is None:
-            o_date = pytz.timezone('Asia/Kolkata').localize(o_date)
-        else:
-            o_date = o_date.astimezone(pytz.timezone('Asia/Kolkata'))
-            
-        if o_date >= today_start:
-            revenue_today += float(o.total_amount)
-        if o_date >= month_start:
-            revenue_month += float(o.total_amount)
+    revenue_today_q = db.session.query(func.sum(OrderModel.total_amount)).filter(
+        OrderModel.order_status != 'Cancelled',
+        OrderModel.created_at >= today_start_naive
+    ).scalar()
+    revenue_today = float(revenue_today_q) if revenue_today_q else 0.0
+
+    revenue_month_q = db.session.query(func.sum(OrderModel.total_amount)).filter(
+        OrderModel.order_status != 'Cancelled',
+        OrderModel.created_at >= month_start_naive
+    ).scalar()
+    revenue_month = float(revenue_month_q) if revenue_month_q else 0.0
             
     # 7. Pending Orders
     pending_orders = OrderModel.query.filter_by(order_status='Pending').count()
@@ -129,8 +125,15 @@ def get_users_complete():
     from backend.utils.timezone import format_iso_datetime
     from backend.models.order import OrderModel, Transaction
     from backend.models.user import DeliveryAddress
+    from sqlalchemy.orm import joinedload, selectinload
     
-    users = UserModel.query.all()
+    users = UserModel.query.options(
+        selectinload(UserModel.addresses),
+        selectinload(UserModel.orders).options(
+            joinedload(OrderModel.transaction),
+            selectinload(OrderModel.items)
+        )
+    ).all()
     
     users_data = []
     total_revenue = 0.0
@@ -165,8 +168,8 @@ def get_users_complete():
             "country": "India"
         }
         
-        # Get user's orders
-        orders = OrderModel.query.filter_by(user_id=user.id).order_by(OrderModel.created_at.desc()).all()
+        # Get user's orders (eager loaded, sort in Python)
+        orders = sorted(user.orders, key=lambda o: o.created_at or datetime.datetime.min, reverse=True)
         orders_list = []
         user_spent = 0.0
         last_order_date = None
@@ -830,7 +833,14 @@ def clear_all_admin_notifications():
 @admin_required
 def get_buy_requests():
     from backend.models.product import BuyRequestModel
-    requests = BuyRequestModel.query.order_by(BuyRequestModel.created_at.desc()).all()
+    from backend.models.user import UserModel
+    from sqlalchemy.orm import joinedload, selectinload
+    requests = BuyRequestModel.query.options(
+        joinedload(BuyRequestModel.product),
+        joinedload(BuyRequestModel.user).selectinload(UserModel.addresses),
+        joinedload(BuyRequestModel.converted_order),
+        joinedload(BuyRequestModel.selected_address)
+    ).order_by(BuyRequestModel.created_at.desc()).all()
     return jsonify([r.to_dict() for r in requests]), 200
 
 

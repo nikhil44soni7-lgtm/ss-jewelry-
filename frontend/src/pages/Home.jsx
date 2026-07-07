@@ -131,6 +131,7 @@ const BannerSlider = React.memo(({
   const subtitleRef = React.useRef(null);
   const descRef = React.useRef(null);
   const btnRef = React.useRef(null);
+  const progressBarRef = React.useRef(null);
 
   const currentSlide = slides[activeSlide] || {};
 
@@ -325,20 +326,82 @@ const BannerSlider = React.memo(({
             </div>
           </div>
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex space-x-3">
+          {/* ---- ADMIN EDIT BUTTON ---- */}
+          {isAdmin && (
+            <Link
+              to="/admin-control?tab=config"
+              className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 px-4 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold backdrop-blur-md transition-all hover:scale-105 cursor-pointer animate-pulse"
+            >
+              <Edit3 className="h-3.5 w-3.5" />
+              <span>Edit Banners</span>
+            </Link>
+          )}
+
+          {/* ---- PAGINATION DOT INDICATORS ---- */}
+          <div
+            className="absolute z-40 flex items-center gap-2.5"
+            style={{ bottom: '28px', left: '50%', transform: 'translateX(-50%)' }}
+          >
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveSlide(idx)}
-                className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${idx === activeSlide ? 'bg-[#D4A75F] w-8' : 'bg-slate-350 hover:bg-slate-200 w-2.5'
-                  }`}
+                aria-label={`Go to slide ${idx + 1}`}
+                className="cursor-pointer rounded-full"
+                style={{
+                  width: idx === activeSlide ? '28px' : '8px',
+                  height: '8px',
+                  background: idx === activeSlide ? '#D4A75F' : 'rgba(255,255,255,0.30)',
+                  boxShadow: idx === activeSlide ? '0 0 12px rgba(212,167,95,0.80), 0 0 4px rgba(212,167,95,0.50)' : 'none',
+                  border: 'none', padding: 0,
+                  transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)'
+                }}
               />
             ))}
           </div>
+
+          {/* ---- ANIMATED GOLD BOTTOM STRIP ---- */}
+          <div
+            className="hero-gold-bottom"
+            style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 45, height: '3px', pointerEvents: 'none' }}
+          />
+
+          {/* ---- PROGRESS STRIPS (bottom) ---- */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', height: '3px' }}>
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlide(idx)}
+                style={{
+                  flex: 1,
+                  background: idx === activeSlide ? 'transparent' : 'rgba(255,255,255,0.18)',
+                  position: 'relative',
+                  cursor: 'pointer',
+                  border: 'none',
+                  padding: 0,
+                  overflow: 'hidden',
+                  transition: 'background 0.3s'
+                }}
+              >
+                {idx === activeSlide && (
+                  <div
+                    ref={progressBarRef}
+                    style={{
+                      position: 'absolute', inset: 0,
+                      background: '#D4A75F',
+                      transformOrigin: 'left center',
+                      transform: 'scaleX(0)'
+                    }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
         </div>
       </div>
 
-      {/* Mobile/Tablet view hero banner */}
+      {/* Mobile view */}
       <div className="block md:hidden w-[94vw] mx-auto mt-[24px] mb-8">
         <div className="relative h-[390px] xs:h-[420px] sm:h-[440px] overflow-hidden rounded-[16px] shadow-[0_20px_50px_rgba(27,11,38,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#D4A75F]/15 dark:border-white/5 bg-gradient-to-tr from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]">
           {isAdmin && (

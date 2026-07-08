@@ -1195,7 +1195,7 @@ export const Navbar = () => {
                 ) : (
                   <Link 
                     to="/login" 
-                    className="flex items-center space-x-1 py-1.5 px-2.5 sm:py-2 sm:px-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white rounded-full text-[9px] sm:text-xs font-bold shadow-md hover:shadow-lg transition-all flex-shrink-0 cursor-pointer"
+                    className="flex items-center space-x-1 py-1.5 px-2.5 sm:py-2 sm:px-4 bg-[#D4A75F] hover:bg-[#BF934B] text-white rounded-full text-[9px] sm:text-xs font-bold shadow-md hover:shadow-lg transition-all flex-shrink-0 cursor-pointer whitespace-nowrap"
                   >
                     <LogIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     <span>{t('common.sign_in')}</span>

@@ -1601,7 +1601,7 @@ export const Checkout = () => {
         {/* STEP 3: SUCCESS RECEIPT SCREEN */}
         {step === 3 && successOrder && (
           <div className="max-w-xl mx-auto bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-805 rounded-3xl p-8 text-center shadow-lg">
-            <div className="bg-emerald-500/10 p-4 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-emerald-500">
+            <div className="bg-green-500/10 p-4 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-green-500">
               <CheckCircle className="h-12 w-12" />
             </div>
             
@@ -1614,7 +1614,7 @@ export const Checkout = () => {
             <div className="mt-8 border-t border-b border-slate-100 dark:border-slate-800 py-4 text-left text-xs space-y-2">
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.status')}</span>
-                <span className="font-bold text-emerald-500">{t('orders.status_pending', { defaultValue: 'Pending' })}</span>
+                <span className="font-bold text-slate-800 dark:text-white">{t('orders.status_pending', { defaultValue: 'Pending' })}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">{t('checkout_page.total_paid')}</span>

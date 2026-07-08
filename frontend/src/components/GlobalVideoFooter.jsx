@@ -66,18 +66,18 @@ export const GlobalVideoFooter = () => {
     const handleEnter = (i) => {
       // Scale, lift, and glow the hovered letter
       gsap.to(letters[i], {
-        y: -18,
-        scale: 1.25,
-        filter: 'drop-shadow(0 0 15px rgba(212, 167, 95, 0.8))',
+        y: -24,
+        scale: 1.3,
+        filter: 'drop-shadow(0 0 20px rgba(212, 167, 95, 0.95))',
         duration: 0.3,
         ease: 'power2.out'
       });
       if (shadowLetters[i]) {
         gsap.to(shadowLetters[i], {
-          y: -18,
-          scale: 1.25,
+          y: -24,
+          scale: 1.3,
           opacity: 1,
-          filter: 'blur(8px)',
+          filter: 'blur(6px)',
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -85,8 +85,8 @@ export const GlobalVideoFooter = () => {
       // Elastic lift for left letter
       if (letters[i - 1]) {
         gsap.to(letters[i - 1], {
-          y: -6,
-          scale: 1.1,
+          y: -8,
+          scale: 1.15,
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -94,8 +94,8 @@ export const GlobalVideoFooter = () => {
       // Elastic lift for right letter
       if (letters[i + 1]) {
         gsap.to(letters[i + 1], {
-          y: -6,
-          scale: 1.1,
+          y: -8,
+          scale: 1.15,
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -167,23 +167,36 @@ export const GlobalVideoFooter = () => {
   return (
     <footer 
       ref={containerRef} 
-      className="relative w-full bg-[#0F172A] dark:bg-slate-950 border-t border-[#D4A75F]/15 py-12 overflow-hidden flex flex-col items-center justify-center transition-colors duration-300"
+      className="relative w-full bg-[#0F172A] dark:bg-slate-950 border-t border-[#D4A75F]/15 py-16 sm:py-24 overflow-hidden flex flex-col items-center justify-center transition-colors duration-300"
     >
+      {/* Moving Gold Light Shimmer CSS */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes luxury-gold-shimmer {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .luxury-gold-shimmer-active {
+          background-size: 200% auto;
+          animation: luxury-gold-shimmer 6s linear infinite;
+        }
+      `}} />
+
       {/* Ambient glowing backdrops */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#3F1D5A]/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[200px] bg-[#D4A75F]/4 rounded-full blur-[90px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#3F1D5A]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-[#D4A75F]/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Decorative Ornaments */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 left-1/2 w-[850px] h-[850px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
       </div>
 
       {/* Responsive Logo Container with GSAP animated letters */}
-      <div className="relative w-full max-w-[95%] mx-auto flex items-center justify-center py-8 select-none pointer-events-none overflow-visible">
+      <div className="relative w-full max-w-[98%] mx-auto flex items-center justify-center py-10 select-none pointer-events-none overflow-visible">
         
         {/* Layer 1: Blurred Soft Shadow Layer (Glow) */}
         <div className="absolute inset-0 flex items-center justify-center overflow-visible select-none pointer-events-none">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap">
+          <h2 className="text-5xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] 2xl:text-[14rem] font-serif font-black tracking-[0.16em] text-center select-none uppercase flex justify-center items-center flex-wrap">
             {text.split('').map((char, index) => (
               <span
                 key={`shadow-${index}`}
@@ -196,14 +209,14 @@ export const GlobalVideoFooter = () => {
           </h2>
         </div>
 
-        {/* Layer 2: Sharp Metallic Gold Gradient & Outline */}
-        <h2 className="relative z-10 text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap pointer-events-auto">
+        {/* Layer 2: Sharp Metallic Gold Gradient & Outline with active shimmer sweep */}
+        <h2 className="relative z-10 text-5xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] 2xl:text-[14rem] font-serif font-black tracking-[0.16em] text-center select-none uppercase flex justify-center items-center flex-wrap pointer-events-auto">
           {text.split('').map((char, index) => (
             <span
               key={`letter-${index}`}
-              className="footer-letter inline-block bg-gradient-to-b from-[#FFF2D4] via-[#D4A75F] to-[#8C601E] bg-clip-text text-transparent px-1 cursor-pointer"
+              className="footer-letter inline-block bg-gradient-to-r from-[#FFF2D4] via-[#D4A75F] to-[#8C601E] bg-clip-text text-transparent px-1 cursor-pointer luxury-gold-shimmer-active"
               style={{
-                WebkitTextStroke: '1.2px rgba(212,167,95,0.3)',
+                WebkitTextStroke: '1.5px rgba(212,167,95,0.3)',
               }}
             >
               {char === ' ' ? '\u00A0' : char}
@@ -213,14 +226,14 @@ export const GlobalVideoFooter = () => {
 
       </div>
 
-      <div className="w-full max-w-[90%] mx-auto flex flex-col items-center justify-center text-center mt-4 pointer-events-none">
+      <div className="w-full max-w-[90%] mx-auto flex flex-col items-center justify-center text-center mt-6 pointer-events-none">
         {/* Subtitle with gold accent */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 0.65, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-[9px] sm:text-xs tracking-[0.45em] uppercase text-[#D4A75F] font-bold mb-2"
+          className="text-[10px] sm:text-xs tracking-[0.55em] uppercase text-[#D4A75F] font-bold mb-2"
         >
           Crafting Timeless Elegance
         </motion.p>

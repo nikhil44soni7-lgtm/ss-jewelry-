@@ -11,6 +11,8 @@ import { AuthContext, API_BASE_URL } from '../context/AuthContext';
 import { LuxuryImage } from '../components/LuxuryImage';
 import { formatPrice } from '../utils/priceFormatter';
 import { translateCategory, translateUiLabel } from '../utils/categoryTranslations';
+import { GoldCalculator } from '../components/GoldCalculator';
+import { TrustShowcase } from '../components/TrustShowcase';
 
 
 const ACTION_TYPES = [
@@ -1563,6 +1565,13 @@ export const Home = () => {
           loading={loading} 
           onCategoryClick={handleCategoryClick}
         />
+      )}
+
+      {!activeSearch && !isAdmin && activeTab === 'products' && (
+        <>
+          <GoldCalculator />
+          <TrustShowcase />
+        </>
       )}
 
 

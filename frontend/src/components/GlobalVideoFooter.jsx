@@ -148,10 +148,10 @@ export const GlobalVideoFooter = () => {
     letters.forEach((letter, i) => {
       const enter = () => handleEnter(i);
       const leave = () => handleLeave(i);
-      
+
       letter.addEventListener('mouseenter', enter);
       letter.addEventListener('mouseleave', leave);
-      
+
       enterHandlers.push(enter);
       leaveHandlers.push(leave);
     });
@@ -166,12 +166,13 @@ export const GlobalVideoFooter = () => {
   }, []);
 
   return (
-    <footer 
-      ref={containerRef} 
+    <footer
+      ref={containerRef}
       className="relative w-full bg-[#0F172A] dark:bg-slate-950 border-t border-[#D4A75F]/15 py-12 overflow-hidden flex flex-col items-center justify-center transition-colors duration-300"
     >
       {/* Continuous Shine Wave Animation Class Utility */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes gold-shine-wave {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
@@ -192,12 +193,12 @@ export const GlobalVideoFooter = () => {
 
       {/* Concentric jewelry orbit lines */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center">
-        <motion.div 
+        <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
           className="w-[850px] h-[850px] rounded-full border border-dashed border-[#D4A75F] absolute"
         />
-        <motion.div 
+        <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 65, repeat: Infinity, ease: "linear" }}
           className="w-[700px] h-[700px] rounded-full border border-double border-[#D4A75F] absolute"
@@ -211,7 +212,7 @@ export const GlobalVideoFooter = () => {
 
       {/* Responsive Logo Container with GSAP animated letters */}
       <div className="relative w-full max-w-[95%] mx-auto flex items-center justify-center py-8 select-none pointer-events-none overflow-visible">
-        
+
         {/* Glistening Diamond Sparkle Stars */}
         <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
           {/* Sparkle 1 */}

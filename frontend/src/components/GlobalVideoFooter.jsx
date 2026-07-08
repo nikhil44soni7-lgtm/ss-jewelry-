@@ -179,6 +179,9 @@ export const GlobalVideoFooter = () => {
         .gold-shimmer-letter {
           background: linear-gradient(90deg, #8C601E 0%, #FFF2D4 30%, #D4A75F 50%, #FFF2D4 70%, #8C601E 100%);
           background-size: 200% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
           animation: gold-shine-wave 8s linear infinite;
         }
       `}} />

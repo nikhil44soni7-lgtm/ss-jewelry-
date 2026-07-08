@@ -56,6 +56,7 @@ const PageWrapper = ({ children }) => {
 function App() {
   const location = useLocation();
   const [appLoading, setAppLoading] = React.useState(true);
+  const [zoomedImage, setZoomedImage] = React.useState(null);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -73,8 +74,58 @@ function App() {
     });
   }, [location.pathname]);
 
+  // Global Image Click-to-Zoom Listener
+  React.useEffect(() => {
+    const handleImageClick = (e) => {
+      const img = e.target.closest('img');
+      if (!img) return;
+
+      // Filter out small interface images, icons, logos, etc.
+      if (
+        img.src.includes('logo.svg') ||
+        img.src.includes('avatar') ||
+        img.src.includes('flag') ||
+        img.classList.contains('no-zoom') ||
+        img.closest('.live-chat-container') ||
+        img.closest('.navbar-brand-logo') ||
+        img.closest('.language-modal-ref') ||
+        img.closest('.notification-container-ref') ||
+        img.offsetWidth < 60 ||
+        img.offsetHeight < 60
+      ) {
+        return;
+      }
+
+      // Intercept and open in lightbox zoom modal
+      e.preventDefault();
+      e.stopPropagation();
+      setZoomedImage(img.src);
+    };
+
+    window.addEventListener('click', handleImageClick, { capture: true });
+    return () => window.removeEventListener('click', handleImageClick, { capture: true });
+  }, []);
+
   return (
     <>
+      <style dangerouslySetInnerHTML={{__html: `
+        /* Magnifying glass hover hint on product/gallery graphics */
+        img:not(.no-zoom):not([src*="logo.svg"]):not([src*="avatar"]):not([src*="flag"]) {
+          cursor: zoom-in;
+          transition: filter 0.25s ease;
+        }
+        img:not(.no-zoom):not([src*="logo.svg"]):not([src*="avatar"]):not([src*="flag"]):hover {
+          filter: brightness(1.04);
+        }
+        /* Exclude interface elements from custom cursor */
+        .navbar img, 
+        .live-chat-container img, 
+        button img,
+        .no-zoom img,
+        .no-zoom {
+          cursor: default !important;
+        }
+      `}} />
       <AnimatePresence>
         {appLoading && (
           <motion.div
@@ -171,6 +222,47 @@ function App() {
 
       {/* Interactive chatbot bubble widget */}
       <LiveChat />
+
+      {/* Global Image Lightbox Zoom Modal */}
+      <AnimatePresence>
+        {zoomedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-md cursor-zoom-out select-none"
+            onClick={() => setZoomedImage(null)}
+          >
+            {/* Close Button Hint */}
+            <div className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-md border border-white/15">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </div>
+
+            {/* Glowing gold border background ornament */}
+            <div className="absolute inset-0 border-[12px] md:border-[20px] border-[#D4A75F]/10 pointer-events-none" />
+
+            {/* Zoomed Image Card */}
+            <motion.div
+              initial={{ scale: 0.9, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 15 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+              className="relative max-w-[92%] max-h-[85%] rounded-2xl overflow-hidden border border-[#D4A75F]/35 bg-slate-950 shadow-[0_30px_100px_rgba(212,167,95,0.22)] flex items-center justify-center p-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={zoomedImage}
+                alt="Zoomed preview"
+                className="max-w-full max-h-[78vh] object-contain rounded-xl select-none cursor-zoom-out"
+                onClick={() => setZoomedImage(null)}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
     </>
   );

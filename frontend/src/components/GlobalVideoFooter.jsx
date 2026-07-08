@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Sparkles } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,18 +67,18 @@ export const GlobalVideoFooter = () => {
     const handleEnter = (i) => {
       // Scale, lift, and glow the hovered letter
       gsap.to(letters[i], {
-        y: -24,
-        scale: 1.3,
-        filter: 'drop-shadow(0 0 20px rgba(212, 167, 95, 0.95))',
+        y: -18,
+        scale: 1.25,
+        filter: 'drop-shadow(0 0 15px rgba(212, 167, 95, 0.8))',
         duration: 0.3,
         ease: 'power2.out'
       });
       if (shadowLetters[i]) {
         gsap.to(shadowLetters[i], {
-          y: -24,
-          scale: 1.3,
+          y: -18,
+          scale: 1.25,
           opacity: 1,
-          filter: 'blur(6px)',
+          filter: 'blur(8px)',
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -85,8 +86,8 @@ export const GlobalVideoFooter = () => {
       // Elastic lift for left letter
       if (letters[i - 1]) {
         gsap.to(letters[i - 1], {
-          y: -8,
-          scale: 1.15,
+          y: -6,
+          scale: 1.1,
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -94,8 +95,8 @@ export const GlobalVideoFooter = () => {
       // Elastic lift for right letter
       if (letters[i + 1]) {
         gsap.to(letters[i + 1], {
-          y: -8,
-          scale: 1.15,
+          y: -6,
+          scale: 1.1,
           duration: 0.3,
           ease: 'power2.out'
         });
@@ -167,36 +168,86 @@ export const GlobalVideoFooter = () => {
   return (
     <footer 
       ref={containerRef} 
-      className="relative w-full bg-[#0F172A] dark:bg-slate-950 border-t border-[#D4A75F]/15 py-16 sm:py-24 overflow-hidden flex flex-col items-center justify-center transition-colors duration-300"
+      className="relative w-full bg-[#0F172A] dark:bg-slate-950 border-t border-[#D4A75F]/15 py-12 overflow-hidden flex flex-col items-center justify-center transition-colors duration-300"
     >
-      {/* Moving Gold Light Shimmer CSS */}
+      {/* Continuous Shine Wave Animation Class Utility */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes luxury-gold-shimmer {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @keyframes gold-shine-wave {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
         }
-        .luxury-gold-shimmer-active {
+        .gold-shimmer-letter {
+          background: linear-gradient(90deg, #8C601E 0%, #FFF2D4 30%, #D4A75F 50%, #FFF2D4 70%, #8C601E 100%);
           background-size: 200% auto;
-          animation: luxury-gold-shimmer 6s linear infinite;
+          animation: gold-shine-wave 8s linear infinite;
         }
       `}} />
 
       {/* Ambient glowing backdrops */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#3F1D5A]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-[#D4A75F]/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#3F1D5A]/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[200px] bg-[#D4A75F]/4 rounded-full blur-[90px] pointer-events-none" />
+
+      {/* Concentric jewelry orbit lines */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+          className="w-[850px] h-[850px] rounded-full border border-dashed border-[#D4A75F] absolute"
+        />
+        <motion.div 
+          animate={{ rotate: -360 }}
+          transition={{ duration: 65, repeat: Infinity, ease: "linear" }}
+          className="w-[700px] h-[700px] rounded-full border border-double border-[#D4A75F] absolute"
+        />
+      </div>
 
       {/* Decorative Ornaments */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 w-[850px] h-[850px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] rounded-full border border-[#D4A75F] -translate-x-1/2 -translate-y-1/2" />
       </div>
 
       {/* Responsive Logo Container with GSAP animated letters */}
-      <div className="relative w-full max-w-[98%] mx-auto flex items-center justify-center py-10 select-none pointer-events-none overflow-visible">
+      <div className="relative w-full max-w-[95%] mx-auto flex items-center justify-center py-8 select-none pointer-events-none overflow-visible">
         
+        {/* Glistening Diamond Sparkle Stars */}
+        <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
+          {/* Sparkle 1 */}
+          <motion.div
+            animate={{ scale: [0.7, 1.25, 0.7], opacity: [0.2, 0.8, 0.2], rotate: [0, 180, 360] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/4 left-[20%] text-[#FFF2D4]"
+          >
+            <Sparkles className="h-5 w-5 fill-[#D4A75F]/20" />
+          </motion.div>
+          {/* Sparkle 2 */}
+          <motion.div
+            animate={{ scale: [1.2, 0.6, 1.2], opacity: [0.7, 0.1, 0.7], rotate: [360, 180, 0] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-1/4 right-[22%] text-[#D4A75F]"
+          >
+            <Sparkles className="h-4 w-4 fill-[#D4A75F]/20" />
+          </motion.div>
+          {/* Sparkle 3 */}
+          <motion.div
+            animate={{ scale: [0.6, 1.3, 0.6], opacity: [0.15, 0.9, 0.15], rotate: [0, 360] }}
+            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 1.8 }}
+            className="absolute top-1/3 right-[32%] text-[#FFF2D4]"
+          >
+            <Sparkles className="h-3.5 w-3.5 fill-[#D4A75F]/20" />
+          </motion.div>
+          {/* Sparkle 4 */}
+          <motion.div
+            animate={{ scale: [1, 0.5, 1], opacity: [0.8, 0.2, 0.8], rotate: [360, 0] }}
+            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+            className="absolute bottom-1/3 left-[32%] text-[#D4A75F]"
+          >
+            <Sparkles className="h-4 w-4 fill-[#D4A75F]/20" />
+          </motion.div>
+        </div>
+
         {/* Layer 1: Blurred Soft Shadow Layer (Glow) */}
         <div className="absolute inset-0 flex items-center justify-center overflow-visible select-none pointer-events-none">
-          <h2 className="text-5xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] 2xl:text-[14rem] font-serif font-black tracking-[0.16em] text-center select-none uppercase flex justify-center items-center flex-wrap">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap">
             {text.split('').map((char, index) => (
               <span
                 key={`shadow-${index}`}
@@ -209,14 +260,14 @@ export const GlobalVideoFooter = () => {
           </h2>
         </div>
 
-        {/* Layer 2: Sharp Metallic Gold Gradient & Outline with active shimmer sweep */}
-        <h2 className="relative z-10 text-5xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] 2xl:text-[14rem] font-serif font-black tracking-[0.16em] text-center select-none uppercase flex justify-center items-center flex-wrap pointer-events-auto">
+        {/* Layer 2: Sharp Metallic Gold Gradient & Outline */}
+        <h2 className="relative z-10 text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap pointer-events-auto">
           {text.split('').map((char, index) => (
             <span
               key={`letter-${index}`}
-              className="footer-letter inline-block bg-gradient-to-r from-[#FFF2D4] via-[#D4A75F] to-[#8C601E] bg-clip-text text-transparent px-1 cursor-pointer luxury-gold-shimmer-active"
+              className="footer-letter gold-shimmer-letter inline-block bg-clip-text text-transparent px-1 cursor-pointer"
               style={{
-                WebkitTextStroke: '1.5px rgba(212,167,95,0.3)',
+                WebkitTextStroke: '1.2px rgba(212,167,95,0.3)',
               }}
             >
               {char === ' ' ? '\u00A0' : char}
@@ -226,14 +277,14 @@ export const GlobalVideoFooter = () => {
 
       </div>
 
-      <div className="w-full max-w-[90%] mx-auto flex flex-col items-center justify-center text-center mt-6 pointer-events-none">
+      <div className="w-full max-w-[90%] mx-auto flex flex-col items-center justify-center text-center mt-4 pointer-events-none">
         {/* Subtitle with gold accent */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 0.65, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-[10px] sm:text-xs tracking-[0.55em] uppercase text-[#D4A75F] font-bold mb-2"
+          className="text-[9px] sm:text-xs tracking-[0.45em] uppercase text-[#D4A75F] font-bold mb-2"
         >
           Crafting Timeless Elegance
         </motion.p>

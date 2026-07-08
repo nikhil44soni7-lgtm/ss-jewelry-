@@ -251,7 +251,7 @@ export const GlobalVideoFooter = () => {
 
         {/* Layer 1: Blurred Soft Shadow Layer (Glow) */}
         <div className="absolute inset-0 flex items-center justify-center overflow-visible select-none pointer-events-none">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap">
+          <h2 className="text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-[0.05em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap">
             {text.split('').map((char, index) => (
               <span
                 key={`shadow-${index}`}
@@ -265,7 +265,7 @@ export const GlobalVideoFooter = () => {
         </div>
 
         {/* Layer 2: Sharp Metallic Gold Gradient & Outline */}
-        <h2 className="relative z-10 text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-widest text-center select-none uppercase flex justify-center items-center flex-wrap pointer-events-auto">
+        <h2 className="relative z-10 text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-[0.05em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap pointer-events-auto">
           {text.split('').map((char, index) => (
             <span
               key={`letter-${index}`}

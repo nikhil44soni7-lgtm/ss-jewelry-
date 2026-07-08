@@ -13,6 +13,7 @@ import { formatPrice } from '../utils/priceFormatter';
 import { translateCategory, translateUiLabel } from '../utils/categoryTranslations';
 import { GoldCalculator } from '../components/GoldCalculator';
 import { TrustShowcase } from '../components/TrustShowcase';
+import { HotProducts } from '../components/HotProducts';
 
 
 const ACTION_TYPES = [
@@ -1791,6 +1792,7 @@ export const Home = () => {
 
       {!activeSearch && !isAdmin && activeTab === 'products' && (
         <>
+          <HotProducts />
           <TrustShowcase />
           <GoldCalculator />
         </>

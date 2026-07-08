@@ -163,14 +163,14 @@ function App() {
         </AnimatePresence>
       </main>
 
+      {/* Grid footer links panel - ONLY visible on Profile page */}
+      {location.pathname === '/profile' && <Footer />}
+
       {/* Global Video Footer - Only shown on user side, hidden on admin side */}
       {!location.pathname.startsWith('/admin') && <GlobalVideoFooter />}
 
       {/* Interactive chatbot bubble widget */}
       <LiveChat />
-
-      {/* Grid footer links panel - ONLY visible on Profile page */}
-      {location.pathname === '/profile' && <Footer />}
     </div>
     </>
   );

@@ -14,6 +14,7 @@ import { translateCategory, translateUiLabel } from '../utils/categoryTranslatio
 import { GoldCalculator } from '../components/GoldCalculator';
 import { TrustShowcase } from '../components/TrustShowcase';
 import { LuxuryGallery } from '../components/LuxuryGallery';
+import { OccasionGallery } from '../components/OccasionGallery';
 
 
 const ACTION_TYPES = [
@@ -1801,6 +1802,7 @@ export const Home = () => {
       {!activeSearch && !isAdmin && activeTab === 'products' && (
         <>
           <LuxuryGallery />
+          <OccasionGallery />
           <TrustShowcase />
           <GoldCalculator />
         </>

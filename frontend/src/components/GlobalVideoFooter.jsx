@@ -173,6 +173,8 @@ export const GlobalVideoFooter = () => {
       {/* Continuous Shine Wave Animation Class Utility */}
       <style dangerouslySetInnerHTML={{
         __html: `
+        @import url('https://fonts.cdnfonts.com/css/transcity');
+
         @keyframes gold-shine-wave {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
@@ -184,6 +186,11 @@ export const GlobalVideoFooter = () => {
           background-clip: text;
           -webkit-text-fill-color: transparent;
           animation: gold-shine-wave 8s linear infinite;
+        }
+        .ss-jewellery-font {
+          font-family: 'Transcity', 'Playfair Display', Georgia, serif !important;
+          font-weight: 900;
+          letter-spacing: 0.08em;
         }
       `}} />
 
@@ -251,7 +258,7 @@ export const GlobalVideoFooter = () => {
 
         {/* Layer 1: Blurred Soft Shadow Layer (Glow) */}
         <div className="absolute inset-0 flex items-center justify-center overflow-visible select-none pointer-events-none">
-          <h2 className="text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-[0.05em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap">
+          <h2 className="ss-jewellery-font text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-[0.08em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap">
             {text.split('').map((char, index) => (
               <span
                 key={`shadow-${index}`}
@@ -265,7 +272,7 @@ export const GlobalVideoFooter = () => {
         </div>
 
         {/* Layer 2: Sharp Metallic Gold Gradient & Outline */}
-        <h2 className="relative z-10 text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-black tracking-[0.05em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap pointer-events-auto">
+        <h2 className="ss-jewellery-font relative z-10 text-[7.5vw] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-[0.08em] xs:tracking-widest text-center select-none uppercase flex justify-center items-center flex-nowrap whitespace-nowrap pointer-events-auto">
           {text.split('').map((char, index) => (
             <span
               key={`letter-${index}`}

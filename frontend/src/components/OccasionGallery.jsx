@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles, ChevronRight, X, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronUp, X, Heart, Sparkles } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-// 3D Parallax & Magnetic Card component for Occasion
+// 3D Parallax Card component for Occasion
 const ParallaxOccasionCard = ({ item, onExpand, index }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
   // Smooth springs for 3D tilt
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), { stiffness: 180, damping: 25 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), { stiffness: 180, damping: 25 });
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 25 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { stiffness: 180, damping: 25 });
 
-  // Magnetic displacement (card shifts slightly toward cursor)
-  const cardX = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { stiffness: 150, damping: 25 });
-  const cardY = useSpring(useTransform(y, [-0.5, 0.5], [-8, 8]), { stiffness: 150, damping: 25 });
+  // Magnetic displacement
+  const cardX = useSpring(useTransform(x, [-0.5, 0.5], [-6, 6]), { stiffness: 150, damping: 25 });
+  const cardY = useSpring(useTransform(y, [-0.5, 0.5], [-6, 6]), { stiffness: 150, damping: 25 });
 
-  // Anti-parallax shift for inner image
-  const imgX = useSpring(useTransform(x, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
-  const imgY = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
+  // Parallax for inner image
+  const imgX = useSpring(useTransform(x, [-0.5, 0.5], [8, -8]), { stiffness: 150, damping: 25 });
+  const imgY = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { stiffness: 150, damping: 25 });
 
-  // Coordinates for the gold spotlight hover follower
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
@@ -48,15 +47,6 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
 
   return (
     <motion.div
-      // Organic floating animation when idle (desynchronized by card index)
-      animate={{
-        y: [0, -8, 0],
-      }}
-      transition={{
-        duration: 5.5 + index * 1.2,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
       style={{
         rotateX,
         rotateY,
@@ -67,9 +57,9 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={() => onExpand(item)}
-      className="relative aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/50 dark:border-slate-800/80 bg-slate-950 shadow-md hover:shadow-xl transition-all duration-300"
+      className="relative min-w-[270px] sm:min-w-[340px] aspect-[9/14] rounded-2xl overflow-hidden cursor-pointer group border border-slate-200/40 dark:border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 select-none flex-shrink-0"
     >
-      {/* Background Ken Burns Zoom Image with Anti-Parallax Offset */}
+      {/* Background Image with Parallax Offset */}
       <motion.div 
         className="absolute -inset-4 w-[calc(100%+2rem)] h-[calc(100%+2rem)]"
         style={{ 
@@ -81,42 +71,33 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
         <img
           src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 saturate-[1.1] brightness-[0.8]"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 saturate-[1.1] brightness-[0.85]"
         />
       </motion.div>
 
       {/* Dark overlay with dynamic gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10 group-hover:via-black/55 transition-colors duration-300 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10 group-hover:via-black/50 transition-colors duration-300 z-10" />
 
-      {/* Interactive Radial Spotlight Follower */}
+      {/* Interactive Spotlight Follower */}
       <div 
         className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(212, 167, 95, 0.25) 0%, transparent 60%)`
+          background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(212, 167, 95, 0.22) 0%, transparent 60%)`
         }}
       />
 
-      {/* Detail Overlay Content */}
+      {/* Text overlay at the bottom exactly matching the reference layout */}
       <div 
-        className="absolute inset-0 p-6 flex flex-col justify-end items-center text-center z-30"
+        className="absolute bottom-8 left-0 right-0 flex flex-col items-center justify-center text-center z-30 px-4"
         style={{ transform: "translateZ(30px)" }}
       >
-        <div className="space-y-1.5 w-full">
-          {/* Bordered Accent Line */}
-          <span className="w-12 h-0.5 bg-[#D4A75F] mx-auto block mb-2 scale-x-50 group-hover:scale-x-100 transition-transform duration-500" />
-          
-          <h3 className="text-base sm:text-lg font-bold font-serif text-white tracking-widest uppercase group-hover:text-[#D4A75F] transition-colors duration-300">
-            {item.title}
-          </h3>
-          
-          <p className="text-[10px] text-slate-350 tracking-wider font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {item.subtitle}
-          </p>
-
-          <div className="pt-2 flex justify-center items-center gap-1 text-[10px] text-[#D4A75F] font-bold tracking-widest uppercase opacity-85 group-hover:opacity-100 transition-opacity duration-300">
-            <span>Explore Style</span>
-            <ChevronRight className="h-3 w-3" />
-          </div>
+        <h3 className="text-white text-base sm:text-lg font-bold tracking-[0.25em] uppercase border-b border-white/90 pb-1.5 mb-3 group-hover:text-[#D4A75F] group-hover:border-[#D4A75F] transition-colors duration-300">
+          {item.title}
+        </h3>
+        
+        {/* Upward Chevron Circle Indicator */}
+        <div className="p-2 sm:p-2.5 rounded-full bg-white text-slate-900 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg transform">
+          <ChevronUp className="h-4 w-4" />
         </div>
       </div>
     </motion.div>
@@ -126,7 +107,9 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
 export const OccasionGallery = () => {
   const { language } = useTranslation();
   const [selectedItem, setSelectedItem] = useState(null);
+  const scrollRef = useRef(null);
 
+  // Occasions Lookbook Data
   const items = {
     en: [
       {
@@ -176,7 +159,7 @@ export const OccasionGallery = () => {
         title: "शादी विवाह",
         subtitle: "शाही विरासत कुंदन",
         image: "/cat_bridal.png",
-        description: "अलंकृत पारंपरिक दुल्हन चोकर सेट, भारी डिज़ाइनर झुमके और मिलान वाले हाथ के गहने। शाही लालित्य के लिए विशेष रूप से तैयार।",
+        description: "कढ़ाई वाले परिधानों के साथ चोकर-लंबाई वाले सेट पहनें। क्लासिक लुक के लिए मांग-टीका के साथ स्टाइल करें।",
         tips: ["कढ़ाई वाले परिधानों के साथ चोकर-लंबाई वाले सेट पहनें।", "क्लासिक लुक के लिए मांग-टीका के साथ स्टाइल करें।", "रंग संतुलन के लिए प्राकृतिक मोतियों को शामिल करें।"]
       },
       {
@@ -198,12 +181,32 @@ export const OccasionGallery = () => {
     ]
   }[language === 'hi' ? 'hi' : 'en'];
 
+  // Scroll function for buttons
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -380 : 380;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative w-full overflow-hidden py-16 bg-transparent transition-colors duration-300">
+      
+      {/* Hide Scrollbar style utility */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-12">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -225,19 +228,42 @@ export const OccasionGallery = () => {
           </p>
         </div>
 
-        {/* 4 Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-          {items.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.12 }}
-            >
-              <ParallaxOccasionCard item={item} onExpand={setSelectedItem} index={index} />
-            </motion.div>
-          ))}
+        {/* Carousel Container Wrapper */}
+        <div className="relative w-full flex items-center group/slider">
+          
+          {/* Left Navigation Chevron */}
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-2 sm:left-4 z-40 p-2.5 sm:p-3.5 rounded-full bg-white text-slate-800 shadow-xl border border-slate-100 hover:bg-slate-50 transition-all opacity-0 group-hover/slider:opacity-100 hover:scale-105 cursor-pointer hidden sm:flex items-center justify-center"
+          >
+            <ChevronLeft className="h-5 w-5 text-slate-800" />
+          </button>
+
+          {/* Horizontal Scrollable Track */}
+          <div
+            ref={scrollRef}
+            className="w-full flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth scrollbar-hide py-4 px-2 sm:px-4"
+          >
+            {items.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.12 }}
+              >
+                <ParallaxOccasionCard item={item} onExpand={setSelectedItem} index={index} />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right Navigation Chevron */}
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-2 sm:right-4 z-40 p-2.5 sm:p-3.5 rounded-full bg-white text-slate-800 shadow-xl border border-slate-100 hover:bg-slate-50 transition-all opacity-0 group-hover/slider:opacity-100 hover:scale-105 cursor-pointer hidden sm:flex items-center justify-center"
+          >
+            <ChevronRight className="h-5 w-5 text-slate-800" />
+          </button>
         </div>
       </div>
 

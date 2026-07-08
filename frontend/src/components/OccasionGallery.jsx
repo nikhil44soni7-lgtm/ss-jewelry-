@@ -3,14 +3,25 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import { Sparkles, ChevronRight, X, Heart } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-// 3D Parallax Card component for Occasion
-const ParallaxOccasionCard = ({ item, onExpand }) => {
+// 3D Parallax & Magnetic Card component for Occasion
+const ParallaxOccasionCard = ({ item, onExpand, index }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Smooth springs for 3D rotation
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), { stiffness: 200, damping: 25 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), { stiffness: 200, damping: 25 });
+  // Smooth springs for 3D tilt
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), { stiffness: 180, damping: 25 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), { stiffness: 180, damping: 25 });
+
+  // Magnetic displacement (card shifts slightly toward cursor)
+  const cardX = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { stiffness: 150, damping: 25 });
+  const cardY = useSpring(useTransform(y, [-0.5, 0.5], [-8, 8]), { stiffness: 150, damping: 25 });
+
+  // Anti-parallax shift for inner image
+  const imgX = useSpring(useTransform(x, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
+  const imgY = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 25 });
+
+  // Coordinates for the gold spotlight hover follower
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
     const el = e.currentTarget;
@@ -23,6 +34,11 @@ const ParallaxOccasionCard = ({ item, onExpand }) => {
     
     x.set(relativeX);
     y.set(relativeY);
+
+    setSpotlightPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
   };
 
   const handleMouseLeave = () => {
@@ -32,35 +48,58 @@ const ParallaxOccasionCard = ({ item, onExpand }) => {
 
   return (
     <motion.div
+      // Organic floating animation when idle (desynchronized by card index)
+      animate={{
+        y: [0, -8, 0],
+      }}
+      transition={{
+        duration: 5.5 + index * 1.2,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
       style={{
         rotateX,
         rotateY,
+        x: cardX,
+        y: cardY,
         transformStyle: "preserve-3d",
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={() => onExpand(item)}
-      className="relative aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/50 dark:border-slate-800/80 bg-slate-900 shadow-md hover:shadow-xl transition-all duration-300"
+      className="relative aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/50 dark:border-slate-800/80 bg-slate-950 shadow-md hover:shadow-xl transition-all duration-300"
     >
-      {/* Background Ken Burns Zoom Image */}
+      {/* Background Ken Burns Zoom Image with Anti-Parallax Offset */}
       <motion.div 
-        className="absolute inset-0 w-full h-full"
-        style={{ transformStyle: "preserve-3d" }}
+        className="absolute -inset-4 w-[calc(100%+2rem)] h-[calc(100%+2rem)]"
+        style={{ 
+          transformStyle: "preserve-3d",
+          x: imgX,
+          y: imgY
+        }}
       >
-        <motion.img
+        <img
           src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 saturate-[1.1] brightness-[0.85]"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 saturate-[1.1] brightness-[0.8]"
         />
       </motion.div>
 
       {/* Dark overlay with dynamic gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10 group-hover:via-black/50 transition-colors duration-300 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10 group-hover:via-black/55 transition-colors duration-300 z-10" />
+
+      {/* Interactive Radial Spotlight Follower */}
+      <div 
+        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(212, 167, 95, 0.25) 0%, transparent 60%)`
+        }}
+      />
 
       {/* Detail Overlay Content */}
       <div 
         className="absolute inset-0 p-6 flex flex-col justify-end items-center text-center z-30"
-        style={{ transform: "translateZ(25px)" }}
+        style={{ transform: "translateZ(30px)" }}
       >
         <div className="space-y-1.5 w-full">
           {/* Bordered Accent Line */}
@@ -88,7 +127,6 @@ export const OccasionGallery = () => {
   const { language } = useTranslation();
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Occasions Lookbook Data
   const items = {
     en: [
       {
@@ -139,7 +177,7 @@ export const OccasionGallery = () => {
         subtitle: "शाही विरासत कुंदन",
         image: "/cat_bridal.png",
         description: "अलंकृत पारंपरिक दुल्हन चोकर सेट, भारी डिज़ाइनर झुमके और मिलान वाले हाथ के गहने। शाही लालित्य के लिए विशेष रूप से तैयार।",
-        tips: ["कढ़ाई वाले परिधानों के साथ चोकर-लंबाई वाले सेट पहनें।", "क्लासिक लुक के लिए मैचिंग मांग-टीका के साथ स्टाइल करें।", "रंग संतुलन के लिए प्राकृतिक मोतियों को शामिल करें।"]
+        tips: ["कढ़ाई वाले परिधानों के साथ चोकर-लंबाई वाले सेट पहनें।", "क्लासिक लुक के लिए मांग-टीका के साथ स्टाइल करें।", "रंग संतुलन के लिए प्राकृतिक मोतियों को शामिल करें।"]
       },
       {
         id: 3,
@@ -197,7 +235,7 @@ export const OccasionGallery = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.12 }}
             >
-              <ParallaxOccasionCard item={item} onExpand={setSelectedItem} />
+              <ParallaxOccasionCard item={item} onExpand={setSelectedItem} index={index} />
             </motion.div>
           ))}
         </div>

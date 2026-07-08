@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Maximize2, X, Sparkles, ChevronRight, Eye } from 'lucide-react';
+import { Maximize2, X, Sparkles, ChevronRight } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-// 3D Parallax Card component
-const ParallaxCard = ({ item, onExpand }) => {
+// 3D Parallax & Magnetic Card component
+const ParallaxCard = ({ item, onExpand, index }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Smooth springs for rotation
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 200, damping: 25 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 200, damping: 25 });
+  // Smooth spring configurations for realistic physics
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 180, damping: 25 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 180, damping: 25 });
+
+  // Magnetic displacement (card shifts slightly toward cursor)
+  const cardX = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { stiffness: 150, damping: 25 });
+  const cardY = useSpring(useTransform(y, [-0.5, 0.5], [-10, 10]), { stiffness: 150, damping: 25 });
+
+  // Anti-parallax shift for inner image (deep holographic/3D window effect)
+  const imgX = useSpring(useTransform(x, [-0.5, 0.5], [12, -12]), { stiffness: 150, damping: 25 });
+  const imgY = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), { stiffness: 150, damping: 25 });
+
+  // Coordinates for the gold spotlight hover follower
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
     const el = e.currentTarget;
@@ -18,12 +29,16 @@ const ParallaxCard = ({ item, onExpand }) => {
     const width = rect.width;
     const height = rect.height;
     
-    // Relative coordinates between -0.5 and 0.5
     const relativeX = (e.clientX - rect.left) / width - 0.5;
     const relativeY = (e.clientY - rect.top) / height - 0.5;
     
     x.set(relativeX);
     y.set(relativeY);
+
+    setSpotlightPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
   };
 
   const handleMouseLeave = () => {
@@ -33,38 +48,58 @@ const ParallaxCard = ({ item, onExpand }) => {
 
   return (
     <motion.div
+      // Organic floating animation when idle (desynchronized by card index)
+      animate={{
+        y: [0, -8, 0],
+      }}
+      transition={{
+        duration: 6 + index * 1.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
       style={{
         rotateX,
         rotateY,
+        x: cardX,
+        y: cardY,
         transformStyle: "preserve-3d",
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={() => onExpand(item)}
-      className="relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/50 dark:border-slate-800/80 bg-slate-900 shadow-lg"
+      className="relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/50 dark:border-slate-800/80 bg-slate-950 shadow-lg"
     >
-      {/* Background Ken Burns Zoom Image */}
+      {/* Background Ken Burns Zoom Image with Anti-Parallax Offset */}
       <motion.div 
-        className="absolute inset-0 w-full h-full"
-        style={{ transformStyle: "preserve-3d" }}
+        className="absolute -inset-4 w-[calc(100%+2rem)] h-[calc(100%+2rem)]"
+        style={{ 
+          transformStyle: "preserve-3d",
+          x: imgX,
+          y: imgY
+        }}
       >
-        <motion.img
+        <img
           src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 saturate-[1.1] brightness-[0.9]"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 saturate-[1.1] brightness-[0.85]"
         />
       </motion.div>
 
       {/* Dark overlay with dynamic backdrop-blur */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10 group-hover:via-black/45 transition-colors duration-300 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/15 group-hover:via-black/50 transition-colors duration-300 z-10" />
 
-      {/* Hover Shimmer Effect */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out z-20 pointer-events-none" />
+      {/* Interactive Radial Spotlight Follower */}
+      <div 
+        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(212, 167, 95, 0.25) 0%, transparent 60%)`
+        }}
+      />
 
       {/* Detail Overlay Content */}
       <div 
-        className="absolute inset-0 p-6 flex flex-col justify-between items-start z-35"
-        style={{ transform: "translateZ(30px)" }}
+        className="absolute inset-0 p-6 flex flex-col justify-between items-start z-30"
+        style={{ transform: "translateZ(35px)" }}
       >
         {/* Top Tag */}
         <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-amber-500/35 text-[10px] sm:text-xs font-bold text-[#D4A75F] uppercase tracking-widest flex items-center gap-1.5">
@@ -77,7 +112,7 @@ const ParallaxCard = ({ item, onExpand }) => {
           <h3 className="text-lg sm:text-xl font-bold font-serif text-white tracking-wide leading-tight group-hover:text-[#D4A75F] transition-colors duration-300">
             {item.title}
           </h3>
-          <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-350 line-clamp-2 leading-relaxed">
             {item.description}
           </p>
 
@@ -100,7 +135,6 @@ export const LuxuryGallery = () => {
   const { language } = useTranslation();
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Asymmetric items database using premium images in public folder
   const items = {
     en: [
       {
@@ -197,7 +231,7 @@ export const LuxuryGallery = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
             >
-              <ParallaxCard item={item} onExpand={setSelectedItem} />
+              <ParallaxCard item={item} onExpand={setSelectedItem} index={index} />
             </motion.div>
           ))}
         </div>

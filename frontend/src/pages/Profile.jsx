@@ -192,6 +192,10 @@ export const Profile = () => {
       setProfileError("Please enter a valid 10-digit alternate mobile number.");
       return;
     }
+    if (isPincodeInvalid) {
+      setProfileError("Please enter a valid 6-digit PIN Code.");
+      return;
+    }
     setProfileLoading(true);
     setProfileMessage('');
     setProfileError('');
@@ -372,6 +376,9 @@ export const Profile = () => {
         return 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900';
     }
   };
+
+  const isAddressEmpty = !street?.trim() && !city?.trim() && !state?.trim() && !pincode?.trim();
+  const isPincodeInvalid = isAddressEmpty ? false : pincode?.trim().length !== 6;
 
   if (!user) {
     return (
@@ -568,10 +575,18 @@ export const Profile = () => {
                         <input
                           type="text"
                           placeholder="560001"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          maxLength={6}
                           value={pincode}
-                          onChange={(e) => setPincode(e.target.value)}
+                          onChange={(e) => setPincode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
                           className="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4A75F] text-slate-800 dark:text-white"
                         />
+                        {pincode && pincode.length !== 6 && (
+                          <p className="mt-1 text-[11px] text-[#EF4444] font-semibold">
+                            Please enter a valid 6-digit PIN Code.
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -579,7 +594,7 @@ export const Profile = () => {
 
                 <button
                   type="submit"
-                  disabled={profileLoading || !profileName.trim() || !isEmailValid(profileEmail) || profileMobile.length !== 10 || (alternateMobile && alternateMobile.length !== 10)}
+                  disabled={profileLoading || !profileName.trim() || !isEmailValid(profileEmail) || profileMobile.length !== 10 || (alternateMobile && alternateMobile.length !== 10) || isPincodeInvalid}
                   className="px-6 py-2.5 bg-[#3F1D5A] hover:bg-[#D4A75F] text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {profileLoading ? 'Saving...' : 'Update Settings & Address'}
@@ -822,7 +837,7 @@ export const Profile = () => {
                           <div key={k} className="truncate"><span className="font-bold capitalize">{k}:</span> {String(v)}</div>
                         ))}
                         <div><span className="font-bold">Qty:</span> {req.quantity}</div>
-                        <div><span className="font-bold">City:</span> {req.city || 'N/A'}</div>
+                        <div className="secondary-text"><span className="font-bold">City:</span> {req.city || 'N/A'}</div>
                       </div>
 
                       {/* Respond Actions */}

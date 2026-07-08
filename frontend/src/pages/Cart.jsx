@@ -59,7 +59,7 @@ export const Cart = () => {
                   >
                     {/* Item Image */}
                     <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 flex-shrink-0">
-                      <LuxuryImage src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      <LuxuryImage src={item.image} alt={item.name} className="w-full h-full object-cover" fetchpriority="low" width="96" height="96" />
                     </div>
 
                     {/* Specifications */}

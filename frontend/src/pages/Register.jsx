@@ -65,6 +65,8 @@ export const Register = () => {
     let { name, value } = e.target;
     if (name === 'mobile') {
       value = value.replace(/\D/g, '').slice(0, 10);
+    } else if (name === 'pincode') {
+      value = value.replace(/[^0-9]/g, '').slice(0, 6);
     }
     setFormData({
       ...formData,
@@ -90,6 +92,11 @@ export const Register = () => {
 
     if (isNameInvalid || isMobileInvalid || isEmailInvalidValue || isPasswordInvalid) {
       setError("Please fill in all the required fields correctly.");
+      return;
+    }
+
+    if (isPincodeInvalid) {
+      setError("Please enter a valid 6-digit PIN Code.");
       return;
     }
 
@@ -175,6 +182,9 @@ export const Register = () => {
       setVerifyingOtp(false);
     }
   };
+
+  const isAddressEmpty = !formData.street.trim() && !formData.city.trim() && !formData.state.trim() && !formData.pincode.trim();
+  const isPincodeInvalid = isAddressEmpty ? false : formData.pincode.length !== 6;
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -353,10 +363,18 @@ export const Register = () => {
                       <input
                         type="text"
                         name="pincode"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={6}
                         value={formData.pincode}
                         onChange={handleChange}
                         className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none"
                       />
+                      {formData.pincode && formData.pincode.length !== 6 && (
+                        <p className="mt-1 text-[11px] text-[#EF4444] font-semibold">
+                          Please enter a valid 6-digit PIN Code.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -366,7 +384,7 @@ export const Register = () => {
 
             <button
               type="submit"
-              disabled={loading || success}
+              disabled={loading || success || isPincodeInvalid}
               className="w-full flex items-center justify-center space-x-2 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />

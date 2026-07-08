@@ -749,7 +749,7 @@ export const MyOrders = () => {
                             {req.city && (
                               <div>
                                 <span className="text-slate-400 block mb-0.5">{language === 'hi' ? 'स्थान' : 'Location'}</span>
-                                <span className="font-bold text-slate-805 dark:text-slate-200">{req.city}</span>
+                                <span className="font-bold text-slate-805 dark:text-slate-200 secondary-text">{req.city}</span>
                               </div>
                             )}
                             {variantStr && (

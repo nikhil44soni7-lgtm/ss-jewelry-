@@ -167,6 +167,115 @@ const translationDictionary = {
   'Submit a written review to share your feedback.': 'अपनी प्रतिक्रिया साझा करने के लिए एक लिखित समीक्षा सबमिट करें।'
 };
 
+const RelatedProductCard = React.memo(({ item }) => {
+  const navigate = useNavigate();
+  const { user, language, isPreviewMode } = useContext(AuthContext);
+  const { addToWishlist, removeFromWishlist, isInWishlist, triggerAuthModal } = useContext(CartContext);
+
+  const isItemInWishlist = isInWishlist(item._id);
+  const itemDiscountedPrice = Math.round(item.price - (item.price * ((item.discount || 0) / 100)));
+
+  const handleItemWishlistToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      triggerAuthModal(language === 'hi' ? 'कृपया अपनी विशलिस्ट देखने के लिए लॉगिन करें।' : 'Please login to access your wishlist.', window.location.pathname);
+      return;
+    }
+    if (isItemInWishlist) {
+      removeFromWishlist(item._id);
+    } else {
+      addToWishlist(item);
+    }
+  };
+
+  const translateCategory = (cat) => {
+    return centralizedTranslateCategory(cat, language);
+  };
+
+  return (
+    <div 
+      onClick={() => {
+        navigate(`/product/${item._id}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }}
+      className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-150 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
+    >
+      {/* Wishlist Button */}
+      <button
+        onClick={handleItemWishlistToggle}
+        disabled={isPreviewMode}
+        className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border border-slate-100 dark:border-slate-850 text-slate-400 hover:text-red-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <Heart className={`h-4 w-4 ${isItemInWishlist ? 'text-red-500 fill-current' : ''}`} />
+      </button>
+
+      {/* Discount Badge */}
+      {item.discount > 0 && (
+        <span className="absolute top-3 left-3 z-10 bg-red-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full shadow-sm">
+          {item.discount}% {language === 'hi' ? 'छूट' : 'OFF'}
+        </span>
+      )}
+
+      {/* Image Block */}
+      <div className="relative aspect-video w-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-center p-2 mt-2">
+        <LuxuryImage
+          src={item.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'}
+          alt={item.name}
+          className="max-h-24 max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+          fetchpriority="low"
+          width="400"
+          height="225"
+        />
+      </div>
+
+      {/* Content Block */}
+      <div className="p-3 sm:p-4 flex-grow flex flex-col">
+        {/* Category */}
+        <span className="text-[9px] font-semibold text-[#D4A75F] uppercase tracking-wider">
+          {translateCategory(item.category)}
+        </span>
+
+        {/* Product Title */}
+        <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 group-hover:text-[#D4A75F] line-clamp-1 mt-0.5">
+          {language === 'hi' ? (item.name_hi || item.name) : (item.name_en || item.name)}
+        </h3>
+
+        {/* Rating & Review Count */}
+        <div className="flex items-center mt-1 mb-2">
+          <div className="flex items-center text-amber-500">
+            <Star className="h-3 w-3 fill-current" />
+            <span className="ml-1 text-[11px] font-bold text-slate-700 dark:text-slate-350">
+              {parseFloat(item.ratings || item.rating || 0).toFixed(1)}
+            </span>
+          </div>
+          <span className="mx-1 text-slate-300 dark:text-slate-650">•</span>
+          <span className="text-[10px] text-slate-400 dark:text-slate-500">
+            {item.review_count !== undefined ? item.review_count : (item.reviews ? item.reviews.length : 0)} {language === 'hi' ? 'समीक्षाएं' : 'reviews'}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mb-3 flex-grow">
+          {language === 'hi' ? (item.description_hi || item.description) : (item.description_en || item.description)}
+        </p>
+
+        {/* Price Row */}
+        <div className="flex items-baseline space-x-1.5 mb-1 mt-auto font-black text-slate-900 dark:text-slate-100">
+          <span className="text-sm sm:text-base font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB] price-amount">
+            ₹{formatPrice(itemDiscountedPrice)}
+          </span>
+          {item.discount > 0 && (
+            <span className="text-[10px] sm:text-xs text-slate-400 line-through font-normal price-amount">
+              ₹{formatPrice(item.price)}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+
 export const ProductDetails = ({ productId }) => {
   const { id: paramId } = useParams();
   const id = productId || paramId;
@@ -402,103 +511,7 @@ export const ProductDetails = ({ productId }) => {
     }
   };
 
-  const RelatedProductCard = ({ item }) => {
-    const isItemInWishlist = isInWishlist(item._id);
-    const itemDiscountedPrice = Math.round(item.price - (item.price * ((item.discount || 0) / 100)));
-
-    const handleItemWishlistToggle = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!user) {
-        triggerAuthModal(language === 'hi' ? 'कृपया अपनी विशलिस्ट देखने के लिए लॉगिन करें।' : 'Please login to access your wishlist.', window.location.pathname);
-        return;
-      }
-      if (isItemInWishlist) {
-        removeFromWishlist(item._id);
-      } else {
-        addToWishlist(item);
-      }
-    };
-
-    return (
-      <div 
-        onClick={() => {
-          navigate(`/product/${item._id}`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-150 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
-      >
-        {/* Wishlist Button */}
-        <button
-          onClick={handleItemWishlistToggle}
-          disabled={isPreviewMode}
-          className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border border-slate-100 dark:border-slate-850 text-slate-400 hover:text-red-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <Heart className={`h-4 w-4 ${isItemInWishlist ? 'text-red-500 fill-current' : ''}`} />
-        </button>
-
-        {/* Discount Badge */}
-        {item.discount > 0 && (
-          <span className="absolute top-3 left-3 z-10 bg-red-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full shadow-sm">
-            {item.discount}% {language === 'hi' ? 'छूट' : 'OFF'}
-          </span>
-        )}
-
-        {/* Image Block */}
-        <div className="relative aspect-video w-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-center p-2 mt-2">
-          <LuxuryImage
-            src={item.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'}
-            alt={item.name}
-            className="max-h-24 max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
-          />
-        </div>
-
-        {/* Content Block */}
-        <div className="p-3 sm:p-4 flex-grow flex flex-col">
-          {/* Category */}
-          <span className="text-[9px] font-semibold text-[#D4A75F] uppercase tracking-wider">
-            {translateCategory(item.category)}
-          </span>
-
-          {/* Product Title */}
-          <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 group-hover:text-[#D4A75F] line-clamp-1 mt-0.5">
-            {language === 'hi' ? (item.name_hi || item.name) : (item.name_en || item.name)}
-          </h3>
-
-          {/* Rating & Review Count */}
-          <div className="flex items-center mt-1 mb-2">
-            <div className="flex items-center text-amber-500">
-              <Star className="h-3 w-3 fill-current" />
-              <span className="ml-1 text-[11px] font-bold text-slate-700 dark:text-slate-350">
-                {parseFloat(item.ratings || item.rating || 0).toFixed(1)}
-              </span>
-            </div>
-            <span className="mx-1 text-slate-300 dark:text-slate-650">•</span>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500">
-              {item.review_count !== undefined ? item.review_count : (item.reviews ? item.reviews.length : 0)} {language === 'hi' ? 'समीक्षाएं' : 'reviews'}
-            </span>
-          </div>
-
-          {/* Description */}
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mb-3 flex-grow">
-            {language === 'hi' ? (item.description_hi || item.description) : (item.description_en || item.description)}
-          </p>
-
-          {/* Price Row */}
-          <div className="flex items-baseline space-x-1.5 mb-1 mt-auto font-black text-slate-900 dark:text-slate-100">
-            <span className="text-sm sm:text-base font-extrabold text-[#3F1D5A] dark:text-[#EFE7DB] price-amount">
-              ₹{formatPrice(itemDiscountedPrice)}
-            </span>
-            {item.discount > 0 && (
-              <span className="text-[10px] sm:text-xs text-slate-400 line-through font-normal price-amount">
-                ₹{formatPrice(item.price)}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // RelatedProductCard is now defined as a memoized top-level component outside ProductDetails
 
   // Editing state for admin
   const [editNameEn, setEditNameEn] = useState('');
@@ -2044,6 +2057,9 @@ export const ProductDetails = ({ productId }) => {
                       src={activeImage || imagesList[0]}
                       alt={product.name}
                       className="w-full h-auto object-contain transition-transform duration-300 ease-out md:group-hover:scale-105 origin-[var(--zoom-x,50%)_var(--zoom-y,50%)]"
+                      fetchpriority="high"
+                      width="600"
+                      height="600"
                     />
                   </div>
 
@@ -2080,7 +2096,7 @@ export const ProductDetails = ({ productId }) => {
                             : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-350 dark:hover:border-slate-700'
                         }`}
                       >
-                        <LuxuryImage src={img} alt={`${product.name} - Thumbnail ${idx + 1}`} className="w-full h-full object-cover" width="80" height="80" />
+                        <LuxuryImage src={img} alt={`${product.name} - Thumbnail ${idx + 1}`} className="w-full h-full object-cover" width="80" height="80" fetchpriority="low" />
                       </button>
                     ))}
                   </div>
@@ -2406,8 +2422,8 @@ export const ProductDetails = ({ productId }) => {
                     </h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-650 dark:text-slate-350">
                       {getLocalizedFeatures().map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2 bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                          <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 mt-0.5 shrink-0" />
+                        <li key={idx} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                          <CheckCircle2 className="h-4.5 w-4.5 text-green-500 shrink-0" />
                           <span>{feat}</span>
                         </li>
                       ))}
@@ -2565,6 +2581,9 @@ export const ProductDetails = ({ productId }) => {
                 src={imagesList[previewImageIndex]}
                 alt={`${product.name} - Full Preview ${previewImageIndex + 1}`}
                 className="max-w-full max-h-full object-contain"
+                fetchpriority="low"
+                width="1200"
+                height="800"
               />
               <button
                 type="button"
@@ -2588,7 +2607,7 @@ export const ProductDetails = ({ productId }) => {
                       : 'border-slate-700 hover:border-slate-500'
                   }`}
                 >
-                  <LuxuryImage src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                  <LuxuryImage src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" fetchpriority="low" width="80" height="80" />
                 </button>
               ))}
             </div>
@@ -2624,6 +2643,9 @@ export const ProductDetails = ({ productId }) => {
                         src={product.images[0]} 
                         alt={product.name} 
                         className="w-full h-full object-cover"
+                        fetchpriority="low"
+                        width="140"
+                        height="140"
                       />
                     </div>
                   )}

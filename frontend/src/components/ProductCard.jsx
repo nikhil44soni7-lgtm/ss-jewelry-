@@ -73,6 +73,7 @@ export const ProductCard = React.memo(({ product, onAdminAction }) => {
           loading="lazy"
           width="600"
           height="600"
+          fetchpriority="low"
         />
         {product.images && product.images.length > 1 && (
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out pointer-events-none">
@@ -83,6 +84,7 @@ export const ProductCard = React.memo(({ product, onAdminAction }) => {
               loading="lazy"
               width="600"
               height="600"
+              fetchpriority="low"
             />
           </div>
         )}

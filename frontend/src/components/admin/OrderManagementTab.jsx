@@ -105,7 +105,7 @@ export const OrderManagementTab = ({
         <div className="flex flex-col sm:flex-row justify-between items-baseline mb-6 gap-3">
           <div>
             <h3 className="text-base font-bold flex items-center gap-2">
-              <ShoppingBag className="h-5 w-5 text-emerald-500" />
+              <ShoppingBag className="h-5 w-5 section-icon green-premium" />
               <span>User Buy Requests ({buyRequests.length})</span>
             </h3>
             <p className="text-[11px] text-slate-400 mt-1">Approve, reject, or track requests for out-of-stock items</p>
@@ -487,7 +487,7 @@ export const OrderManagementTab = ({
                         <p className="text-[10px] text-slate-400">{req.email}</p>
                         <p className="text-[10px] text-slate-400">{req.mobile || 'No Mobile'}</p>
                         {req.city && (
-                          <p className="text-[10px] text-emerald-600 dark:text-emerald-450 font-semibold mt-0.5">City: {req.city}</p>
+                          <p className="text-[10px] text-emerald-600 mt-0.5 secondary-text">City: {req.city}</p>
                         )}
                       </td>
                       <td className="py-3.5 pr-2 max-w-[200px] truncate">

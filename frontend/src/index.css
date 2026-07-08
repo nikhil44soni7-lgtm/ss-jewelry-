@@ -655,5 +655,31 @@ html.dark .price-amount {
   font-weight: 700 !important;
 }
 
+/* ==========================================================================
+   GLOBAL REUSABLE SHARED STYLES
+   ========================================================================== */
+.section-icon {
+  transition: color 200ms ease-in-out;
+}
 
+.section-icon.green-premium {
+  color: #16A34A !important;
+}
 
+.section-icon.green-premium:hover {
+  color: #15803D !important;
+}
+
+.info-text,
+.secondary-text {
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+
+.dark .info-text,
+.dark .secondary-text,
+html.dark .info-text,
+html.dark .secondary-text {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+}

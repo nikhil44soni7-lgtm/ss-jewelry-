@@ -228,6 +228,9 @@ export const Checkout = () => {
 
   // Handle guest fields and keep address synced
   const handleGuestInputChange = (field, value) => {
+    if (field === 'pincode') {
+      value = value.replace(/[^0-9]/g, '').slice(0, 6);
+    }
     setShippingDetails(prev => {
       const updated = { ...prev, [field]: value };
       const streetPart = getStreetPart(updated);
@@ -273,9 +276,10 @@ export const Checkout = () => {
       !addressForm.city?.trim() ||
       !addressForm.state?.trim() ||
       !addressForm.pincode?.trim() ||
+      addressForm.pincode.replace(/[^0-9]/g, '').length !== 6 ||
       !addressForm.country?.trim()
     ) {
-      setError(t('checkout_page.validation_error', { defaultValue: 'Please fill in all required fields.' }));
+      setError(addressForm.pincode?.replace(/[^0-9]/g, '').length !== 6 ? "Please enter a valid 6-digit PIN Code." : t('checkout_page.validation_error', { defaultValue: 'Please fill in all required fields.' }));
       return;
     }
 
@@ -480,6 +484,7 @@ export const Checkout = () => {
         activeAddress.city?.trim() &&
         activeAddress.state?.trim() &&
         activeAddress.pincode?.trim() &&
+        activeAddress.pincode.replace(/[^0-9]/g, '').length === 6 &&
         (activeAddress.country || 'India')?.trim()
       );
     } else {
@@ -497,6 +502,7 @@ export const Checkout = () => {
         shippingDetails.city?.trim() &&
         shippingDetails.state?.trim() &&
         shippingDetails.pincode?.trim() &&
+        shippingDetails.pincode.replace(/[^0-9]/g, '').length === 6 &&
         shippingDetails.country?.trim()
       );
     }
@@ -928,11 +934,22 @@ export const Checkout = () => {
                           <input
                             type="text"
                             required
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={6}
                             value={addressForm.pincode}
-                            onChange={(e) => setAddressForm({...addressForm, pincode: e.target.value})}
-                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-slate-800 dark:text-slate-100"
+                            onChange={(e) => {
+                              const numericVal = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                              setAddressForm({...addressForm, pincode: numericVal});
+                            }}
+                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-slate-850 dark:text-slate-105"
                             placeholder="e.g. 302021"
                           />
+                          {addressForm.pincode && addressForm.pincode.length !== 6 && (
+                            <p className="mt-1 text-[11px] text-[#EF4444] font-semibold">
+                              Please enter a valid 6-digit PIN Code.
+                            </p>
+                          )}
                         </div>
                       </div>
 
@@ -1057,7 +1074,7 @@ export const Checkout = () => {
                         </button>
                         <button
                           type="submit"
-                          disabled={!!(addressForm.alternate_mobile_number && addressForm.alternate_mobile_number.length !== 10)}
+                          disabled={addressForm.pincode?.length !== 6 || !!(addressForm.alternate_mobile_number && addressForm.alternate_mobile_number.length !== 10)}
                           className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Save Address
@@ -1314,11 +1331,19 @@ export const Checkout = () => {
                       <input
                         type="text"
                         required
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={6}
                         value={shippingDetails.pincode || ''}
                         onChange={(e) => handleGuestInputChange('pincode', e.target.value)}
                         className="w-full px-4 py-3 text-base bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-slate-800 dark:text-slate-100"
                         placeholder="e.g. 302021"
                       />
+                      {shippingDetails.pincode && shippingDetails.pincode.length !== 6 && (
+                        <p className="mt-1 text-[11px] text-[#EF4444] font-semibold">
+                          Please enter a valid 6-digit PIN Code.
+                        </p>
+                      )}
                     </div>
                   </div>
 

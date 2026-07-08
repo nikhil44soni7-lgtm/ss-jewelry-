@@ -956,6 +956,11 @@ export const Home = () => {
     setAddUserError(null);
     setAddUserSuccess(null);
 
+    if (isAdminPincodeInvalid) {
+      setAddUserError("Please enter a valid 6-digit PIN Code.");
+      return;
+    }
+
     if (addUserForm.password !== addUserForm.confirm_password) {
       setAddUserError("Passwords do not match.");
       return;
@@ -1540,6 +1545,9 @@ export const Home = () => {
     fetchProducts();
   }, [activeCategory, activeSearch, language, refreshTrigger]);
 
+  const isAdminAddressEmpty = !addUserForm.address?.trim() && !addUserForm.city?.trim() && !addUserForm.state?.trim() && !addUserForm.pincode?.trim();
+  const isAdminPincodeInvalid = isAdminAddressEmpty ? false : addUserForm.pincode?.trim().length !== 6;
+
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-16">
 
@@ -2005,10 +2013,18 @@ export const Home = () => {
                     <input
                       type="text"
                       placeholder="e.g. 400001"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={6}
                       value={addUserForm.pincode}
-                      onChange={(e) => setAddUserForm({ ...addUserForm, pincode: e.target.value })}
+                      onChange={(e) => setAddUserForm({ ...addUserForm, pincode: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })}
                       className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/35 text-xs text-slate-800 dark:text-slate-100"
                     />
+                    {addUserForm.pincode && addUserForm.pincode.length !== 6 && (
+                      <p className="mt-1 text-[11px] text-[#EF4444] font-semibold">
+                        Please enter a valid 6-digit PIN Code.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2028,7 +2044,7 @@ export const Home = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={addUserLoading}
+                  disabled={addUserLoading || isAdminPincodeInvalid}
                   className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
                 >
                   {addUserLoading ? (

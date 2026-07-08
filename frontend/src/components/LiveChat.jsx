@@ -142,9 +142,8 @@ export const LiveChat = () => {
           }}
           className="pointer-events-auto w-[calc(100vw-32px)] sm:w-96 h-[450px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300"
         >
-          
-          {/* Header */}
-          <div className="bg-[#3F1D5A] flex flex-col text-white chat-header">
+                    {/* Header */}
+          <div className="bg-[#3F1D5A] flex flex-col text-white chat-header relative">
             {/* Drag Handle - Mobile only */}
             <div className="sm:hidden flex justify-center w-full pt-2.5 pb-1 cursor-grab active:cursor-grabbing">
               <div className="w-12 h-1.5 bg-white/40 rounded-full" />
@@ -164,12 +163,21 @@ export const LiveChat = () => {
                 </div>
               </div>
               
-              {/* Close Button - Hidden on mobile devices, visible on desktop/tablet (>= 640px) */}
+              {/* Close Button - Hidden on mobile devices, visible on desktop/tablet (>= 768px) */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="hidden sm:block text-white hover:text-purple-200 p-1 rounded-lg hover:bg-purple-800/50 cursor-pointer"
+                className="hidden md:block text-white hover:text-purple-200 p-1 rounded-lg hover:bg-purple-800/50 cursor-pointer"
               >
                 <X className="h-5 w-5" />
+              </button>
+
+              {/* Mobile Close Button - Visible only on mobile screens (< 768px) */}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="md:hidden absolute top-[14px] right-4 flex items-center justify-center w-8 h-8 rounded-full bg-[#2d1440] border border-white/10 shadow-md hover:bg-[#200e2e] transition-colors cursor-pointer text-white"
+                title="Close Chat"
+              >
+                <X className="h-4.5 w-4.5" />
               </button>
             </div>
           </div>

@@ -30,6 +30,11 @@ export const GlobalVideoFooter = () => {
               <stop offset="100%" stopColor="#8A6021" />
             </linearGradient>
 
+            {/* High-quality heavy Gaussian blur filter */}
+            <filter id="luxuryBlur" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="15" />
+            </filter>
+
             <style>{`
               .animated-outline {
                 stroke-dasharray: 1200;
@@ -47,7 +52,30 @@ export const GlobalVideoFooter = () => {
             `}</style>
           </defs>
 
-          {/* Golden text with dynamic fill, outline and draw animation */}
+          {/* Blurred shadow/glow layer underneath */}
+          <text
+            x="50%"
+            y="50%"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="url(#goldTextGradient)"
+            stroke="url(#goldOutlineGradient)"
+            strokeWidth="3.2"
+            strokeOpacity="0.95"
+            fontSize="240"
+            fontWeight="950"
+            fontFamily="'Outfit', 'Inter', sans-serif"
+            letterSpacing="0.08em"
+            textLength="1300"
+            lengthAdjust="spacingAndGlyphs"
+            className="pointer-events-none"
+            filter="url(#luxuryBlur)"
+            opacity="0.85"
+          >
+            SS JEWELLERY
+          </text>
+
+          {/* Sharp text layer on top with dynamic fill, outline and draw animation */}
           <text
             x="50%"
             y="50%"

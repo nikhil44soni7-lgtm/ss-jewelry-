@@ -34,6 +34,31 @@ export const GlobalVideoFooter = () => {
                 SS JEWELLERY
               </text>
             </mask>
+
+            {/* Shimmering gold gradient for premium theme */}
+            <linearGradient id="goldOutlineGradient" x1="-100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#D4A75F" />
+              <stop offset="50%" stopColor="#FFF2DC" />
+              <stop offset="100%" stopColor="#D4A75F" />
+              <animate attributeName="x1" values="-100%; 100%" dur="3.5s" repeatCount="indefinite" />
+              <animate attributeName="x2" values="0%; 200%" dur="3.5s" repeatCount="indefinite" />
+            </linearGradient>
+
+            <style>{`
+              .animated-outline {
+                stroke-dasharray: 1200;
+                stroke-dashoffset: 1200;
+                animation: drawTrace 12s linear infinite, glowPulse 4s ease-in-out infinite alternate;
+              }
+              @keyframes drawTrace {
+                0% { stroke-dashoffset: 2400; }
+                100% { stroke-dashoffset: 0; }
+              }
+              @keyframes glowPulse {
+                0% { filter: drop-shadow(0 0 2px rgba(212, 167, 95, 0.35)); }
+                100% { filter: drop-shadow(0 0 10px rgba(212, 167, 95, 0.75)); }
+              }
+            `}</style>
           </defs>
           
           <foreignObject x="0" y="0" width="100%" height="100%" mask="url(#text-mask)">
@@ -48,23 +73,23 @@ export const GlobalVideoFooter = () => {
             />
           </foreignObject>
 
-          {/* Golden outline framing */}
+          {/* Golden outline framing with dynamic gradients and draw animation */}
           <text
             x="50%"
             y="50%"
             textAnchor="middle"
             dominantBaseline="middle"
             fill="none"
-            stroke="#D4A75F"
+            stroke="url(#goldOutlineGradient)"
             strokeWidth="3.2"
-            strokeOpacity="0.9"
+            strokeOpacity="0.95"
             fontSize="240"
             fontWeight="950"
             fontFamily="'Outfit', 'Inter', sans-serif"
             letterSpacing="0.08em"
             textLength="1300"
             lengthAdjust="spacingAndGlyphs"
-            className="pointer-events-none"
+            className="pointer-events-none animated-outline"
           >
             SS JEWELLERY
           </text>

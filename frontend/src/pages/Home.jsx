@@ -15,6 +15,8 @@ import { GoldCalculator } from '../components/GoldCalculator';
 import { TrustShowcase } from '../components/TrustShowcase';
 import { LuxuryGallery } from '../components/LuxuryGallery';
 import { OccasionGallery } from '../components/OccasionGallery';
+import { OwnerShowcase } from '../components/OwnerShowcase';
+import { VideoShowcase } from '../components/VideoShowcase';
 
 
 const ACTION_TYPES = [
@@ -1805,6 +1807,8 @@ export const Home = () => {
           <OccasionGallery />
           <TrustShowcase />
           <GoldCalculator />
+          <VideoShowcase />
+          <OwnerShowcase />
         </>
       )}
 

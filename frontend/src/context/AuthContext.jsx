@@ -3,8 +3,16 @@ import axios from 'axios';
 
 export const AuthContext = createContext();
 
-// Base URL for Flask REST API
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://ss-jewelry.onrender.com/api';
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) return import.meta.env.VITE_API_BASE_URL;
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000/api';
+  }
+  return 'https://ss-jewelry.onrender.com/api';
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 export const SERVER_BASE_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
 
 export const AuthProvider = ({ children }) => {

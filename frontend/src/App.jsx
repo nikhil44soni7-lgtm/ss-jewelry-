@@ -112,7 +112,7 @@ function App() {
       <LanguageSelectionModal />
 
       {/* Main page content area */}
-      <main className={`flex-grow ${location.pathname === '/' ? '' : 'pt-24 lg:pt-0'}`}>
+      <main className="flex-grow pt-20">
         <AnimatePresence mode="wait">
           <React.Suspense fallback={<LoadingFallback />}>
             <Routes location={location} key={location.pathname}>

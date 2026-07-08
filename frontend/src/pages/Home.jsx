@@ -157,7 +157,7 @@ const SearchSpotlight = ({ products, language }) => {
   const rightImg = getProductImage(rightProduct);
 
   return (
-    <div className="relative w-full overflow-hidden mt-[108px] lg:mt-0 py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#0A0512] via-[#150A21] to-[#0A0512] dark:from-[#0A0512] dark:to-[#150A21] border-b border-[#D4A75F]/20 text-white">
+    <div className="relative w-full overflow-hidden mt-0 py-10 md:py-16 px-4 md:px-8 bg-gradient-to-b from-[#0A0512] via-[#150A21] to-[#0A0512] dark:from-[#0A0512] dark:to-[#150A21] border-b border-[#D4A75F]/20 text-white">
       {/* Background Decorative Rings/Ornaments */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none">
         <div className="absolute top-1/2 left-1/4 w-[600px] h-[600px] rounded-full border border-[#D4A75F] -translate-y-1/2" />
@@ -347,7 +347,7 @@ const BannerSlider = React.memo(({
           </div>
         </div>
         {/* Mobile Loading Skeleton */}
-        <div className="block md:hidden w-[94vw] mx-auto mt-[108px] mb-8">
+        <div className="block md:hidden w-[94vw] mx-auto mt-4 mb-8">
           <MobileBannerSkeleton />
         </div>
       </>
@@ -614,7 +614,7 @@ const BannerSlider = React.memo(({
       </div>
 
       {/* Mobile view */}
-      <div className="block md:hidden w-[94vw] mx-auto mt-[108px] mb-8">
+      <div className="block md:hidden w-[94vw] mx-auto mt-4 mb-8">
         <div className="relative h-[390px] xs:h-[420px] sm:h-[440px] overflow-hidden rounded-[16px] shadow-[0_20px_50px_rgba(27,11,38,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#D4A75F]/15 dark:border-white/5 bg-gradient-to-tr from-[#1B0B26] via-[#3F1D5A] to-[#2E1442]">
           {isAdmin && (
             <Link

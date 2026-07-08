@@ -230,7 +230,7 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop/Web view navbar */}
-      <nav className={`hidden lg:block sticky top-0 z-40 transition-all duration-500 border-b ${
+      <nav className={`hidden lg:block fixed top-0 left-0 right-0 w-full z-45 transition-all duration-500 border-b ${
         isScrolled
           ? 'navbar-glass-scrolled shadow-md'
           : 'bg-white dark:bg-slate-950 border-[#F2E8D9]/60 dark:border-slate-850 shadow-sm'

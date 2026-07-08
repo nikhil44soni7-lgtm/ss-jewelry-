@@ -12,7 +12,7 @@ export const GlobalVideoFooter = () => {
 
       {/* Video Masked text container - Edge-to-edge with zero margins/padding at top/bottom */}
       <div className="w-full p-0 m-0 flex justify-center overflow-hidden">
-        <svg className="w-[100vw] h-auto select-none p-0 m-0" viewBox="0 0 1320 380">
+        <svg className="w-[100vw] h-auto select-none p-0 m-0" viewBox="0 0 1320 300">
           <defs>
             {/* Shimmering gold outline gradient */}
             <linearGradient id="goldOutlineGradient" x1="-100%" y1="0%" x2="0%" y2="0%">
@@ -56,24 +56,24 @@ export const GlobalVideoFooter = () => {
           {/* Sharp text layer on top with dynamic fill, outline and draw animation */}
           <motion.text
             x="50%"
-            y="50%"
+            y="56%"
             textAnchor="middle"
             dominantBaseline="middle"
             fill="url(#goldTextGradient)"
             stroke="url(#goldOutlineGradient)"
-            strokeWidth="3.2"
+            strokeWidth="6"
             strokeOpacity="0.95"
             fontSize="300"
             fontWeight="1000"
             fontFamily="'Outfit', 'Inter', sans-serif"
-            letterSpacing="0.08em"
+            letterSpacing="0.10em"
             textLength="1300"
             lengthAdjust="spacingAndGlyphs"
             className="pointer-events-none animated-outline"
             initial={{ filter: 'blur(22px)', opacity: 0, scale: 0.94 }}
             whileInView={{ filter: 'blur(0px)', opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
             SS JEWELLERY
           </motion.text>
@@ -87,7 +87,7 @@ export const GlobalVideoFooter = () => {
           whileInView={{ opacity: 0.65, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-[9px] sm:text-xs tracking-[0.45em] uppercase text-[#D4A75F] font-bold mb-4 sm:mb-6"
+          className="text-[9px] sm:text-xs tracking-[0.45em] uppercase text-[#D4A75F] font-bold -mt-2 sm:-mt-3 mb-2 sm:mb-2"
         >
           Crafting Timeless Elegance
         </motion.p>

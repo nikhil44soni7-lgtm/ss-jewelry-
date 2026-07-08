@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ChevronUp, X, Heart, Sparkles } from 'lucide-react';
+import { ChevronUp, X, Heart, Sparkles } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-// 3D Parallax Card component for Occasion
+// 3D Parallax & Magnetic Card component for Occasion
 const ParallaxOccasionCard = ({ item, onExpand, index }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -57,7 +57,7 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={() => onExpand(item)}
-      className="relative min-w-[270px] sm:min-w-[340px] aspect-[9/14] rounded-2xl overflow-hidden cursor-pointer group border border-slate-200/40 dark:border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 select-none flex-shrink-0"
+      className="relative w-[260px] sm:w-[330px] aspect-[9/14] rounded-2xl overflow-hidden cursor-pointer group border border-slate-200/40 dark:border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-shadow duration-350 select-none flex-shrink-0"
     >
       {/* Background Image with Parallax Offset */}
       <motion.div 
@@ -107,7 +107,6 @@ const ParallaxOccasionCard = ({ item, onExpand, index }) => {
 export const OccasionGallery = () => {
   const { language } = useTranslation();
   const [selectedItem, setSelectedItem] = useState(null);
-  const scrollRef = useRef(null);
 
   // Occasions Lookbook Data
   const items = {
@@ -181,89 +180,61 @@ export const OccasionGallery = () => {
     ]
   }[language === 'hi' ? 'hi' : 'en'];
 
-  // Scroll function for buttons
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -380 : 380;
-      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   return (
     <section className="relative w-full overflow-hidden py-16 bg-transparent transition-colors duration-300">
       
-      {/* Hide Scrollbar style utility */}
+      {/* Infinite Seamless Marquee CSS */}
       <style dangerouslySetInnerHTML={{__html: `
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        @keyframes marquee-horizontal {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+        .animate-marquee-track {
+          display: flex;
+          gap: 20px;
+          width: max-content;
+          animation: marquee-horizontal 35s linear infinite;
+        }
+        .animate-marquee-track:hover {
+          animation-play-state: paused;
         }
       `}} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* Title block remains aligned with parent margins */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center max-w-3xl mb-12">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-[#D4A75F] text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-4"
+        >
+          <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+          {language === 'hi' ? 'अवसर के अनुसार लुकबुक' : 'Shop by Occasion'}
+        </motion.div>
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-[#D4A75F] text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-4"
-          >
-            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-            {language === 'hi' ? 'अवसर के अनुसार लुकबुक' : 'Shop by Occasion'}
-          </motion.div>
-          
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#3F1D5A] dark:text-[#EFE7DB] tracking-wide">
-            {language === 'hi' ? 'हर अवसर के लिए विशेष स्टाइल' : 'Styling Curated for Every Occasion'}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">
-            {language === 'hi' 
-              ? 'चाहे दैनिक पहनावा हो या विशेष विवाह समारोह, हमारे संग्रह हर पल को अनमोल बनाते हैं।' 
-              : 'From daily office statement wear to royal wedding celebrations, find the perfect design matches.'
-            }
-          </p>
-        </div>
+        <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#3F1D5A] dark:text-[#EFE7DB] tracking-wide">
+          {language === 'hi' ? 'हर अवसर के लिए विशेष स्टाइल' : 'Styling Curated for Every Occasion'}
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">
+          {language === 'hi' 
+            ? 'चाहे दैनिक पहनावा हो या विशेष विवाह समारोह, हमारे संग्रह हर पल को अनमोल बनाते हैं।' 
+            : 'From daily office statement wear to royal wedding celebrations, find the perfect design matches.'
+          }
+        </p>
+      </div>
 
-        {/* Carousel Container Wrapper */}
-        <div className="relative w-full flex items-center group/slider">
-          
-          {/* Left Navigation Chevron */}
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-2 sm:left-4 z-40 p-2.5 sm:p-3.5 rounded-full bg-white text-slate-800 shadow-xl border border-slate-100 hover:bg-slate-50 transition-all opacity-0 group-hover/slider:opacity-100 hover:scale-105 cursor-pointer hidden sm:flex items-center justify-center"
-          >
-            <ChevronLeft className="h-5 w-5 text-slate-800" />
-          </button>
-
-          {/* Horizontal Scrollable Track */}
-          <div
-            ref={scrollRef}
-            className="w-full flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth scrollbar-hide py-4 px-2 sm:px-4"
-          >
-            {items.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.12 }}
-              >
-                <ParallaxOccasionCard item={item} onExpand={setSelectedItem} index={index} />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Right Navigation Chevron */}
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-2 sm:right-4 z-40 p-2.5 sm:p-3.5 rounded-full bg-white text-slate-800 shadow-xl border border-slate-100 hover:bg-slate-50 transition-all opacity-0 group-hover/slider:opacity-100 hover:scale-105 cursor-pointer hidden sm:flex items-center justify-center"
-          >
-            <ChevronRight className="h-5 w-5 text-slate-800" />
-          </button>
+      {/* Full-width Carousel Track (no margins, edge-to-edge width) */}
+      <div className="w-full overflow-hidden py-4 relative z-10">
+        <div className="animate-marquee-track">
+          {/* Double items array for seamless looping visual alignment */}
+          {[...items, ...items].map((item, index) => (
+            <ParallaxOccasionCard 
+              key={`${item.id}-${index}`} 
+              item={item} 
+              onExpand={setSelectedItem} 
+              index={index} 
+            />
+          ))}
         </div>
       </div>
 

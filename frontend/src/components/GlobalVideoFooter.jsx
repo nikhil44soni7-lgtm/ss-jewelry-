@@ -52,31 +52,6 @@ export const GlobalVideoFooter = () => {
             `}</style>
           </defs>
 
-          {/* Blurred shadow/glow layer underneath */}
-          <motion.text
-            x="50%"
-            y="50%"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="url(#goldTextGradient)"
-            stroke="url(#goldOutlineGradient)"
-            strokeWidth="3.2"
-            strokeOpacity="0.95"
-            fontSize="240"
-            fontWeight="950"
-            fontFamily="'Outfit', 'Inter', sans-serif"
-            letterSpacing="0.08em"
-            textLength="1300"
-            lengthAdjust="spacingAndGlyphs"
-            className="pointer-events-none"
-            filter="url(#luxuryBlur)"
-            initial={{ filter: 'blur(30px)', opacity: 0, scale: 0.94 }}
-            whileInView={{ filter: 'blur(0px)', opacity: 0.85, scale: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            SS JEWELLERY
-          </motion.text>
 
           {/* Sharp text layer on top with dynamic fill, outline and draw animation */}
           <motion.text
@@ -88,8 +63,8 @@ export const GlobalVideoFooter = () => {
             stroke="url(#goldOutlineGradient)"
             strokeWidth="3.2"
             strokeOpacity="0.95"
-            fontSize="240"
-            fontWeight="950"
+            fontSize="300"
+            fontWeight="1000"
             fontFamily="'Outfit', 'Inter', sans-serif"
             letterSpacing="0.08em"
             textLength="1300"
@@ -116,16 +91,6 @@ export const GlobalVideoFooter = () => {
         >
           Crafting Timeless Elegance
         </motion.p>
-
-        {/* Quick Copyright with tight padding */}
-        <div className="w-full border-t border-slate-900/60 dark:border-slate-900/60 pt-4 pb-6 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-500 dark:text-slate-400 gap-4">
-          <p>© {new Date().getFullYear()} SS JEWELLERY. All Rights Reserved.</p>
-          <div className="flex gap-6">
-            <Link to="/support" className="hover:text-[#D4A75F] transition-colors">Support</Link>
-            <Link to="/support-center" className="hover:text-[#D4A75F] transition-colors">Privacy Policy</Link>
-            <Link to="/cart" className="hover:text-[#D4A75F] transition-colors">My Cart</Link>
-          </div>
-        </div>
       </div>
     </footer>
   );

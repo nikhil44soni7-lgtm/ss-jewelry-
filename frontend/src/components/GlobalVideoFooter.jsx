@@ -14,28 +14,7 @@ export const GlobalVideoFooter = () => {
       <div className="w-full p-0 m-0 flex justify-center overflow-hidden">
         <svg className="w-[100vw] h-auto select-none p-0 m-0" viewBox="0 0 1320 380">
           <defs>
-            <mask id="text-mask" x="0" y="0" width="100%" height="100%">
-              <rect x="0" y="0" width="100%" height="100%" fill="black" />
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill="white"
-                stroke="white"
-                strokeWidth="4.5"
-                fontSize="240"
-                fontWeight="950"
-                fontFamily="'Outfit', 'Inter', sans-serif"
-                letterSpacing="0.08em"
-                textLength="1300"
-                lengthAdjust="spacingAndGlyphs"
-              >
-                SS JEWELLERY
-              </text>
-            </mask>
-
-            {/* Shimmering gold gradient for premium theme */}
+            {/* Shimmering gold outline gradient */}
             <linearGradient id="goldOutlineGradient" x1="-100%" y1="0%" x2="0%" y2="0%">
               <stop offset="0%" stopColor="#D4A75F" />
               <stop offset="50%" stopColor="#FFF2DC" />
@@ -44,14 +23,18 @@ export const GlobalVideoFooter = () => {
               <animate attributeName="x2" values="0%; 200%" dur="3.5s" repeatCount="indefinite" />
             </linearGradient>
 
+            {/* Solid luxury metallic gold gradient fill */}
+            <linearGradient id="goldTextGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FCE7C8" />
+              <stop offset="50%" stopColor="#D4A75F" />
+              <stop offset="100%" stopColor="#8A6021" />
+            </linearGradient>
+
             <style>{`
               .animated-outline {
                 stroke-dasharray: 1200;
                 stroke-dashoffset: 1200;
                 animation: drawTrace 12s linear infinite, glowPulse 4s ease-in-out infinite alternate;
-              }
-              .blur-breathing {
-                animation: breathingBlur 5s ease-in-out infinite alternate;
               }
               @keyframes drawTrace {
                 0% { stroke-dashoffset: 2400; }
@@ -61,56 +44,16 @@ export const GlobalVideoFooter = () => {
                 0% { filter: drop-shadow(0 0 2px rgba(212, 167, 95, 0.35)); }
                 100% { filter: drop-shadow(0 0 10px rgba(212, 167, 95, 0.75)); }
               }
-              @keyframes breathingBlur {
-                0% {
-                  filter: blur(2px);
-                  opacity: 0.45;
-                }
-                100% {
-                  filter: blur(15px);
-                  opacity: 0.95;
-                }
-              }
             `}</style>
           </defs>
-          
-          {/* Glowing background blur layer (Moah-style glow) */}
+
+          {/* Golden text with dynamic fill, outline and draw animation */}
           <text
             x="50%"
             y="50%"
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#D4A75F"
-            fontSize="240"
-            fontWeight="950"
-            fontFamily="'Outfit', 'Inter', sans-serif"
-            letterSpacing="0.08em"
-            textLength="1300"
-            lengthAdjust="spacingAndGlyphs"
-            className="pointer-events-none blur-breathing"
-          >
-            SS JEWELLERY
-          </text>
-
-          <foreignObject x="0" y="0" width="100%" height="100%" mask="url(#text-mask)">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              src="/jewelry-showcase.mp4"
-              style={{ filter: 'brightness(1.25) contrast(1.15)' }}
-            />
-          </foreignObject>
-
-          {/* Golden outline framing with dynamic gradients and draw animation */}
-          <text
-            x="50%"
-            y="50%"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="none"
+            fill="url(#goldTextGradient)"
             stroke="url(#goldOutlineGradient)"
             strokeWidth="3.2"
             strokeOpacity="0.95"

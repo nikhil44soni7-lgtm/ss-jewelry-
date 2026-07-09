@@ -122,6 +122,9 @@ const MobileCategorySkeleton = () => (
 
 const SearchSpotlight = ({ products, language }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [searchParams] = useSearchParams();
+  const activeCategory = searchParams.get('category') || 'All';
+  const activeSearch = searchParams.get('search') || '';
 
   useEffect(() => {
     setActiveIndex(0);
@@ -171,7 +174,12 @@ const SearchSpotlight = ({ products, language }) => {
         <div className="lg:col-span-4 order-2 lg:order-1 text-center lg:text-left flex flex-col justify-center">
           <span className="inline-flex self-center lg:self-start items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-bold bg-[#D4A75F]/15 text-[#D4A75F] border border-[#D4A75F]/35 uppercase tracking-widest mb-4">
             <Sparkles className="h-3 w-3 animate-pulse" />
-            {language === 'hi' ? 'शीर्ष मिलान' : 'Top Search Match'}
+            {activeSearch 
+              ? (language === 'hi' ? 'शीर्ष खोज मिलान' : 'Top Search Match')
+              : activeCategory !== 'All'
+              ? `${translateCategory(activeCategory, language)} ${language === 'hi' ? 'विशेष संग्रह' : 'Spotlight'}`
+              : (language === 'hi' ? 'विशेष संग्रह' : 'Featured Collection')
+            }
           </span>
           
           <motion.h2 
@@ -1551,7 +1559,7 @@ export const Home = () => {
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-16">
 
-      {!activeSearch ? (
+      {!activeSearch && activeCategory === 'All' ? (
         <BannerSlider
           slides={slides}
           activeSlide={activeSlide}

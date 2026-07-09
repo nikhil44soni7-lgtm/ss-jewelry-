@@ -47,13 +47,14 @@ export const VideoShowcase = () => {
 
         {/* 
           Autoplay, loop, muted, no controls.
-          To hide the YouTube top bar (title, channel avatar) and bottom watermark/logo,
-          we scale the iframe up by 15% and offset it negative absolute positions
-          to crop those elements off the edges.
+          To ensure absolutely no YouTube branding, titles, channel icons, or controls
+          are visible on both mobile and web views, we scale the iframe significantly
+          (w-135%, h-135%) and offset it by negative positions.
+          'playsinline=1' is included to prevent native full-screen hijack on mobile devices.
         */}
         <iframe
-          className="absolute w-[116%] h-[116%] -left-[8%] -top-[8%] scale-[1.02]"
-          src="https://www.youtube.com/embed/ac_eyiZp6mc?autoplay=1&mute=1&loop=1&playlist=ac_eyiZp6mc&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0"
+          className="absolute w-[135%] h-[135%] -left-[17.5%] -top-[17.5%] scale-[1.02]"
+          src="https://www.youtube.com/embed/ac_eyiZp6mc?autoplay=1&mute=1&loop=1&playlist=ac_eyiZp6mc&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1"
           title="SS Jewellery Video Showcase"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

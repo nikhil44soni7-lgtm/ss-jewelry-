@@ -781,8 +781,6 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
               return (
                 <motion.div
                   key={cat.name}
-                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="flex flex-col items-center justify-center"
                 >
                   <Link
@@ -791,7 +789,7 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                       e.preventDefault();
                       onCategoryClick(cat.name);
                     }}
-                    className="flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
+                    className="category-item-link flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-20 sm:w-24 group"
                   >
                     <div
                       className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
@@ -810,10 +808,10 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         width="76"
                         height="76"
                         wrapperClassName="rounded-full"
-                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                        className={`w-full h-full object-cover rounded-full transition-all duration-500 no-zoom ${
                           isActive
-                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
-                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                            ? 'opacity-100 saturate-120 brightness-105 contrast-105'
+                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100'
                         }`}
                       />
                     </div>
@@ -855,8 +853,6 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
               return (
                 <motion.div
                   key={cat.name}
-                  animate={isActive ? { scale: 1.08 } : { scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="flex-none flex flex-col items-center justify-center"
                 >
                   <Link
@@ -865,7 +861,7 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                       e.preventDefault();
                       onCategoryClick(cat.name);
                     }}
-                    className="snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
+                    className="category-item-link snap-center flex-none flex flex-col items-center justify-center focus:outline-none cursor-pointer select-none w-[76px] sm:w-[84px] group"
                   >
                     <div
                       className={`rounded-full flex items-center justify-center overflow-hidden border-2 p-0.5 transition-all duration-500 ${
@@ -884,10 +880,10 @@ const CategoryGrid = React.memo(({ activeCategory, loading, onCategoryClick }) =
                         width="68"
                         height="68"
                         wrapperClassName="rounded-full"
-                        className={`w-full h-full object-cover rounded-full transition-all duration-500 ${
+                        className={`w-full h-full object-cover rounded-full transition-all duration-500 no-zoom ${
                           isActive
-                            ? 'opacity-100 saturate-120 brightness-105 contrast-105 scale-105'
-                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-105'
+                            ? 'opacity-100 saturate-120 brightness-105 contrast-105'
+                            : 'opacity-50 saturate-30 brightness-90 contrast-90 group-hover:opacity-100 group-hover:saturate-100 group-hover:brightness-100 group-hover:contrast-100'
                         }`}
                       />
                     </div>
@@ -1216,12 +1212,13 @@ export const Home = () => {
     }
     setSearchParams(newParams, { preventScrollReset: true });
 
-    if (source === 'banner') {
+    // Smooth scroll down to show the products immediately
+    setTimeout(() => {
       const allProductsHeading = document.getElementById('all-products-heading');
       if (allProductsHeading) {
         allProductsHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }
+    }, 100);
   }, [searchParams, setSearchParams]);
 
   // Banner Management States

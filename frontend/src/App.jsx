@@ -86,6 +86,8 @@ function App() {
         img.src.includes('avatar') ||
         img.src.includes('flag') ||
         img.classList.contains('no-zoom') ||
+        img.closest('.no-zoom') ||
+        img.closest('.category-item-link') ||
         img.closest('.live-chat-container') ||
         img.closest('.navbar-brand-logo') ||
         img.closest('.language-modal-ref') ||
